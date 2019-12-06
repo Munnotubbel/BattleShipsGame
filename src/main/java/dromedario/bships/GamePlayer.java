@@ -81,15 +81,6 @@ public class GamePlayer {
         return this.turn;
     }
 //----------------------------------------------------------------turn
-public GamePlayer getOpponent(){
-    Set<GamePlayer> gamePlayers = this.getGame().getGamePlayers();
-    final GamePlayer[] opponent = new GamePlayer[1];
-    gamePlayers.forEach(e -> {
-        if(e.getId() != this.getId()){
-            opponent[0] = e;
-        }
-    });
-    return  opponent[0];
-}
+
 
 }
