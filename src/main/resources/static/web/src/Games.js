@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
+import { Route, HashRouter, NavLink } from "react-router-dom";
 export default class Games extends Component {
   state = {};
 
@@ -14,7 +15,7 @@ export default class Games extends Component {
   };
 
   render() {
-    this.state.games && console.log(this.state.games);
+    // this.state.games && console.log(this.state.games);
 
     if (this.state.games) {
       return (
@@ -31,7 +32,7 @@ export default class Games extends Component {
               <Grid item xs={6}>
                 {game.gamename}
                 <ul>
-                  <li>Game ID: {game.gameId}</li>
+                  <li>Game ID: {game.gmId}</li>
                   <li>created at: {game.created}</li>
                   {game.gamePlayers && (
                     <div>
@@ -42,13 +43,24 @@ export default class Games extends Component {
                             <ul>
                               <ul>
                                 <li>Playername: {gamePly.player.name}</li>
-                                <li>Player ID: {gamePly.player.playerId}</li>
+                                <li>
+                                  <NavLink
+                                    to={{
+                                      pathname: "/web/game_view",
+                                      gamePlayer: {
+                                        gmPlyId: `${gamePly.gmPlyId}`
+                                      },
+                                      game: { gmId: `${game.gmId}` }
+                                    }}
+                                  >
+                                    GamePlayer ID: {gamePly.gmPlyId}
+                                  </NavLink>
+                                </li>
                               </ul>
                               <ul>
                                 Ships:
                                 {gamePly.ships &&
                                   gamePly.ships.map(ship => {
-                                    console.log(ship);
                                     return (
                                       <ul>
                                         <li>Ship Type: {ship.ShipType}</li>

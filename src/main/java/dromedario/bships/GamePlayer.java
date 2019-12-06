@@ -1,11 +1,8 @@
 package dromedario.bships;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
@@ -14,6 +11,7 @@ public class GamePlayer {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     Date date;
+    private Integer turn ;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
@@ -23,6 +21,9 @@ public class GamePlayer {
     private Game game;
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     Set<Ship> ships = new HashSet<>();
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Attack> attacks = new HashSet<>();
+
 
     public GamePlayer() {
     };
@@ -31,6 +32,7 @@ public class GamePlayer {
         this.date = new Date();
         this.game= gm;
         this.player=ply;
+        this.turn = 1;
     };
 
 //---------------------------------------------------------------Game
@@ -63,7 +65,31 @@ public class GamePlayer {
     public Set<Ship> getShips() {
         return this.ships;
     }
-
-
+//----------------------------------------------------------------Attacks
+    public void addAttack(Attack attack) {
+        attack.setGamePlayer(this);
+        attacks.add(attack);
+    }
+    public Set<Attack> getAttacks() {
+        return this.attacks;
+    }
+    //----------------------------------------------------------------turn
+    public void nextTurn() {
+        this.turn++;
+    }
+    public Integer getTurn() {
+        return this.turn;
+    }
+//----------------------------------------------------------------turn
+public GamePlayer getOpponent(){
+    Set<GamePlayer> gamePlayers = this.getGame().getGamePlayers();
+    final GamePlayer[] opponent = new GamePlayer[1];
+    gamePlayers.forEach(e -> {
+        if(e.getId() != this.getId()){
+            opponent[0] = e;
+        }
+    });
+    return  opponent[0];
+}
 
 }

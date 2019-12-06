@@ -1,12 +1,8 @@
 package dromedario.bships;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import static java.util.stream.Collectors.toList;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -20,6 +16,8 @@ public class BshipsApplicationController {
     private GamePlayerRepository gamePlayerRepository;
     @Autowired
     private ShipRepository shipRepository;
+    @Autowired
+    private AttackRepository attackRepository;
     //--------------------------------------------------------------players route
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/players")
@@ -36,7 +34,7 @@ public class BshipsApplicationController {
         gameRepository.findAll().stream().forEach(game -> {
             Map<String, Object> gameMap = new HashMap<>();
             gameMap.put("gamename", game.getGameName());
-        gameMap.put("gameId", game.getGameId());
+        gameMap.put("gmId", game.getGameId());
         gameMap.put("created", game.date.toString());
         gameMap.put("gamePlayers", GamePlayersOfGame(game));
         gamesList.add(gameMap);
@@ -49,11 +47,12 @@ public class BshipsApplicationController {
 //--------------------------------------------------------------#games route GET GAMEPLAYERS
     public List<Object> GamePlayersOfGame(Game game){
         List<Object> gamePlys = new ArrayList<>();
-        game.getGamePlayers().forEach(gamePlayerOfGame -> {
+        game.getGamePlayers().stream().forEach(gamePlayerOfGame -> {
             Map<String, Object> gmPlyMap = new HashMap<>();
-            gmPlyMap.put("id", gamePlayerOfGame.getId());
+            gmPlyMap.put("gmPlyId", gamePlayerOfGame.getId());
             gmPlyMap.put("player", PlayerOfGamePlayer(gamePlayerOfGame) );
             gmPlyMap.put("ships", ShipsOfGamePlayer(gamePlayerOfGame));
+            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
             gamePlys.add(gmPlyMap);
         });
         return gamePlys;
@@ -62,14 +61,14 @@ public class BshipsApplicationController {
     public Object PlayerOfGamePlayer(GamePlayer gamePlayer){
         Player player = gamePlayer.getPlayer();
         Map<String, Object> plyMap = new HashMap<>();
-        plyMap.put("playerId", player.getId());
+        plyMap.put("plyId", player.getId());
         plyMap.put("name",player.getUserName());
         return plyMap;
     }
 //--------------------------------------------------------------#games route GET SHIPS
     public List<Object> ShipsOfGamePlayer(GamePlayer gamePlayer){
         List<Object> shipsList = new ArrayList<>();
-        gamePlayer.getShips().forEach(ship -> {
+        gamePlayer.getShips().stream().forEach(ship -> {
             Map<String, Object> shipsMap = new HashMap<>();
             shipsMap.put("ShipType", ship.getShipType());
             shipsMap.put("location",ship.getLocations());
@@ -77,13 +76,25 @@ public class BshipsApplicationController {
         });
         return shipsList;
     }
+//--------------------------------------------------------------#games route GET ATTACKS
+public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
+    List<Object> listOfAttacks = new ArrayList<>();
+    gamePlayer.getAttacks().stream().forEach(attack -> {
+        Map<String, Object> attacksInfo = new HashMap<>();
+        attacksInfo.put("turn", attack.getTurn());
+        attacksInfo.put("attackLocations",attack.getAttackLocations());
+        listOfAttacks.add(attacksInfo);
+    });
+    return listOfAttacks;
+}
+
 //--------------------------------------------------------------#games route for Game ID
     @RequestMapping("/game/{gameId}")
-    private Object findGame(@PathVariable Long gameId) {
+    public Object findGame(@PathVariable Long gameId) {
         Game game = gameRepository.findGameByGameId(gameId);
         return showGame(game);
     }
-    private Map<String, Object> showGame(Game game) {
+    public Map<String, Object> showGame(Game game) {
         Map<String, Object> gameMap = new HashMap<>();
         gameMap.put("gamename", game.getGameName());
         gameMap.put("id", game.getGameId());
@@ -95,20 +106,51 @@ public class BshipsApplicationController {
 
 //--------------------------------------------------------------#games_view route for gamePlayer ID
     @RequestMapping("/game_view/{gamePlayerId}")
-    private Object gameView(@PathVariable Long gamePlayerId) {
+    public Object gameView(@PathVariable Long gamePlayerId) {
         GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
-                   return showGamePlayerGame(gamePlayer);
+                        return showGamePlayerGame(gamePlayer);
         }
-
 //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
-    private Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer) {
+    public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer) {
+
         Map<String, Object> gameMap = new HashMap<>();
-        gameMap.put("id", gamePlayer.getGame().getGameId());
+        gameMap.put("gmId", gamePlayer.getGame().getGameId());
+        gameMap.put("gmName", gamePlayer.getGame().getGameName());
+        gameMap.put("gmPlyId", gamePlayer.getId());
         gameMap.put("created", gamePlayer.getGame().getDate().toString());
         gameMap.put("gamePlayers", PlayerOfGamePlayer(gamePlayer));
         gameMap.put("ships", ShipsOfGamePlayer(gamePlayer));
-        return gameMap;
-    }
+        gameMap.put("attacks", AttacksOfGamePlayer(gamePlayer));
+//        gameMap.put("enemy", getEnemyInfo(gamePlayer));
+
+            Long gameId = gamePlayer.getGame().getGameId();
+            Game game = gameRepository.findGameByGameId(gameId);
+            game.getGamePlayers().forEach(gamePlayerOfGame -> {
+                if (gamePlayerOfGame.getId()!= gamePlayer.getId()){
+                    gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
+                    gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame) );
+                    gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
+                    }});
+
+            return gameMap;
+                         }
+//--------------------------------------------------------------get Enemy GamePlayer
+//public List<Object> getEnemyInfo(GamePlayer gamePlayer){
+//    Long gameId = gamePlayer.getGame().getGameId();
+//    Game game = gameRepository.findGameByGameId(gameId);
+//    List<Object> enemyPlayer = new ArrayList<>();
+//    game.getGamePlayers().forEach(gamePlayerOfGame -> {
+//        Map<String, Object> gmPlyMap = new HashMap<>();
+//        if (gamePlayerOfGame.getId()!= gamePlayer.getId())
+//        {
+//            gmPlyMap.put("gmPlyId", gamePlayerOfGame.getId());
+//            gmPlyMap.put("player", PlayerOfGamePlayer(gamePlayerOfGame) );
+//            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
+//            enemyPlayer.add(gmPlyMap);}
+//    });
+//        return enemyPlayer;
+//}
+
 
 
 }

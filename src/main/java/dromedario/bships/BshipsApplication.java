@@ -17,7 +17,7 @@ public class BshipsApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(PlayerRepository playerRepository,GameRepository gameRepository,GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository) {
+	public CommandLineRunner initData(PlayerRepository playerRepository,GameRepository gameRepository,GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, AttackRepository attackRepository) {
 		return (args) -> {
 //--------------------------------------------------------------create Players
 			Player ply1= new Player("Bobo");
@@ -135,6 +135,68 @@ public class BshipsApplication {
 			shipRepository.save(desGmPly2);
 			shipRepository.save(cruGmPly2);
 			shipRepository.save(batGmPly2);
+//--------------------------------------------------------------create & save Attacks GamePlayer 1
+			List<String> attackLocations1 = new ArrayList<>();
+			List<String> attackLocations2 = new ArrayList<>();
+			List<String> attackLocations3 = new ArrayList<>();
+
+			attackLocations1.add("A1");
+			attackLocations1.add("B2");
+			attackLocations1.add("C3");
+
+			attackLocations2.add("D4");
+			attackLocations2.add("E5");
+			attackLocations2.add("F6");
+
+			attackLocations3.add("G7");
+			attackLocations3.add("H8");
+			attackLocations3.add("I9");
+
+			Attack attack1 = new Attack(1, attackLocations1);
+			Attack attack2 = new Attack(2, attackLocations2);
+			Attack attack3 = new Attack(3, attackLocations3);
+
+			gmPly1.addAttack(attack1);
+			gmPly1.addAttack(attack2);
+			gmPly1.addAttack(attack3);
+
+			attackRepository.save(attack1);
+			attackRepository.save(attack2);
+			attackRepository.save(attack3);
+
+			gamePlayerRepository.save(gmPly1);
+
+//--------------------------------------------------------------create & save Attacks GamePlayer 2
+			List<String> attackLocations4 = new ArrayList<>();
+			List<String> attackLocations5 = new ArrayList<>();
+			List<String> attackLocations6 = new ArrayList<>();
+
+			attackLocations4.add("A10");
+			attackLocations4.add("B9");
+			attackLocations4.add("C8");
+
+			attackLocations5.add("D7");
+			attackLocations5.add("E6");
+			attackLocations5.add("F5");
+
+			attackLocations6.add("G4");
+			attackLocations6.add("H3");
+			attackLocations6.add("I2");
+
+			Attack attack4 = new Attack(1, attackLocations4);
+			Attack attack5 = new Attack(2, attackLocations5);
+			Attack attack6 = new Attack(3, attackLocations6);
+
+			gmPly2.addAttack(attack4);
+			gmPly2.addAttack(attack5);
+			gmPly2.addAttack(attack6);
+
+			attackRepository.save(attack4);
+			attackRepository.save(attack5);
+			attackRepository.save(attack6);
+
+			gamePlayerRepository.save(gmPly2);
+
 
 		};
 	}

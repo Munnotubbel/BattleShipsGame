@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Games from "./Games";
-import Game from "./Game_view";
+import Game_view from "./Game_view";
 import { withStyles } from "@material-ui/core/styles";
 
 import Menu from "@material-ui/core/Menu";
@@ -25,7 +25,18 @@ export default class App extends Component {
   state = {
     players: []
   };
-
+  gamePlayerPicked = props => {
+    if (props.location) {
+      this.state.gamePlayer = props.location.gamePlayer;
+      this.state.game = props.location.game;
+    }
+    return (
+      <Game_view
+        gamePlayer={this.state.gamePlayer.gmPlyId}
+        game={this.state.game.gmId}
+      />
+    );
+  };
   render() {
     return (
       <HashRouter>
@@ -46,7 +57,8 @@ export default class App extends Component {
         >
           <Route exact path="/" component={Players} />
           <Route path="/web/games" component={Games} />
-          <Route path="/web/game" component={Game} />
+          <Route path="/web/game_view" component={this.gamePlayerPicked} />
+          <Route path="/web/game" component={Game_view} />
         </Grid>
       </HashRouter>
     );

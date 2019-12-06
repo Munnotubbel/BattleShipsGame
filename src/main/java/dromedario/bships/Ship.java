@@ -19,7 +19,7 @@ public class Ship {
 
     @ElementCollection
     @Column(name="ShipLocation")
-    private List<String> locations = new ArrayList<>();
+    private List<String> shipLocations = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
@@ -27,9 +27,9 @@ public class Ship {
 
     public Ship() {}
 
-    public Ship(String ShipType, List<String> location) {
+    public Ship(String ShipType, List<String> shipLocations) {
         this.shipType = ShipType;
-        this.locations = location;
+        this.shipLocations = shipLocations;
     }
 
 //----------------------------------------------------------------ID
@@ -52,10 +52,10 @@ public class Ship {
     }
 //----------------------------------------------------------------Location
     public void setLocations(List<String> locations) {
-        this.locations = locations;
+        this.shipLocations = locations;
     }
     public List<String> getLocations(){
-        return this.locations;
+        return this.shipLocations;
     }
 
 

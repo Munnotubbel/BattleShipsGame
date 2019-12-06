@@ -8,7 +8,7 @@ export default class Players extends Component {
   }
 
   fetchPlayer() {
-    fetch(`api/players`)
+    fetch(`/players`)
       .then(response => response.json())
       .then(
         response => this.setState({ players: response }),
@@ -42,7 +42,7 @@ export default class Players extends Component {
     });
   };
   render() {
-    this.state.players && console.log(this.state.players.players);
+    this.state.players && console.log(this.state.players);
     if (this.state.players) {
       return (
         <Grid
@@ -77,8 +77,8 @@ export default class Players extends Component {
               {this.state.players.players &&
                 this.state.players.players.map(player => {
                   return (
-                    <Grid item xs={4} key={player.id}>
-                      {player.id}-{player.userName}
+                    <Grid item xs={4} key={player.plyId}>
+                      {player.plyId}-{player.userName}
                     </Grid>
                   );
                 })}
