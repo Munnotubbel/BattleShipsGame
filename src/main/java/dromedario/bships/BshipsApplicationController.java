@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 @RestController
 @RequestMapping("/api")
 public class BshipsApplicationController {
@@ -18,6 +20,8 @@ public class BshipsApplicationController {
     private ShipRepository shipRepository;
     @Autowired
     private AttackRepository attackRepository;
+    @Autowired
+    private ScoreRepository scoreRepository;
     //--------------------------------------------------------------players route
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/players")
@@ -31,10 +35,10 @@ public class BshipsApplicationController {
     @RequestMapping("/games")
     public Map<String, Object> getGames() {
         List<Object> gamesList = new ArrayList<>();
-        gameRepository.findAll().stream().forEach(game -> {
+        gameRepository.findAll().forEach(game -> {
             Map<String, Object> gameMap = new HashMap<>();
             gameMap.put("gamename", game.getGameName());
-        gameMap.put("gmId", game.getGameId());
+            gameMap.put("gmId", game.getGameId());
         gameMap.put("created", game.date.toString());
         gameMap.put("gamePlayers", GamePlayersOfGame(game));
         gamesList.add(gameMap);
@@ -51,8 +55,9 @@ public class BshipsApplicationController {
             Map<String, Object> gmPlyMap = new HashMap<>();
             gmPlyMap.put("gmPlyId", gamePlayerOfGame.getId());
             gmPlyMap.put("player", PlayerOfGamePlayer(gamePlayerOfGame) );
-            gmPlyMap.put("ships", ShipsOfGamePlayer(gamePlayerOfGame));
-            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
+//            gmPlyMap.put("ships", ShipsOfGamePlayer(gamePlayerOfGame));
+//            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
+            gmPlyMap.put("score", gamePlayerOfGame.getGmPlyScore(game));
             gamePlys.add(gmPlyMap);
         });
         return gamePlys;
@@ -63,6 +68,7 @@ public class BshipsApplicationController {
         Map<String, Object> plyMap = new HashMap<>();
         plyMap.put("plyId", player.getId());
         plyMap.put("name",player.getUserName());
+
         return plyMap;
     }
 //--------------------------------------------------------------#games route GET SHIPS
@@ -100,6 +106,7 @@ public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
         gameMap.put("id", game.getGameId());
         gameMap.put("created", game.date.toString());
         gameMap.put("gamePlayers", GamePlayersOfGame(game));
+
         return gameMap;
     }
 
@@ -151,6 +158,18 @@ public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
 //        return enemyPlayer;
 //}
 
+//--------------------------------------------------------------#ranking route
+    @CrossOrigin(origins = "http://localhost:3000")
+    @RequestMapping("/ranking")
+    public List<HashMap<String, Object>> ScoreOfGamePlayer() {
+        return playerRepository.findAll()
+                .stream().map(player -> new HashMap<String, Object>() {{
+                    put("UserName", player.getUserName());
+                    put("scores", player.getScores()
+                            .stream()
+                            .map(score -> score.getScore()).collect(toList()));
+                }}).collect(toList());
+    }
 
 
 }

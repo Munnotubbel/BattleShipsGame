@@ -1,6 +1,6 @@
 package dromedario.bships;
-import org.hibernate.annotations.GenericGenerator;
 
+import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.*;
 
@@ -73,14 +73,24 @@ public class GamePlayer {
     public Set<Attack> getAttacks() {
         return this.attacks;
     }
-    //----------------------------------------------------------------turn
+    //----------------------------------------------------------------Turn
     public void nextTurn() {
         this.turn++;
     }
     public Integer getTurn() {
         return this.turn;
     }
-//----------------------------------------------------------------turn
+//----------------------------------------------------------------Score
+    public HashMap<String, Object> getGmPlyScore  (Game game){
+        return player.getScores().stream()
+                .filter(score -> score.getGame().equals(game))
+                .map(score -> new HashMap<String, Object>(){{
+                    put("rating", score.getScore());
+                    put("ratingId", score.getId());
+                }})
+                .findFirst()
+                .orElse(null);
+    }
 
 
 }

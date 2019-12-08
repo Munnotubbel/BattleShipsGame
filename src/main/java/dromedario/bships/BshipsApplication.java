@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +17,13 @@ public class BshipsApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(PlayerRepository playerRepository,GameRepository gameRepository,GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository, AttackRepository attackRepository) {
+	public CommandLineRunner initData(
+			PlayerRepository playerRepository,
+			GameRepository gameRepository,
+			GamePlayerRepository gamePlayerRepository,
+			ShipRepository shipRepository,
+			AttackRepository attackRepository,
+			ScoreRepository scoreRepository) {
 		return (args) -> {
 //--------------------------------------------------------------create Players
 			Player ply1= new Player("Bobo");
@@ -30,6 +36,7 @@ public class BshipsApplication {
 			Game gm2= new Game("Game 2",new Date());
 			Game gm3= new Game("Game 3",new Date());
 			Game gm4= new Game("Game 4",new Date());
+			Game gm5= new Game("Game 5",new Date());
 //--------------------------------------------------------------create GamePlayers
 			GamePlayer gmPly1 = new GamePlayer(ply1, gm1);
 			GamePlayer gmPly2 = new GamePlayer(ply2, gm1);
@@ -39,7 +46,7 @@ public class BshipsApplication {
 			GamePlayer gmPly6 = new GamePlayer(ply3, gm3);
 			GamePlayer gmPly7 = new GamePlayer(ply2, gm4);
 			GamePlayer gmPly8 = new GamePlayer(ply4, gm4);
-
+			GamePlayer gmPly9 = new GamePlayer(ply5, gm5);
 //--------------------------------------------------------------Save Players
 			playerRepository.save(ply1);
 			playerRepository.save(ply2);
@@ -51,6 +58,7 @@ public class BshipsApplication {
 			gameRepository.save(gm2);
 			gameRepository.save(gm3);
 			gameRepository.save(gm4);
+			gameRepository.save(gm5);
 //--------------------------------------------------------------Save GamePlayers
 			gamePlayerRepository.save(gmPly1);
 			gamePlayerRepository.save(gmPly2);
@@ -60,142 +68,153 @@ public class BshipsApplication {
 			gamePlayerRepository.save(gmPly6);
 			gamePlayerRepository.save(gmPly7);
 			gamePlayerRepository.save(gmPly8);
+			gamePlayerRepository.save(gmPly9);
+
 //--------------------------------------------------------------Ship Locations GamePlayer 1
-			List<String> locSubGmPly1 = new ArrayList<>();
-			locSubGmPly1.add("A1");
-			locSubGmPly1.add("A2");
+			List<String> locSubGmPly1 = Arrays.asList("A1","A2");
+			List<String> locDesGmPly1 = Arrays.asList("B3", "B4", "B5");
+			List<String> locCruGmPly1 = Arrays.asList("C6", "C7", "C8", "C9");
+			List<String> locBatGmPly1 = Arrays.asList("D5", "D4", "D3", "D2","D1");
 
-			List<String> locDesGmPly1 = new ArrayList<>();
-			locDesGmPly1.add("B3");
-			locDesGmPly1.add("B4");
-			locDesGmPly1.add("B5");
-
-			List<String> locCruGmPly1 = new ArrayList<>();
-			locCruGmPly1.add("C6");
-			locCruGmPly1.add("C7");
-			locCruGmPly1.add("C8");
-			locCruGmPly1.add("C9");
-
-			List<String> locBatGmPly1 = new ArrayList<>();
-			locBatGmPly1.add("D5");
-			locBatGmPly1.add("D4");
-			locBatGmPly1.add("D3");
-			locBatGmPly1.add("D2");
-			locBatGmPly1.add("D1");
 //--------------------------------------------------------------Ships Locations GamePlayer 2
-			List<String> locSubGmPly2 = new ArrayList<>();
-			locSubGmPly2.add("J10");
-			locSubGmPly2.add("J09");
-
-			List<String> locDesGmPly2 = new ArrayList<>();
-			locDesGmPly2.add("I8");
-			locDesGmPly2.add("I7");
-			locDesGmPly2.add("I6");
-
-			List<String> locCruGmPly2 = new ArrayList<>();
-			locCruGmPly2.add("H5");
-			locCruGmPly2.add("H4");
-			locCruGmPly2.add("H3");
-			locCruGmPly2.add("H2");
-
-			List<String> locBatGmPly2 = new ArrayList<>();
-			locBatGmPly2.add("G6");
-			locBatGmPly2.add("G7");
-			locBatGmPly2.add("G8");
-			locBatGmPly2.add("G9");
-			locBatGmPly2.add("G10");
+			List<String> locSubGmPly2 = Arrays.asList("J10", "J9");
+			List<String> locDesGmPly2 = Arrays.asList("I8", "I7", "I6");
+			List<String> locCruGmPly2 = Arrays.asList("H5", "H4", "H3", "H2");
+			List<String> locBatGmPly2 = Arrays.asList("G6", "G7","G8","G9","G10");
 
 //--------------------------------------------------------------create Ships GamePlayer 1
 		Ship subGmPly1 = new Ship("Submarine",locSubGmPly1);
 		Ship desGmPly1 = new Ship("Destroyer",locDesGmPly1);
 		Ship cruGmPly1 = new Ship("Cruise Ship",locCruGmPly1);
 		Ship batGmPly1 = new Ship("Battleship",locBatGmPly1);
+
 //--------------------------------------------------------------create Ships GamePlayer 2
 		Ship subGmPly2 = new Ship("Submarine",locSubGmPly2);
 		Ship desGmPly2 = new Ship("Destroyer",locDesGmPly2);
 		Ship cruGmPly2 = new Ship("Cruise Ship",locCruGmPly2);
 		Ship batGmPly2 = new Ship("Battleship",locBatGmPly2);
+
 //--------------------------------------------------------------add Ships to GamePlayer 1
 			gmPly1.addShip(subGmPly1);
 			gmPly1.addShip(desGmPly1);
 			gmPly1.addShip(cruGmPly1);
 			gmPly1.addShip(batGmPly1);
+
 //--------------------------------------------------------------add Ships to GamePlayer 2
 			gmPly2.addShip(subGmPly2);
 			gmPly2.addShip(desGmPly2);
 			gmPly2.addShip(cruGmPly2);
 			gmPly2.addShip(batGmPly2);
+
 //--------------------------------------------------------------save Ships of GamePlayer 1
 			shipRepository.save(subGmPly1);
 			shipRepository.save(desGmPly1);
 			shipRepository.save(cruGmPly1);
 			shipRepository.save(batGmPly1);
+
 //--------------------------------------------------------------save Ships of GamePlayer 2
 			shipRepository.save(subGmPly2);
 			shipRepository.save(desGmPly2);
 			shipRepository.save(cruGmPly2);
 			shipRepository.save(batGmPly2);
+
 //--------------------------------------------------------------create & save Attacks GamePlayer 1
-			List<String> attackLocations1 = new ArrayList<>();
-			List<String> attackLocations2 = new ArrayList<>();
-			List<String> attackLocations3 = new ArrayList<>();
-
-			attackLocations1.add("A1");
-			attackLocations1.add("B2");
-			attackLocations1.add("C3");
-
-			attackLocations2.add("D4");
-			attackLocations2.add("E5");
-			attackLocations2.add("F6");
-
-			attackLocations3.add("G7");
-			attackLocations3.add("H8");
-			attackLocations3.add("I9");
+			List<String> attackLocations1 = Arrays.asList("J10", "J9", "I8");
+			List<String> attackLocations2 = Arrays.asList("I7", "I6","H5");
+			List<String> attackLocations3 = Arrays.asList("H4", "H3", "H2");
+			List<String> attackLocations4 = Arrays.asList("G6", "G7","G8");
+			List<String> attackLocations5 = Arrays.asList("G9", "G10", "G4");
 
 			Attack attack1 = new Attack(1, attackLocations1);
 			Attack attack2 = new Attack(2, attackLocations2);
 			Attack attack3 = new Attack(3, attackLocations3);
+			Attack attack4 = new Attack(4, attackLocations4);
+			Attack attack5 = new Attack(5, attackLocations5);
 
 			gmPly1.addAttack(attack1);
 			gmPly1.addAttack(attack2);
 			gmPly1.addAttack(attack3);
+			gmPly1.addAttack(attack4);
+			gmPly1.addAttack(attack5);
 
 			attackRepository.save(attack1);
 			attackRepository.save(attack2);
 			attackRepository.save(attack3);
+			attackRepository.save(attack4);
+			attackRepository.save(attack5);
 
 			gamePlayerRepository.save(gmPly1);
 
 //--------------------------------------------------------------create & save Attacks GamePlayer 2
-			List<String> attackLocations4 = new ArrayList<>();
-			List<String> attackLocations5 = new ArrayList<>();
-			List<String> attackLocations6 = new ArrayList<>();
+			List<String> attackLocations6 = Arrays.asList("A10", "B9", "C8");
+			List<String> attackLocations7 = Arrays.asList("D7", "E6", "F5");
+			List<String> attackLocations8 = Arrays.asList("G4", "H3", "I2");
+			List<String> attackLocations9 = Arrays.asList("J1", "J2", "H4");
+			List<String> attackLocations10 = Arrays.asList("G5", "F6", "E7");
 
-			attackLocations4.add("A10");
-			attackLocations4.add("B9");
-			attackLocations4.add("C8");
+			Attack attack6 = new Attack(1, attackLocations6);
+			Attack attack7 = new Attack(2, attackLocations7);
+			Attack attack8 = new Attack(3, attackLocations8);
+			Attack attack9 = new Attack(4, attackLocations9);
+			Attack attack10 = new Attack(5, attackLocations10);
 
-			attackLocations5.add("D7");
-			attackLocations5.add("E6");
-			attackLocations5.add("F5");
-
-			attackLocations6.add("G4");
-			attackLocations6.add("H3");
-			attackLocations6.add("I2");
-
-			Attack attack4 = new Attack(1, attackLocations4);
-			Attack attack5 = new Attack(2, attackLocations5);
-			Attack attack6 = new Attack(3, attackLocations6);
-
-			gmPly2.addAttack(attack4);
-			gmPly2.addAttack(attack5);
 			gmPly2.addAttack(attack6);
+			gmPly2.addAttack(attack7);
+			gmPly2.addAttack(attack8);
+			gmPly2.addAttack(attack9);
+			gmPly2.addAttack(attack10);
 
-			attackRepository.save(attack4);
-			attackRepository.save(attack5);
 			attackRepository.save(attack6);
+			attackRepository.save(attack7);
+			attackRepository.save(attack8);
+			attackRepository.save(attack9);
+			attackRepository.save(attack10);
 
 			gamePlayerRepository.save(gmPly2);
+//--------------------------------------------------------------Winner Winner Chickendinner
+			Score score1 = new Score(1.0,new Date());
+			Score score2 = new Score(0.0,new Date());
+			Score score3 = new Score(1.0,new Date());
+			Score score4 = new Score(0.0,new Date());
+			Score score5 = new Score(0.0,new Date());
+			Score score6 = new Score(1.0,new Date());
+			Score score7 = new Score(0.0,new Date());
+			Score score8 = new Score(1.0,new Date());
+
+			gm1.addScore(score1);
+			gm1.addScore(score2);
+			gm2.addScore(score3);
+			gm2.addScore(score4);
+			gm3.addScore(score5);
+			gm3.addScore(score6);
+			gm4.addScore(score7);
+			gm4.addScore(score8);
+
+
+			ply1.addScore(score1);
+			ply2.addScore(score2);
+			ply3.addScore(score3);
+			ply4.addScore(score4);
+			ply1.addScore(score5);
+			ply3.addScore(score6);
+			ply2.addScore(score7);
+			ply4.addScore(score8);
+			scoreRepository.save(score1);
+			scoreRepository.save(score2);
+			scoreRepository.save(score3);
+			scoreRepository.save(score4);
+			scoreRepository.save(score5);
+			scoreRepository.save(score6);
+			scoreRepository.save(score7);
+			scoreRepository.save(score8);
+			gameRepository.save(gm1);
+			gameRepository.save(gm2);
+			gameRepository.save(gm3);
+			gameRepository.save(gm4);
+			playerRepository.save(ply1);
+			playerRepository.save(ply2);
+			playerRepository.save(ply3);
+			playerRepository.save(ply4);
 
 
 		};
