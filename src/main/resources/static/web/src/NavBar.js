@@ -94,6 +94,15 @@ export default function CustomizedMenus() {
             <ListItemText primary="Game view" />
           </NavLink>
         </StyledMenuItem>
+
+        <StyledMenuItem>
+          <NavLink to="/web/ranking">
+            <ListItemIcon>
+              <InboxIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Ranking" />
+          </NavLink>
+        </StyledMenuItem>
       </StyledMenu>
     </div>
   );

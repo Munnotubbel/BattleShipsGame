@@ -1,7 +1,27 @@
 package dromedario.bships;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.web.bind.annotation.*;
 
+
+
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -23,13 +43,42 @@ public class BshipsApplicationController {
     @Autowired
     private ScoreRepository scoreRepository;
     //--------------------------------------------------------------players route
+//    @CrossOrigin(origins = "http://localhost:3000")
+//    @RequestMapping("/players")
+//    public Map<String,Object> getPlayers() {
+//        List<Object> playerList = new ArrayList<>();
+//        playerRepository.findAll().forEach(player -> {
+//            Map<String, Object> playerMap = new HashMap<>();
+//            playerMap.put("userName", player.getUserName());
+//            playerMap.put("gmId", player.getId());
+//                    playerList.add(playerMap);
+//                    Map<String, Object> map = new HashMap<>();
+//                    map.put("games",playerList);
+//                    return map;
+//                }
+//
+//
+//        Map<String,Object> playerMap = new HashMap<>();
+//        playerMap.put("players",playerRepository.findAll());
+//        return playerMap;
+//    };
+
+
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/players")
-    public Map<String,Object> getPlayers() {
-        Map<String,Object> playerMap = new HashMap<>();
-        playerMap.put("players",playerRepository.findAll());
-        return playerMap;
-    };
+    public Map<String, Object> getPlayers() {
+        List<Object> playerList = new ArrayList<>();
+        playerRepository.findAll().forEach(player -> {
+            Map<String, Object> playerMap = new HashMap<>();
+            playerMap.put("username", player.getUserName());
+            playerMap.put("id", player.getId());
+            playerList.add(playerMap);
+        });
+        Map<String, Object> map = new HashMap<>();
+        map.put("players",playerList);
+        return map;
+    }
+
     //--------------------------------------------------------------games route
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/games")
@@ -68,6 +117,7 @@ public class BshipsApplicationController {
         Map<String, Object> plyMap = new HashMap<>();
         plyMap.put("plyId", player.getId());
         plyMap.put("name",player.getUserName());
+        plyMap.put("password",player.getPassword());
 
         return plyMap;
     }
@@ -128,36 +178,37 @@ public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
         gameMap.put("gamePlayers", PlayerOfGamePlayer(gamePlayer));
         gameMap.put("ships", ShipsOfGamePlayer(gamePlayer));
         gameMap.put("attacks", AttacksOfGamePlayer(gamePlayer));
-//        gameMap.put("enemy", getEnemyInfo(gamePlayer));
+        gameMap.put("enemy", getEnemyInfo(gamePlayer));
 
-            Long gameId = gamePlayer.getGame().getGameId();
-            Game game = gameRepository.findGameByGameId(gameId);
-            game.getGamePlayers().forEach(gamePlayerOfGame -> {
-                if (gamePlayerOfGame.getId()!= gamePlayer.getId()){
-                    gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
-                    gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame) );
-                    gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
-                    }});
+//            Long gameId = gamePlayer.getGame().getGameId();
+//        Game game = gameRepository.findGameByGameId(gameId);
+//        game.getGamePlayers().forEach(gamePlayerOfGame -> {
+//            if (gamePlayerOfGame.getId()!= gamePlayer.getId()){
+//                gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
+//                gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame) );
+//                gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
+//            }});
 
             return gameMap;
                          }
 //--------------------------------------------------------------get Enemy GamePlayer
-//public List<Object> getEnemyInfo(GamePlayer gamePlayer){
-//    Long gameId = gamePlayer.getGame().getGameId();
-//    Game game = gameRepository.findGameByGameId(gameId);
-//    List<Object> enemyPlayer = new ArrayList<>();
-//    game.getGamePlayers().forEach(gamePlayerOfGame -> {
-//        Map<String, Object> gmPlyMap = new HashMap<>();
-//        if (gamePlayerOfGame.getId()!= gamePlayer.getId())
-//        {
-//            gmPlyMap.put("gmPlyId", gamePlayerOfGame.getId());
-//            gmPlyMap.put("player", PlayerOfGamePlayer(gamePlayerOfGame) );
-//            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
-//            enemyPlayer.add(gmPlyMap);}
-//    });
-//        return enemyPlayer;
-//}
-
+public Map<String, Object> getEnemyInfo(GamePlayer gamePlayer){
+    Long gameId = gamePlayer.getGame().getGameId();
+    Game game = gameRepository.findGameByGameId(gameId);
+    List<Object> enemyPlayer = new ArrayList<>();
+    game.getGamePlayers().forEach(gamePlayerOfGame -> {
+        Map<String, Object> gmPlyMap = new HashMap<>();
+        if (gamePlayerOfGame.getId()!= gamePlayer.getId())
+        {
+            gmPlyMap.put("EnGmPlyId", gamePlayerOfGame.getId());
+            gmPlyMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame) );
+            gmPlyMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
+            enemyPlayer.add(gmPlyMap);}
+    });
+    Map<String, Object> map = new HashMap<>();
+    map.put("enemyGmPly",enemyPlayer);
+    return map;
+}
 //--------------------------------------------------------------#ranking route
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/ranking")
@@ -170,6 +221,21 @@ public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
                             .map(score -> score.getScore()).collect(toList()));
                 }}).collect(toList());
     }
+
+//--------------------------------------------------------------#login route
+    @CrossOrigin(origins = "http://localhost:3000")
+    @RequestMapping("/login")
+    public Map<String, Object> loggedPlayer(Authentication authentication) {
+        if (authentication != null) {
+            Map<String, Object> loggedPlayer = new HashMap<String, Object>();
+            loggedPlayer.put("userName", (authentication.getName()));
+            loggedPlayer.put("id", playerRepository.findByUserName(authentication.getName()).getId());
+             return loggedPlayer;
+        }
+       else return null;
+    }
+
+
 
 
 }

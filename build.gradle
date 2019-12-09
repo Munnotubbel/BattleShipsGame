@@ -1,8 +1,23 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.1.RELEASE")
+	}
+}
+
+
 plugins {
 	id 'org.springframework.boot' version '2.2.1.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 }
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
 
 group = 'dromedario'
 version = '0.0.1-SNAPSHOT'
@@ -11,19 +26,14 @@ sourceCompatibility = '11'
 repositories {
 	mavenCentral()
 }
-bootRun {
-	sourceResources sourceSets.main
-}
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	runtimeOnly 'com.h2database:h2'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-}
 
-test {
-	useJUnitPlatform()
+
+
+dependencies {
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	implementation('org.springframework.boot:spring-boot-starter-data-rest')
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	runtimeOnly('com.h2database:h2')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	compile("org.springframework.boot:spring-boot-starter-security")
 }

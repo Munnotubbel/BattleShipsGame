@@ -84,6 +84,7 @@ export default class Players extends Component {
                 })}
             </Grid>
           </Grid>
+          {/* <Grid>Hallo Hello, [[${account.userName}]]!</Grid> */}
         </Grid>
       );
     } else {

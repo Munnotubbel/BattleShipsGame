@@ -6,7 +6,7 @@ package dromedario.bships;
 
 @RepositoryRestResource
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-//    Player findByUsername(String name);
+    Player findByUserName(String userName);
     List<Player> findAll();
 }
 

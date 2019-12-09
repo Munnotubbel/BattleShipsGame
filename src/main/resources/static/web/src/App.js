@@ -10,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Games from "./Games";
 import Game_view from "./Game_view";
+import Ranking from "./Ranking";
 import { withStyles } from "@material-ui/core/styles";
 
 import Menu from "@material-ui/core/Menu";
@@ -59,6 +60,7 @@ export default class App extends Component {
           <Route path="/web/games" component={Games} />
           <Route path="/web/game_view" component={this.gamePlayerPicked} />
           <Route path="/web/game" component={Game_view} />
+          <Route path="/web/ranking" component={Ranking} />
         </Grid>
       </HashRouter>
     );

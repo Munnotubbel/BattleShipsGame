@@ -1,9 +1,29 @@
 package dromedario.bships;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
+
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +34,10 @@ public class BshipsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BshipsApplication.class, args);
 
+	}
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 
 	@Bean
@@ -26,11 +50,11 @@ public class BshipsApplication {
 			ScoreRepository scoreRepository) {
 		return (args) -> {
 //--------------------------------------------------------------create Players
-			Player ply1= new Player("Bobo");
-			Player ply2= new Player("Brain");
-			Player ply3= new Player("ShinShan");
-			Player ply4= new Player("Bonkers");
-			Player ply5= new Player("Foghorn");
+			Player ply1= new Player("Bobo","12345");
+			Player ply2= new Player("Brain","12345");
+			Player ply3= new Player("ShinShan","12345");
+			Player ply4= new Player("Bonkers","12345");
+			Player ply5= new Player("Foghorn","12345");
 //--------------------------------------------------------------create Games
 			Game gm1= new Game("Game 1",new Date());
 			Game gm2= new Game("Game 2",new Date());
@@ -220,7 +244,70 @@ public class BshipsApplication {
 		};
 	}
 
+	@Configuration
+	class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+		@Autowired
+		private PlayerRepository playerRepository;
+
+		@Override
+		public void init(AuthenticationManagerBuilder auth) throws Exception {
+			auth.userDetailsService(userName-> {
+				Player player = playerRepository.findByUserName(userName);
+				if (player != null) {
+					return new User(player.getUserName(), player.getPassword(),
+							AuthorityUtils.createAuthorityList("USER"));
+				} else {
+					throw new UsernameNotFoundException("Unknown user: " + userName);
+				}
+			});
+		}
+
+	}
 
 
+	@EnableWebSecurity
+	@Configuration
+	class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+		@Autowired
+		private WebApplicationContext applicationContext;
+		private WebSecurityConfiguration webSecurityConfiguration;
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+				http.csrf().disable().authorizeRequests()
+					.antMatchers("/web/players").permitAll()
+					.antMatchers("/web/games").permitAll()
+					.antMatchers("/web/ranking").permitAll()
+					.antMatchers("/web/game-view/*").hasAuthority("USER")
+					.antMatchers("/api/players").permitAll()
+					.antMatchers("/api/games").permitAll()
+					.antMatchers("/api/game/*").permitAll()
+					.antMatchers("/api/ranking").permitAll()
+					.antMatchers("/api/game-view/*").hasAuthority("USER")
+					.antMatchers("/rest/*").permitAll()
+					.anyRequest().authenticated()
+					.and()
+					.formLogin()
+					.usernameParameter("username")
+					.passwordParameter("password")
+					.loginPage("/api/login")
+					.and()
+					.logout()
+					.logoutUrl("/api/logout");
 
+			http.exceptionHandling().authenticationEntryPoint((request, response, authentication) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+			http.formLogin().failureHandler((request, response, authentication) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+			http.formLogin().successHandler((request, response, authentication) -> clearAuthenticationAttributes(request));
+			http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+		}
+
+		private void clearAuthenticationAttributes(HttpServletRequest request) {
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+			}
+		}
+
+
+	}
 }
