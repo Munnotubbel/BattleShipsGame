@@ -103,6 +103,15 @@ export default function CustomizedMenus() {
             <ListItemText primary="Ranking" />
           </NavLink>
         </StyledMenuItem>
+
+        <StyledMenuItem>
+          <NavLink to="/web/login">
+            <ListItemIcon>
+              <InboxIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="login" />
+          </NavLink>
+        </StyledMenuItem>
       </StyledMenu>
     </div>
   );

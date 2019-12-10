@@ -147,11 +147,14 @@ public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
 //--------------------------------------------------------------#games route for Game ID
     @RequestMapping("/game/{gameId}")
     public Object findGame(@PathVariable Long gameId) {
+
         Game game = gameRepository.findGameByGameId(gameId);
         return showGame(game);
     }
     public Map<String, Object> showGame(Game game) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Map<String, Object> gameMap = new HashMap<>();
+        gameMap.put("LOGGED",authentication.getName());
         gameMap.put("gamename", game.getGameName());
         gameMap.put("id", game.getGameId());
         gameMap.put("created", game.date.toString());
@@ -222,18 +225,19 @@ public Map<String, Object> getEnemyInfo(GamePlayer gamePlayer){
                 }}).collect(toList());
     }
 
-//--------------------------------------------------------------#login route
-    @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping("/login")
-    public Map<String, Object> loggedPlayer(Authentication authentication) {
-        if (authentication != null) {
-            Map<String, Object> loggedPlayer = new HashMap<String, Object>();
-            loggedPlayer.put("userName", (authentication.getName()));
-            loggedPlayer.put("id", playerRepository.findByUserName(authentication.getName()).getId());
-             return loggedPlayer;
+//--------------------------------------------------------------#logged Player
+    public String loggedPlayer (){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            System.out.println(currentUserName);
+            return currentUserName;
+
         }
-       else return null;
+        else {return null;}
     }
+
 
 
 

@@ -11,6 +11,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Games from "./Games";
 import Game_view from "./Game_view";
 import Ranking from "./Ranking";
+import Login from "./Login";
 import { withStyles } from "@material-ui/core/styles";
 
 import Menu from "@material-ui/core/Menu";
@@ -46,7 +47,6 @@ export default class App extends Component {
             <Toolbar>
               <NavBar />
               <Typography variant="h6">Battleships</Typography>
-              <Button color="inherit">Login</Button>
             </Toolbar>
           </AppBar>
         </div>
@@ -61,6 +61,7 @@ export default class App extends Component {
           <Route path="/web/game_view" component={this.gamePlayerPicked} />
           <Route path="/web/game" component={Game_view} />
           <Route path="/web/ranking" component={Ranking} />
+          <Route path="/web/login" component={Login} />
         </Grid>
       </HashRouter>
     );

@@ -24,8 +24,8 @@ public class Player {
     public Player() {
     }
 
-    public Player(final String userN, final String password)  {
-        this.userName=userN;
+    public Player(final String userName, final String password)  {
+        this.userName=userName;
         this.password=password;
     }
 

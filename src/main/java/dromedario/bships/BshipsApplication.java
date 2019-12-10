@@ -5,10 +5,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,14 +23,21 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.context.WebApplicationContext;
-
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.filter.CorsFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 
 @SpringBootApplication
 public class BshipsApplication {
@@ -34,7 +45,22 @@ public class BshipsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BshipsApplication.class, args);
 
+
 	}
+
+//	@Bean
+//	public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
+//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//		CorsConfiguration config = new CorsConfiguration();
+//		config.setAllowCredentials(true);
+//		config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+//		config.setAllowedMethods(Collections.singletonList("*"));
+//		config.setAllowedHeaders(Collections.singletonList("*"));
+//		source.registerCorsConfiguration("/**", config);
+//		//FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter((org.springframework.web.cors.CorsConfigurationSource) source));
+//		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+//		return bean;
+//	}
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -50,11 +76,11 @@ public class BshipsApplication {
 			ScoreRepository scoreRepository) {
 		return (args) -> {
 //--------------------------------------------------------------create Players
-			Player ply1= new Player("Bobo","12345");
-			Player ply2= new Player("Brain","12345");
-			Player ply3= new Player("ShinShan","12345");
-			Player ply4= new Player("Bonkers","12345");
-			Player ply5= new Player("Foghorn","12345");
+			Player ply1= new Player("Bobo",passwordEncoder().encode("12345"));
+			Player ply2= new Player("Brain",passwordEncoder().encode("12345"));
+			Player ply3= new Player("ShinShan",passwordEncoder().encode("12345"));
+			Player ply4= new Player("Bonkers",passwordEncoder().encode("12345"));
+			Player ply5= new Player("Foghorn",passwordEncoder().encode("12345"));
 //--------------------------------------------------------------create Games
 			Game gm1= new Game("Game 1",new Date());
 			Game gm2= new Game("Game 2",new Date());
@@ -253,6 +279,7 @@ public class BshipsApplication {
 		@Override
 		public void init(AuthenticationManagerBuilder auth) throws Exception {
 			auth.userDetailsService(userName-> {
+				System.out.println(userName);
 				Player player = playerRepository.findByUserName(userName);
 				if (player != null) {
 					return new User(player.getUserName(), player.getPassword(),
@@ -263,32 +290,42 @@ public class BshipsApplication {
 			});
 		}
 
+
 	}
 
 
 	@EnableWebSecurity
+
 	@Configuration
 	class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Autowired
 		private WebApplicationContext applicationContext;
 		private WebSecurityConfiguration webSecurityConfiguration;
+
+
+
+		@CrossOrigin(origins = "http://localhost:3000")
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-				http.csrf().disable().authorizeRequests()
+			http.csrf().disable().authorizeRequests()
 					.antMatchers("/web/players").permitAll()
 					.antMatchers("/web/games").permitAll()
 					.antMatchers("/web/ranking").permitAll()
-					.antMatchers("/web/game-view/*").hasAuthority("USER")
-					.antMatchers("/api/players").permitAll()
+//					.antMatchers("/web/game-view/*").hasAuthority("USER")
+						.antMatchers("/web/login/*").permitAll()
+
+						.antMatchers("/api/players").permitAll()
 					.antMatchers("/api/games").permitAll()
 					.antMatchers("/api/game/*").permitAll()
 					.antMatchers("/api/ranking").permitAll()
-					.antMatchers("/api/game-view/*").hasAuthority("USER")
+//					.antMatchers("/api/game-view/*").hasAuthority("USER")
+					.antMatchers("/api/login/*").permitAll()
 					.antMatchers("/rest/*").permitAll()
 					.anyRequest().authenticated()
+
 					.and()
 					.formLogin()
-					.usernameParameter("username")
+					.usernameParameter("userName")
 					.passwordParameter("password")
 					.loginPage("/api/login")
 					.and()
@@ -300,6 +337,16 @@ public class BshipsApplication {
 			http.formLogin().successHandler((request, response, authentication) -> clearAuthenticationAttributes(request));
 			http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
 		}
+//		@Bean
+//		CorsConfigurationSource corsConfigurationSource() {
+//			CorsConfiguration configuration = new CorsConfiguration();
+//			configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+//			configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+//			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//			source.registerCorsConfiguration("/**", configuration);
+//			return source;
+//		}
+
 
 		private void clearAuthenticationAttributes(HttpServletRequest request) {
 			HttpSession session = request.getSession(false);
