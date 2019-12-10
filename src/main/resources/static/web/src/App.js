@@ -12,6 +12,7 @@ import Games from "./Games";
 import Game_view from "./Game_view";
 import Ranking from "./Ranking";
 import Login from "./Login";
+import SignUp from "./SignUp";
 import { withStyles } from "@material-ui/core/styles";
 
 import Menu from "@material-ui/core/Menu";
@@ -62,6 +63,7 @@ export default class App extends Component {
           <Route path="/web/game" component={Game_view} />
           <Route path="/web/ranking" component={Ranking} />
           <Route path="/web/login" component={Login} />
+          <Route path="/web/signup" component={SignUp} />
         </Grid>
       </HashRouter>
     );

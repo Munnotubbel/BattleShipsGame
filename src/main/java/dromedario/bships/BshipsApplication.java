@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.context.WebApplicationContext;
@@ -30,6 +32,9 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -48,19 +53,6 @@ public class BshipsApplication {
 
 	}
 
-//	@Bean
-//	public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
-//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//		CorsConfiguration config = new CorsConfiguration();
-//		config.setAllowCredentials(true);
-//		config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-//		config.setAllowedMethods(Collections.singletonList("*"));
-//		config.setAllowedHeaders(Collections.singletonList("*"));
-//		source.registerCorsConfiguration("/**", config);
-//		//FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter((org.springframework.web.cors.CorsConfigurationSource) source));
-//		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-//		return bean;
-//	}
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -271,6 +263,7 @@ public class BshipsApplication {
 	}
 
 	@Configuration
+
 	class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
 		@Autowired
@@ -293,10 +286,11 @@ public class BshipsApplication {
 
 	}
 
-
-	@EnableWebSecurity
-
+	@CrossOrigin(origins = "http://localhost:3000")
 	@Configuration
+	@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+
 	class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Autowired
 		private WebApplicationContext applicationContext;
@@ -307,19 +301,23 @@ public class BshipsApplication {
 		@CrossOrigin(origins = "http://localhost:3000")
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.csrf().disable().authorizeRequests()
+
+			http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and()
+					.authorizeRequests()
 					.antMatchers("/web/players").permitAll()
 					.antMatchers("/web/games").permitAll()
 					.antMatchers("/web/ranking").permitAll()
-//					.antMatchers("/web/game-view/*").hasAuthority("USER")
-						.antMatchers("/web/login/*").permitAll()
+					.antMatchers("/web/game-view/*").hasAuthority("USER")
+					.antMatchers("/web/login").permitAll()
+					.antMatchers("/web/**").permitAll()
+					.antMatchers("/players").permitAll()
 
-						.antMatchers("/api/players").permitAll()
+					.antMatchers("/api/players").permitAll()
 					.antMatchers("/api/games").permitAll()
 					.antMatchers("/api/game/*").permitAll()
 					.antMatchers("/api/ranking").permitAll()
-//					.antMatchers("/api/game-view/*").hasAuthority("USER")
-					.antMatchers("/api/login/*").permitAll()
+					.antMatchers("/api/game-view/*").hasAuthority("USER")
+					.antMatchers("/api/**").permitAll()
 					.antMatchers("/rest/*").permitAll()
 					.anyRequest().authenticated()
 
@@ -332,20 +330,15 @@ public class BshipsApplication {
 					.logout()
 					.logoutUrl("/api/logout");
 
+			http.csrf().disable();
+//
+			http.exceptionHandling()
+			.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 			http.exceptionHandling().authenticationEntryPoint((request, response, authentication) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 			http.formLogin().failureHandler((request, response, authentication) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 			http.formLogin().successHandler((request, response, authentication) -> clearAuthenticationAttributes(request));
 			http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
 		}
-//		@Bean
-//		CorsConfigurationSource corsConfigurationSource() {
-//			CorsConfiguration configuration = new CorsConfiguration();
-//			configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
-//			configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-//			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//			source.registerCorsConfiguration("/**", configuration);
-//			return source;
-//		}
 
 
 		private void clearAuthenticationAttributes(HttpServletRequest request) {

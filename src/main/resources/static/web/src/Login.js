@@ -10,7 +10,9 @@ export default class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleChange = event => {
-    this.setState({ [event.target.id]: event.target.value });
+    this.setState({ [event.target.id]: event.target.value }, () =>
+      console.log(this.state)
+    );
   };
 
   handleSubmit = event => {
@@ -19,28 +21,25 @@ export default class Login extends Component {
   };
 
   fetchLogin = () => {
-    Axios.defaults.headers.post["Content-Type"] =
-      "application/json;charset=utf-8";
-    Axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-    Axios.post("http://localhost:8080/api/login", {
-      userName: "Bobo",
-      password: "12345"
-    }).then(function() {
-      console.log("logged in!");
-    });
-    // fetch(
-    //   "https://ubiqum-cors-anywhere.herokuapp.com/http://localhost:8080/api/login",
-    //   {
-    //     credentials: "include",
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json"
-    //     },
-
-    //   }
-    // ).then(function(json) {
-    //   console.log(json);
-    // });
+    const URL = `/api/login`;
+    fetch(URL, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `userName=${this.state.username}&password=${this.state.password}`
+    })
+      .then(response => {
+        console.log(response);
+        if (response.status == 200) {
+          console.log("logged in!");
+        } else {
+          console.log("Invalid username or password");
+        }
+      })
+      .catch(err => console.log("err", err));
   };
 
   render() {

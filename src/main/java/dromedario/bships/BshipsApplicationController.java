@@ -3,6 +3,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
@@ -25,7 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
 public class BshipsApplicationController {
@@ -42,41 +44,33 @@ public class BshipsApplicationController {
     private AttackRepository attackRepository;
     @Autowired
     private ScoreRepository scoreRepository;
-    //--------------------------------------------------------------players route
-//    @CrossOrigin(origins = "http://localhost:3000")
-//    @RequestMapping("/players")
-//    public Map<String,Object> getPlayers() {
-//        List<Object> playerList = new ArrayList<>();
-//        playerRepository.findAll().forEach(player -> {
-//            Map<String, Object> playerMap = new HashMap<>();
-//            playerMap.put("userName", player.getUserName());
-//            playerMap.put("gmId", player.getId());
-//                    playerList.add(playerMap);
-//                    Map<String, Object> map = new HashMap<>();
-//                    map.put("games",playerList);
-//                    return map;
-//                }
-//
-//
-//        Map<String,Object> playerMap = new HashMap<>();
-//        playerMap.put("players",playerRepository.findAll());
-//        return playerMap;
-//    };
+
+    @Bean
+    public PasswordEncoder passwordEncoderCont() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
 
+
+    private HashMap<String, Object> doMap(String key, Object value) {
+        HashMap<String, Object> map = new LinkedHashMap<>();
+        map.put(key, value);
+        return map;
+    }
+//--------------------------------------------------------------players route
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping("/players")
+    @RequestMapping(path = "/players", method = RequestMethod.GET)
     public Map<String, Object> getPlayers() {
         List<Object> playerList = new ArrayList<>();
         playerRepository.findAll().forEach(player -> {
             Map<String, Object> playerMap = new HashMap<>();
+            playerMap.put("LOGGED",loggedPlayer());
             playerMap.put("username", player.getUserName());
             playerMap.put("id", player.getId());
             playerList.add(playerMap);
         });
-        Map<String, Object> map = new HashMap<>();
-        map.put("players",playerList);
-        return map;
+
+        return doMap("players",playerList);
     }
 
     //--------------------------------------------------------------games route
@@ -92,9 +86,8 @@ public class BshipsApplicationController {
         gameMap.put("gamePlayers", GamePlayersOfGame(game));
         gamesList.add(gameMap);
     });
-    Map<String, Object> map = new HashMap<>();
-        map.put("games",gamesList);
-        return map;
+        return doMap("games",gamesList);
+
     }
 
 //--------------------------------------------------------------#games route GET GAMEPLAYERS
@@ -152,9 +145,10 @@ public List<Object> AttacksOfGamePlayer(GamePlayer gamePlayer){
         return showGame(game);
     }
     public Map<String, Object> showGame(Game game) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication;
         Map<String, Object> gameMap = new HashMap<>();
-        gameMap.put("LOGGED",authentication.getName());
+
+        gameMap.put("LOGGED",loggedPlayer());
         gameMap.put("gamename", game.getGameName());
         gameMap.put("id", game.getGameId());
         gameMap.put("created", game.date.toString());
@@ -208,9 +202,8 @@ public Map<String, Object> getEnemyInfo(GamePlayer gamePlayer){
             gmPlyMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
             enemyPlayer.add(gmPlyMap);}
     });
-    Map<String, Object> map = new HashMap<>();
-    map.put("enemyGmPly",enemyPlayer);
-    return map;
+
+    return doMap("enemyGmPly",enemyPlayer);
 }
 //--------------------------------------------------------------#ranking route
     @CrossOrigin(origins = "http://localhost:3000")
@@ -231,15 +224,23 @@ public Map<String, Object> getEnemyInfo(GamePlayer gamePlayer){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
-            System.out.println(currentUserName);
             return currentUserName;
 
         }
         else {return null;}
     }
+//--------------------------------------------------------------POST player
 
-
-
-
-
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(
+            @RequestParam String userName, @RequestParam String password) {
+        if ( userName.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>(doMap("error","something is missing"), HttpStatus.UNAUTHORIZED);
+        }
+        if (playerRepository.findByUserName(userName) !=  null) {
+            return new ResponseEntity<>(doMap("error","user exists"), HttpStatus.UNAUTHORIZED);
+        }
+        Player newPlayer = playerRepository.save(new Player(userName, passwordEncoderCont().encode(password)));
+        return new ResponseEntity<>(doMap("userName", newPlayer.getUserName()), HttpStatus.CREATED);
+    }
 }

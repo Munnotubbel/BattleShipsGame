@@ -52,6 +52,19 @@ export default function CustomizedMenus() {
     setAnchorEl(null);
   };
 
+  const logOut = () => {
+    fetch("/api/logout", {
+      method: "POST"
+    }).then(response => {
+      if (response.status == 200) {
+        console.log("logged out");
+        window.location.reload();
+      } else {
+        console.log("something went wrong");
+      }
+    });
+  };
+
   return (
     <div>
       <Button
@@ -105,12 +118,28 @@ export default function CustomizedMenus() {
         </StyledMenuItem>
 
         <StyledMenuItem>
+          <NavLink to="/web/signup">
+            <ListItemIcon>
+              <InboxIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Sign Up" />
+          </NavLink>
+        </StyledMenuItem>
+
+        <StyledMenuItem>
           <NavLink to="/web/login">
             <ListItemIcon>
               <InboxIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary="login" />
           </NavLink>
+        </StyledMenuItem>
+
+        <StyledMenuItem>
+          <ListItemIcon onClick={logOut}>
+            <InboxIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="logout" />
         </StyledMenuItem>
       </StyledMenu>
     </div>
