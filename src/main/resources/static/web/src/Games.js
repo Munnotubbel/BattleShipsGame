@@ -15,7 +15,7 @@ export default class Games extends Component {
   };
 
   render() {
-    // this.state.games && console.log(this.state.games);
+    this.state.games && console.log(this.state.games);
 
     if (this.state.games) {
       return (

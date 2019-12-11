@@ -74,11 +74,11 @@ public class BshipsApplication {
 			Player ply4= new Player("Bonkers",passwordEncoder().encode("12345"));
 			Player ply5= new Player("Foghorn",passwordEncoder().encode("12345"));
 //--------------------------------------------------------------create Games
-			Game gm1= new Game("Game 1",new Date());
-			Game gm2= new Game("Game 2",new Date());
-			Game gm3= new Game("Game 3",new Date());
-			Game gm4= new Game("Game 4",new Date());
-			Game gm5= new Game("Game 5",new Date());
+			Game gm1= new Game(new Date());
+			Game gm2= new Game(new Date());
+			Game gm3= new Game(new Date());
+			Game gm4= new Game(new Date());
+			Game gm5= new Game(new Date());
 //--------------------------------------------------------------create GamePlayers
 			GamePlayer gmPly1 = new GamePlayer(ply1, gm1);
 			GamePlayer gmPly2 = new GamePlayer(ply2, gm1);
@@ -312,11 +312,12 @@ public class BshipsApplication {
 					.antMatchers("/web/**").permitAll()
 					.antMatchers("/players").permitAll()
 
+					.antMatchers("/api/lookForGame").permitAll()
 					.antMatchers("/api/players").permitAll()
 					.antMatchers("/api/games").permitAll()
 					.antMatchers("/api/game/*").permitAll()
 					.antMatchers("/api/ranking").permitAll()
-					.antMatchers("/api/game-view/*").hasAuthority("USER")
+					.antMatchers("/api/game-view/**").hasAuthority("USER")
 					.antMatchers("/api/**").permitAll()
 					.antMatchers("/rest/*").permitAll()
 					.anyRequest().authenticated()

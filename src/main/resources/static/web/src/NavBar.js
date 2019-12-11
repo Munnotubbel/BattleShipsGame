@@ -10,6 +10,7 @@ import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
 import MenuIcon from "@material-ui/icons/Menu";
 import { Route, HashRouter, NavLink } from "react-router-dom";
+import GoBack from "./GoBack";
 const StyledMenu = withStyles({
   paper: {
     border: "1px solid #d3d4d5"
@@ -59,6 +60,18 @@ export default function CustomizedMenus() {
       if (response.status == 200) {
         console.log("logged out");
         window.location.reload();
+      } else {
+        console.log("something went wrong");
+      }
+    });
+  };
+
+  const lookForGame = () => {
+    fetch("/api/lookForGame", {
+      method: "POST"
+    }).then(response => {
+      if (response.status == 201) {
+        return <NavLink to="/web/games"></NavLink>;
       } else {
         console.log("something went wrong");
       }
@@ -141,7 +154,15 @@ export default function CustomizedMenus() {
           </ListItemIcon>
           <ListItemText primary="logout" />
         </StyledMenuItem>
+
+        <StyledMenuItem>
+          <ListItemIcon onClick={lookForGame}>
+            <InboxIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="create Game" />
+        </StyledMenuItem>
       </StyledMenu>
+      <GoBack></GoBack>
     </div>
   );
 }

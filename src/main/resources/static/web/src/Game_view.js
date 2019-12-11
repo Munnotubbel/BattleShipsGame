@@ -3,68 +3,90 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { responsiveFontSizes } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
 class Game extends Component {
-  state = {};
+  state = {
+    ships: [
+      { shipLocations: ["A1", "A2"], ShipType: "Submarine" },
+      { shipLocations: ["B3", "B4", "B5"], ShipType: "Destroyer" },
+      { shipLocations: ["C6", "C7", "C8", "C9"], ShipType: "Cruise Ship" },
+      { shipLocations: ["D5", "D4", "D3", "D2", "D1"], ShipType: "Battleship" }
+    ]
+  };
   componentDidMount = () => {
-    this.fetchData();
+    this.setState({ gamePlayerId: this.props.gamePlayer }, () => {
+      this.fetchData();
+    });
   };
   fetchData = () => {
-    fetch(`api/game_view/${this.props.gamePlayer}`)
-      .then(response => response.json())
+    fetch(`api/game_view/${this.state.gamePlayerId}`)
+      .then(response =>
+        response.status !== 401 ? response.json() : this.props.history.goBack()
+      )
       .then(response => {
-        const myShipLocations = [];
-        const myAttacks = [];
-        const hits = [];
+        console.log(response);
+        if (response) {
+          const myShipLocations = [];
+          const myAttacks = [];
+          const hits = [];
 
-        response.ships.forEach(element => {
-          for (var i = 0; i < element.location.length; i++) {
-            myShipLocations.push(element.location[i]);
-          }
-        });
-        response.attacks.forEach(element => {
-          for (var i = 0; i < element.attackLocations.length; i++) {
-            myAttacks.push(element.attackLocations[i]);
-          }
-        });
-        response.EnAttacks.forEach(element => {
-          for (var i = 0; i < element.attackLocations.length; i++) {
-            hits.push(element.attackLocations[i]);
-          }
-        });
-        this.setState({
-          gameName: response.gmName,
-          enemyName: response.EnPlayer.name,
-          myName: response.gamePlayers.name,
-          locations: myShipLocations,
-          attacks: myAttacks,
-          hits: hits
-        });
+          response.ships.forEach(element => {
+            for (var i = 0; i < element.location.length; i++) {
+              myShipLocations.push(element.location[i]);
+            }
+          });
+          response.attacks.forEach(element => {
+            for (var i = 0; i < element.attackLocations.length; i++) {
+              myAttacks.push(element.attackLocations[i]);
+            }
+          });
+          response.EnAttacks.forEach(element => {
+            for (var i = 0; i < element.attackLocations.length; i++) {
+              hits.push(element.attackLocations[i]);
+            }
+          });
+          this.setState({
+            responstStatus: response.status,
+            gameName: response.gmName,
+            enemyName: response.EnPlayer.name,
+            myName: response.player.name,
+            locations: myShipLocations,
+            attacks: myAttacks,
+            hits: hits
+          });
+        }
       });
-
-    // fetch(`api/game/${this.props.game}`)
-    //   .then(response => response.json())
-    //   .then(response => {
-    //     const bothUsers = [];
-    //     response.gamePlayers.forEach(element => {
-    //       bothUsers.push(element.player.name);
-    //     });
-    //     this.setState({
-    //       opponents: bothUsers
-    //     });
-    //   });
   };
 
-  // getLocations = () => {
-  //   console.log("get locations now");
-  //   const locations = [];
-  //   this.state.ships.forEach(element => {
-  //     for (var i = 0; i < element.location.length; i++) {
-  //       locations.push(element.location[i]);
-  //     }
-  //   });
-  //   this.setState({ locations: locations });
-  // };
+  postShips = () => {
+    console.log(JSON.stringify(this.state.ships));
+    fetch(`/api/game_view/${this.props.gamePlayer}/ships`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify([
+        { shipLocations: ["A1", "A2"], ShipType: "Submarine" },
+        { shipLocations: ["B3", "B4", "B5"], ShipType: "Destroyer" },
+        { shipLocations: ["C6", "C7", "C8", "C9"], ShipType: "Cruise Ship" },
+        {
+          shipLocations: ["D5", "D4", "D3", "D2", "D1"],
+          ShipType: "Battleship"
+        }
+      ])
+    })
+      .then(response => {
+        if (response.status == 201) {
+          return response.json();
+        } else {
+          alert("ships exist");
+        }
+      })
+      .catch(err => console.log("err", err));
+  };
 
   createOwnBoard = () => {
     let board = [];
@@ -315,54 +337,62 @@ class Game extends Component {
     return enemyBoard;
   };
   render() {
+    this.state.responstStatus && console.log(this.state.responstStatus);
     this.state.attacks && console.log(this.state.attacks);
     this.state.locations && console.log(this.state.locations);
 
-    if (this.state.locations && this.state.attacks) {
-      return (
-        <Grid container direction="row" justify="center" alignItems="center">
-          <Grid item xs={12} align="center">
-            <h2>
-              {this.state.myName} (You) VS {this.state.enemyName}
-            </h2>
-          </Grid>
-          <Grid
-            item
-            align="center"
-            xs={5}
-            style={{
-              minHeight: "300px",
-              maxHeight: "300px",
-              minWidth: "300px",
-              maxWidth: "300px",
-              marginRight: "20px"
-            }}
-          >
-            <strong>my Board</strong>
-            {this.createOwnBoard()}
-          </Grid>
-
-          <Grid
-            item
-            align="center"
-            xs={5}
-            style={{
-              minHeight: "300px",
-              maxHeight: "300px",
-              minWidth: "300px",
-              maxWidth: "300px",
-              marginLeft: "20px"
-            }}
-          >
-            <strong>enemy Board</strong>
-            {this.createEnemyBoard()}
-          </Grid>
-        </Grid>
-      );
+    if (this.state.responstStatus == 401) {
+      this.props.history.goBack();
     } else {
-      return <h1>...loading</h1>;
+      if (this.state.locations && this.state.attacks) {
+        return (
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item xs={12} align="center">
+              <h2>
+                {this.state.myName} (You) VS {this.state.enemyName}
+              </h2>
+            </Grid>
+            <Grid>
+              <button onClick={this.postShips}>post ships</button>
+            </Grid>
+            <Grid
+              item
+              align="center"
+              xs={5}
+              style={{
+                minHeight: "300px",
+                maxHeight: "300px",
+                minWidth: "300px",
+                maxWidth: "300px",
+                marginRight: "20px"
+              }}
+            >
+              <strong>my Board</strong>
+              {this.createOwnBoard()}
+            </Grid>
+
+            <Grid
+              item
+              align="center"
+              xs={5}
+              style={{
+                minHeight: "300px",
+                maxHeight: "300px",
+                minWidth: "300px",
+                maxWidth: "300px",
+                marginLeft: "20px"
+              }}
+            >
+              <strong>enemy Board</strong>
+              {this.createEnemyBoard()}
+            </Grid>
+          </Grid>
+        );
+      } else {
+        return <h1>...loading</h1>;
+      }
     }
   }
 }
 
-export default Game;
+export default withRouter(Game);

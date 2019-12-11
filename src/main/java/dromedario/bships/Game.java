@@ -12,7 +12,7 @@ public class Game {
     @GenericGenerator(name = "native", strategy = "native")
     private long gameId;
     Date date;
-    private String gameName;
+
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
@@ -22,8 +22,7 @@ public class Game {
     public Game() {
     }
 
-    public Game(String gameN, Date date) {
-        this.gameName= gameN;
+    public Game(Date date) {
         this.date = date;
     }
 
@@ -36,10 +35,7 @@ public class Game {
     public Date getDate() {
         return this.date;
     }
-//--------------------------------------------------------------GameName
-    public String getGameName() {
-        return this.gameName;
-    }
+
 //--------------------------------------------------------------GamePlayers
 
     public Set<GamePlayer> getGamePlayers() {

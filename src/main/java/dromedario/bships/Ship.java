@@ -17,7 +17,7 @@ public class Ship {
 
 
     @ElementCollection
-    @Column(name="ShipLocation")
+    @Column(name="shipLocation")
     private List<String> shipLocations = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,8 +50,8 @@ public class Ship {
         return this.shipType;
     }
 //----------------------------------------------------------------Location
-    public void setLocations(List<String> locations) {
-        this.shipLocations = locations;
+    public void setLocations(List<String> shipLocations) {
+        this.shipLocations = shipLocations;
     }
     public List<String> getLocations(){
         return this.shipLocations;
