@@ -9,15 +9,17 @@ class Game extends Component {
   state = {
     rotate: "horizontal",
     fleetInPosition: false,
-    shipLog:{ship1:[],ship2:[],ship3:[],ship4:[],},
+    shipLog:[],
+    shipLogTemp:[],
     boardCol: [1,2,3,4,5,6,7,8,9,10],
     boardRow: [100,200,300,400,500,600,700,800,900,1000],
     shipsPlaced: false,
     shipsToPlace: { ship1:true, ship2:false, ship3:false, ship4:false},
-    myShips:{ship1:{locations:[]},
-            ship2:{locations:[]},
-            ship3:{locations:[]},
-            ship4:{locations:[]}},
+    myShip1: null,
+    myShip2: null,
+    myShip3: null,
+    myShip4: null,
+
     ships: [
       { "locations": [101, 102], "shipType": "Submarine" },
       { "locations": [203, 204, 205], "shipType": "Destroyer" },
@@ -81,7 +83,8 @@ class Game extends Component {
   };
 
   postShips = () => {
-    console.log(JSON.stringify(this.state.ships));
+    const post =[this.state.myShip1,this.state.myShip2,this.state.myShip3,this.state.myShip4]
+    console.log(JSON.stringify(post));
     fetch(`/api/game_view/${this.props.gamePlayer}/ships`, {
       method: "POST",
       credentials: "include",
@@ -89,7 +92,7 @@ class Game extends Component {
         "Accept": "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(this.state.ships)
+      body: JSON.stringify(post)
     })
       .then(response => {
         console.log(response)
@@ -104,16 +107,17 @@ class Game extends Component {
 
 placeShip =(number)=>{
   switch (number){
-    case 1: this.setState({shipsToPlace:{ship1:false,ship2:true}})
+    case 1: this.setState({shipsToPlace:{ship1:false,ship2:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
     break;
-    case 2: this.setState({shipsToPlace:{ship2:false,ship3:true}})
+    case 2: this.setState({shipsToPlace:{ship2:false,ship3:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
     break;
-    case 3: this.setState({shipsToPlace:{ship3:false,ship4:true}})
+    case 3: this.setState({shipsToPlace:{ship3:false,ship4:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
     break;
-    case 4: this.setState({shipsToPlace:{ship4:false},fleetInPosition:true})
+    case 4: this.setState({shipsToPlace:{ship4:false},fleetInPosition:true, shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
     break;
   }
-  
+}
+placeAgain=()=>{this.setState({shipsToPlace:{ship1:true,ship2:false,ship2:false,ship2:false},fleetInPosition:false, shipLog: [],shipLogTemp: []})
 }
 
 rotate=(direction)=>{
@@ -121,7 +125,7 @@ rotate=(direction)=>{
 };
 
 checkValid=(arr)=>{
-  const unvalid=[11,211,311,,411,511,611,711,811,911,1011,1101,1102,1103,1104,1105,1106,1107,1108,1109,1110];
+  const unvalid=[111,211,311,,411,511,611,711,811,911,1011,1101,1102,1103,1104,1105,1106,1107,1108,1109,1110];
   const check =unvalid.filter(element => arr.includes(element))
   console.log(check)
   if (check.length===0){return true}
@@ -129,77 +133,77 @@ checkValid=(arr)=>{
 
 handleClick=(cellKey)=>{
   if (this.state.shipsPlaced===false){
-    const locations=[];
+
    
           
         if (this.state.shipsToPlace.ship1===true){
           console.log("ship 1")
-          
+          const locations=[];
           
           
           if (this.state.rotate==="horizontal"){locations.push(cellKey,cellKey+1);
             
 
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship1:{locations: locations, shipType: "Submarine"}},
-            shipLog:[...locations]})
+              this.setState({myShip1:{"locations": locations, shipType: "Submarine"},
+              shipLogTemp:[...locations]})
             }
                 else{alert("invalid position")}
               }
                   else{locations.push(cellKey,cellKey+100)
                   if(this.checkValid(locations)===true){
-                    this.setState({myShips:{ship1:{locations: locations, shipType: "Submarine"}},
-                  shipLog:[...locations]})}
+                    this.setState({myShip1:{"locations": locations, shipType: "Submarine"},
+                    shipLogTemp:[...locations]})}
                 else {alert("invalid position")}}
             
         }
         else if (this.state.shipsToPlace.ship2===true){
           console.log("ship 2")
-          
+          const locations=[];
           if (this.state.rotate==="horizontal"){locations.push(cellKey,cellKey+1,cellKey+2);
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship2:{locations: locations, shipType: "Submarine"}},
-            shipLog:{ship1:locations}})
+              this.setState({myShip2:{"locations": locations, shipType: "Destroyer"},
+              shipLogTemp:[...locations]})
               }
               else {alert("unvalid position")}}
           else{locations.push(cellKey,cellKey+100,cellKey+200);
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship2:{locations: locations, shipType: "Submarine"}},
-            shipLog:{ship1:locations}})}
+              this.setState({myShip2:{"locations": locations, shipType: "Destroyer"},
+              shipLogTemp:[...locations]})}
               else {alert("unvalid position")}}
             
         }
         else if (this.state.shipsToPlace.ship3===true){
           console.log("ship 3")
-          
+          const locations=[];
           if (this.state.rotate==="horizontal"){locations.push(cellKey,cellKey+1,cellKey+2,cellKey+3);
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship3:{locations: locations, shipType: "Submarine"}},
+              this.setState({myShip3:{"locations": locations, shipType: "Cruise Ship"},
            
-            shipLog:[...this.state.shipLog,...locations]})}
+              shipLogTemp:[...locations]})}
               else {alert("unvalid position")}}
           else{locations.push(cellKey,cellKey+100,cellKey+200,cellKey+300);
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship3:{locations: locations, shipType: "Submarine"}},
+              this.setState({myShip3:{"locations": locations, shipType: "Cruise Ship"},
            
-            shipLog:[...this.state.shipLog,...locations]})}
+              shipLogTemp:[...locations]})}
             
             else {alert("unvalid position")}}
             
         }
         else if (this.state.shipsToPlace.ship4===true){
           console.log("ship 4")
-        
+          const locations=[];
           if (this.state.rotate==="horizontal"){locations.push(cellKey,cellKey+1,cellKey+2,cellKey+3,cellKey+4);
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship4:{locations: locations, shipType: "Submarine"}},
-              shipLog:[...this.state.shipLog,...locations]
+              this.setState({myShip4:{"locations": locations, shipType: "Battleship"},
+              shipLogTemp:[...locations]
              })}
               else {alert("unvalid position")}}
           else{locations.push(cellKey,cellKey+100,cellKey+200,cellKey+300,cellKey+400);
             if(this.checkValid(locations)===true){
-              this.setState({myShips:{ship4:{locations: locations, shipType: "Submarine"}},
-              shipLog:[...this.state.shipLog,...locations]
+              this.setState({myShip4:{"locations": locations, shipType: "Battleship"},
+              shipLogTemp:[...locations]  
              })}
               else {alert("unvalid position");}}
            
@@ -250,7 +254,7 @@ handleClick=(cellKey)=>{
               </Grid>
             );
           }
-        } else if (this.state.locations.includes(cellKey) ||this.state.shipLog.ship1.includes(cellKey)) {
+        } else if (this.state.locations.includes(cellKey) ||this.state.shipLog.includes(cellKey)||this.state.shipLogTemp.includes(cellKey)) {
           {
             children.push(
               <Grid
@@ -268,7 +272,7 @@ handleClick=(cellKey)=>{
                   maxWidth: "30px"
                 }}
               >
-                {cellKey}
+                
               </Grid>
             );
           }
@@ -291,7 +295,7 @@ handleClick=(cellKey)=>{
                 }}
                 
               >
-                {cellKey}
+                
               </Grid>
             );
           }
@@ -313,7 +317,7 @@ handleClick=(cellKey)=>{
               }}
               onClick={()=>this.handleClick(cellKey)}
             >
-              {cellKey}
+              
             </Grid>
           );
         }
@@ -362,7 +366,7 @@ handleClick=(cellKey)=>{
                   maxWidth: "30px"
                 }}
               >
-                {cellKey}
+               
               </Grid>
             );
           }
@@ -382,7 +386,7 @@ handleClick=(cellKey)=>{
                 maxWidth: "30px"
               }}
             >
-              {cellKey}
+            
             </Grid>
           );
         }
@@ -403,8 +407,8 @@ handleClick=(cellKey)=>{
     return enemyBoard;
   };
   render() {
- console.log("RENDER")
-    // this.state.attacks && console.log(this.state.attacks);
+
+    this.state.shipsPlaced && console.log(this.state.shipsPlaced);
     // this.state.locations && console.log(this.state.locations);
 
 
@@ -420,14 +424,14 @@ handleClick=(cellKey)=>{
               </h2>
             </Grid>
             <Grid>
-              {(this.state.fleetInPosition===true && this.state.shipsPlaced===false) ?<button onClick={()=>this.postShips}>post ships</button>: null}
+              {(this.state.fleetInPosition===true && this.state.shipsPlaced===false) ?<button onClick={()=>this.postShips()}>post ships</button>: null}
             {this.state.shipsToPlace.ship1===true ?<button onClick={()=>this.placeShip(1,2)}>Place First Ship</button>: null}
             {this.state.shipsToPlace.ship2===true ?<button onClick={()=>this.placeShip(2,3)}>Place Second Ship</button>: null}
             {this.state.shipsToPlace.ship3===true ?<button onClick={()=>this.placeShip(3,4)}>Place Third Ship</button>: null}
             {this.state.shipsToPlace.ship4===true ?<button onClick={()=>this.placeShip(4,null)}>Place Fourth Ship</button>: null}
-            {this.state.fleetInPosition===false ? <button onClick={()=>this.rotate("horizontal")}>horizontal</button> :null}
-            {this.state.fleetInPosition===false ? <button onClick={()=>this.rotate(null)}>vertical</button> :null}
-              
+            {(this.state.fleetInPosition===true && this.state.shipsPlaced===false) ? <button onClick={()=>this.rotate("horizontal")}>horizontal</button> :null}
+            {(this.state.fleetInPosition===true && this.state.shipsPlaced===false) ? <button onClick={()=>this.rotate(null)}>vertical</button> :null}
+            {this.state.shipsPlaced===false ? <button onClick={()=>this.placeAgain()}>again</button> : null}
             </Grid>
             <Grid
               item

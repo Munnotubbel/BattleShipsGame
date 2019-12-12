@@ -15,7 +15,7 @@ export default class Games extends Component {
   };
 
   render() {
-    this.state.games && console.log(this.state.games);
+    // this.state.games && console.log(this.state.games);
 
     if (this.state.games) {
       return (
@@ -57,7 +57,7 @@ export default class Games extends Component {
                                   </NavLink>
                                 </li>
                               </ul>
-                              <ul>
+                              {/* <ul>
                                 Ships:
                                 {gamePly.ships &&
                                   gamePly.ships.map(ship => {
@@ -68,7 +68,7 @@ export default class Games extends Component {
                                       </ul>
                                     );
                                   })}
-                              </ul>
+                              </ul> */}
                             </ul>
                           );
                         })}
