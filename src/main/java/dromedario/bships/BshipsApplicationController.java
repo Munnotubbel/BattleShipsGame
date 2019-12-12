@@ -298,6 +298,7 @@ public class BshipsApplicationController {
         GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
 
   System.out.println("INCOMING SHIPNUMBER = " +ships.size());
+        System.out.println(ships);
 
         if (authentication.getName() == null) {
             return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);

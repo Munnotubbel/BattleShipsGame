@@ -113,16 +113,16 @@ public class BshipsApplication {
 			gamePlayerRepository.save(gmPly9);
 
 //--------------------------------------------------------------Ship Locations GamePlayer 1
-			List<String> locSubGmPly1 = Arrays.asList("A1","A2");
-			List<String> locDesGmPly1 = Arrays.asList("B3", "B4", "B5");
-			List<String> locCruGmPly1 = Arrays.asList("C6", "C7", "C8", "C9");
-			List<String> locBatGmPly1 = Arrays.asList("D5", "D4", "D3", "D2","D1");
+			List<Integer> locSubGmPly1 = Arrays.asList(101,102);
+			List<Integer> locDesGmPly1 = Arrays.asList(203, 204, 205);
+			List<Integer> locCruGmPly1 = Arrays.asList(306, 307, 308, 309);
+			List<Integer> locBatGmPly1 = Arrays.asList(405, 404, 403, 402,401);
 
 //--------------------------------------------------------------Ships Locations GamePlayer 2
-			List<String> locSubGmPly2 = Arrays.asList("J10", "J9");
-			List<String> locDesGmPly2 = Arrays.asList("I8", "I7", "I6");
-			List<String> locCruGmPly2 = Arrays.asList("H5", "H4", "H3", "H2");
-			List<String> locBatGmPly2 = Arrays.asList("G6", "G7","G8","G9","G10");
+			List<Integer> locSubGmPly2 = Arrays.asList(1010, 1009);
+			List<Integer> locDesGmPly2 = Arrays.asList(908, 907, 906);
+			List<Integer> locCruGmPly2 = Arrays.asList(805, 804, 803, 802);
+			List<Integer> locBatGmPly2 = Arrays.asList(706, 707,708,709,710);
 
 //--------------------------------------------------------------create Ships GamePlayer 1
 		Ship subGmPly1 = new Ship("Submarine",locSubGmPly1);
@@ -161,11 +161,11 @@ public class BshipsApplication {
 			shipRepository.save(batGmPly2);
 
 //--------------------------------------------------------------create & save Attacks GamePlayer 1
-			List<String> attackLocations1 = Arrays.asList("J10", "J9", "I8");
-			List<String> attackLocations2 = Arrays.asList("I7", "I6","H5");
-			List<String> attackLocations3 = Arrays.asList("H4", "H3", "H2");
-			List<String> attackLocations4 = Arrays.asList("G6", "G7","G8");
-			List<String> attackLocations5 = Arrays.asList("G9", "G10", "G4");
+			List<Integer> attackLocations1 = Arrays.asList(1010, 1009, 1008);
+			List<Integer> attackLocations2 = Arrays.asList(907, 906,905);
+			List<Integer> attackLocations3 = Arrays.asList(804, 803, 802);
+			List<Integer> attackLocations4 = Arrays.asList(706, 707,708);
+			List<Integer> attackLocations5 = Arrays.asList(609, 610, 604);
 
 			Attack attack1 = new Attack(1, attackLocations1);
 			Attack attack2 = new Attack(2, attackLocations2);
@@ -188,11 +188,11 @@ public class BshipsApplication {
 			gamePlayerRepository.save(gmPly1);
 
 //--------------------------------------------------------------create & save Attacks GamePlayer 2
-			List<String> attackLocations6 = Arrays.asList("A10", "B9", "C8");
-			List<String> attackLocations7 = Arrays.asList("D7", "E6", "F5");
-			List<String> attackLocations8 = Arrays.asList("G4", "H3", "I2");
-			List<String> attackLocations9 = Arrays.asList("J1", "J2", "H4");
-			List<String> attackLocations10 = Arrays.asList("G5", "F6", "E7");
+			List<Integer> attackLocations6 = Arrays.asList(110, 209, 309);
+			List<Integer> attackLocations7 = Arrays.asList(407,506, 605);
+			List<Integer> attackLocations8 = Arrays.asList(604,703, 802);
+			List<Integer> attackLocations9 = Arrays.asList(1001, 1002, 804);
+			List<Integer> attackLocations10 = Arrays.asList(705, 606, 605);
 
 			Attack attack6 = new Attack(1, attackLocations6);
 			Attack attack7 = new Attack(2, attackLocations7);

@@ -15,7 +15,7 @@ public class Attack {
 
     @ElementCollection
     @Column(name="AttackLocation")
-    private List<String> attackLocations = new ArrayList<>();
+    private List<Integer> attackLocations = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
@@ -25,7 +25,7 @@ public class Attack {
 
     public Attack(){};
 
-    public Attack(Integer turn, List<String> attackLocations) {
+    public Attack(Integer turn, List<Integer> attackLocations) {
         this.attackLocations = attackLocations;
         this.turn = turn;
     }
@@ -45,7 +45,7 @@ public class Attack {
         return this.gamePlayer;
     }
 //--------------------------------------------------------------Attack Locations
-    public List<String> getAttackLocations(){
+    public List<Integer> getAttackLocations(){
         return this.attackLocations;
     }
 
