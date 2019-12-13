@@ -34,6 +34,7 @@ public class Attack {
         return id;
     }
 //--------------------------------------------------------------Turn
+    private Integer nextTurn(){return this.turn++;}
     public Integer getTurn() {
         return turn;
     }

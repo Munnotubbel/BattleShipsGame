@@ -42,6 +42,8 @@ public class Game {
         return gamePlayers;
     }
 
+
+    //--------------------------------------------------------------Scores
     public void addScore(Score score){
         score.setGame(this);
         scores.add(score);
@@ -56,8 +58,6 @@ public class Game {
 
 
 
-
-
-
-
 }
+
+

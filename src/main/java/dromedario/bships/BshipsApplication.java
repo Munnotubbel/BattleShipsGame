@@ -166,24 +166,28 @@ public class BshipsApplication {
 			List<Integer> attackLocations3 = Arrays.asList(804, 803, 802);
 			List<Integer> attackLocations4 = Arrays.asList(706, 707,708);
 			List<Integer> attackLocations5 = Arrays.asList(609, 610, 604);
+			List<Integer> attackLocations11 = Arrays.asList(101, 205, 601);
 
 			Attack attack1 = new Attack(1, attackLocations1);
 			Attack attack2 = new Attack(2, attackLocations2);
 			Attack attack3 = new Attack(3, attackLocations3);
 			Attack attack4 = new Attack(4, attackLocations4);
 			Attack attack5 = new Attack(5, attackLocations5);
+			Attack attack11 = new Attack(6, attackLocations11);
 
 			gmPly1.addAttack(attack1);
 			gmPly1.addAttack(attack2);
 			gmPly1.addAttack(attack3);
 			gmPly1.addAttack(attack4);
 			gmPly1.addAttack(attack5);
+			gmPly1.addAttack(attack11);
 
 			attackRepository.save(attack1);
 			attackRepository.save(attack2);
 			attackRepository.save(attack3);
 			attackRepository.save(attack4);
 			attackRepository.save(attack5);
+			attackRepository.save(attack11);
 
 			gamePlayerRepository.save(gmPly1);
 
@@ -317,7 +321,10 @@ public class BshipsApplication {
 					.antMatchers("/api/games").permitAll()
 					.antMatchers("/api/game/*").permitAll()
 					.antMatchers("/api/ranking").permitAll()
-					.antMatchers("/api/game-view/**").hasAuthority("USER")
+                    .antMatchers("/api/game-view/attacks").hasAuthority("USER")
+                    .antMatchers("/api/game-view/ships").hasAuthority("USER")
+
+                    .antMatchers("/api/game-view/**").hasAuthority("USER")
 					.antMatchers("/api/**").permitAll()
 					.antMatchers("/rest/*").permitAll()
 					.anyRequest().authenticated()

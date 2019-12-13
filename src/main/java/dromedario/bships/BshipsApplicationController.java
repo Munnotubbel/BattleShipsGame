@@ -151,12 +151,41 @@ public class BshipsApplicationController {
         Authentication authentication;
         Map<String, Object> gameMap = new HashMap<>();
         gameMap.put("LOGGED", loggedPlayer());
-//        gameMap.put("EMPTYGAME",getEmptyGame());
         gameMap.put("id", game.getGameId());
         gameMap.put("created", game.date.toString());
         gameMap.put("gamePlayers", GamePlayersOfGame(game));
 
         return gameMap;
+    }
+    //--------------------------------------------------------------Check next Turn
+   Map<String,Object> checkNextTurn(Game game) {
+        List<Integer> turns = new ArrayList<>();
+        boolean checkNext =false;
+        if (game.gamePlayers.size()==2){
+        game.gamePlayers.stream().forEach(gp->{
+
+            List<Integer> atckTurns=new ArrayList<>();
+
+            if (gp.getAttacks().size()>1){
+                        gp.getAttacks().stream().forEach(atck-> {
+                        atckTurns.add(atck.getTurn());
+                        });
+
+         turns.add(Collections.max(atckTurns));}
+            else {atckTurns.add(1);
+                turns.add(Collections.max(atckTurns));}
+    });}
+        if (turns.size()>1){
+       if(turns.get(0)==turns.get(1))
+       { checkNext= true;}
+       else {checkNext= false;}}
+
+       Map<String, Object> turnInfo = new HashMap<>();
+       turnInfo.put("nextTurn",checkNext );
+       if (turns.size()>0)
+       {turnInfo.put("round", Collections.min(turns)+1);}
+       else{turnInfo.put("round", Collections.min(turns));}
+       return turnInfo;
     }
 
 
@@ -173,8 +202,8 @@ public class BshipsApplicationController {
 
     //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
     public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer) {
-
         Map<String, Object> gameMap = new HashMap<>();
+        gameMap.put("turnInfo", checkNextTurn(gamePlayer.getGame()));
         gameMap.put("gmId", gamePlayer.getGame().getGameId());
         gameMap.put("gmPlyId", gamePlayer.getId());
         gameMap.put("created", gamePlayer.getGame().getDate().toString());
@@ -318,6 +347,29 @@ public class BshipsApplicationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @RequestMapping(path = "/game_view/{gamePlayerId}/attacks", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> postAttacks(@PathVariable Long gamePlayerId,@RequestBody List<Attack> attacks, Authentication authentication) {
+        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+
+        System.out.println("INCOMING ATTACKS = " +attacks.size());
+        System.out.println(attacks);
+
+        if (authentication.getName() == null) {
+            return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);
+        }
+        attacks.forEach(attack -> {
+            gamePlayer.addAttack(attack);
+            attackRepository.save(attack);
+            gamePlayerRepository.save(gamePlayer);
+
+            System.out.println("--------------------------------------------------------");
+            System.out.println(attack.getAttackLocations());
+            System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        });
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
 
         }
