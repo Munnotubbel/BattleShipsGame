@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import Hitpoints from "./Hitpoints";
+import "./Hitpoints.css"
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { responsiveFontSizes } from "@material-ui/core";
@@ -7,6 +8,7 @@ import { withRouter } from "react-router-dom";
 
 class Game extends Component {
   state = {
+    myHits:[],
     shotsTemp: [],
     shots: [],
     rotate: "horizontal",
@@ -73,7 +75,9 @@ class Game extends Component {
           })}
           {response.EnPlayer && (enemyName=response.EnPlayer.name)}
 
+
           this.setState({
+            myHits: response.myHits ? response.myHits : [],
             responstStatus: response.status,
             gameName: response.gmName,
             enemyName: enemyName,
@@ -81,6 +85,7 @@ class Game extends Component {
             locations: myShipLocations, 
             attacks: myAttacks,
             hits: hits,
+            hitMyShip: response.EnHits ? response.EnHits:null,
             shipTypes: shipTypes,
             round: response.turnInfo? response.turnInfo.round : 1,
             nextTurn: response.turnInfo? response.turnInfo.nextTurn :false,
@@ -88,6 +93,8 @@ class Game extends Component {
         }
       });
   };
+
+
 
   postShips = () => {
     const post =[this.state.myShip1,this.state.myShip2,this.state.myShip3,this.state.myShip4]
@@ -115,17 +122,34 @@ class Game extends Component {
 
 placeShip =(number)=>{
   switch (number){
-    case 1: this.setState({shipsToPlace:{ship1:false,ship2:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
+    case 1: 
+    if(this.state.shipLogTemp.length===2) 
+    {this.setState({shipsToPlace:{ship1:false,ship2:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]});} 
+    else{alert("place first ship")}
     break;
-    case 2: this.setState({shipsToPlace:{ship2:false,ship3:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
+
+    case 2: 
+    if(this.state.shipLogTemp.length===3) 
+    {this.setState({shipsToPlace:{ship2:false,ship3:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]});}
+    else{alert("place second ship")}
     break;
-    case 3: this.setState({shipsToPlace:{ship3:false,ship4:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
+
+    case 3: 
+    if(this.state.shipLogTemp.length===4) 
+    {this.setState({shipsToPlace:{ship3:false,ship4:true},shipLog: [...this.state.shipLog,...this.state.shipLogTemp]});}
+    else{alert("place third ship")} 
     break;
-    case 4: this.setState({shipsToPlace:{ship4:false},fleetInPosition:true, shipLog: [...this.state.shipLog,...this.state.shipLogTemp]})
+
+    case 4: 
+    if(this.state.shipLogTemp.length===5) 
+    {this.setState({shipsToPlace:{ship4:false},fleetInPosition:true, shipLog: [...this.state.shipLog,...this.state.shipLogTemp]});} 
+    else{alert("place fourth ship")}
     break;
   }
 }
 placeAgain=()=>{this.setState({shipsToPlace:{ship1:true,ship2:false,ship2:false,ship2:false},fleetInPosition:false, shipLog: [],shipLogTemp: []})
+
+
 }
 
 rotate=(direction)=>{
@@ -142,18 +166,14 @@ checkValid=(arr)=>{
 }
 
 handleClick=(cellKey)=>{
-  if (this.state.shipsPlaced===false){
-
-   
+  if (this.state.shipsPlaced===false){   
           
         if (this.state.shipsToPlace.ship1===true){
           console.log("ship 1")
           const locations=[];
-          
-          
+                    
           if (this.state.rotate==="horizontal"){locations.push(cellKey,cellKey+1);
             
-
             if(this.checkValid(locations)===true){
               this.setState({myShip1:{"locations": locations, shipType: "Submarine"},
               shipLogTemp:[...locations]})
@@ -247,7 +267,8 @@ postShots=()=>{
       .then(response => {
         console.log(response)
         if (response.status == 201) {
-          this.fetchData()
+          this.fetchData();
+          this.setState({shots:[]})
           return response.json();
           
         }
@@ -256,6 +277,20 @@ postShots=()=>{
   };
   
 
+hitpoints=(hits)=>{
+switch (hits){
+case 0: return <Grid item xs={12}></Grid>
+}
+
+}  
+gameOver=()=>{
+  if(this.state.myHits.length===10 && this.state.hits.length===10){
+    
+    return <h2>it's a tie</h2>
+
+
+  }
+}
 
 
   createOwnBoard = () => {
@@ -272,8 +307,7 @@ postShots=()=>{
         let cellKey =  j+i;
         
         if (
-          this.state.locations.includes(cellKey) &&
-          this.state.hits.includes(cellKey)
+          this.state.hitMyShip.includes(cellKey)          
         ) {
           {
             children.push(
@@ -390,7 +424,7 @@ postShots=()=>{
       //Inner loop to create children
       for (let j = 1; j <11; j++) {
         let cellKey = i + j;
-        if (this.state.attacks.includes(cellKey) || this.state.shots.includes(cellKey)) {
+        if (this.state.myHits.includes(cellKey)) {
           {
             enemyChildren.push(
               <Grid
@@ -408,11 +442,69 @@ postShots=()=>{
                   maxWidth: "30px"
                 }}
               >
+              <strong>X</strong>
+              </Grid>
+            );
+          }
+        }
+
+        else if (this.state.shots.includes(cellKey)) {
+          {
+            enemyChildren.push(
+              <Grid
+                item
+                value={cellKey}
+                xs={1}
+                align="center"
+                style={{
+                  backgroundColor: "gray",
+                  paddingTop: "1px",
+                  border: "1px solid black",
+                  minHeight: "30px",
+                  maxHeight: "30px",
+                  minWidth: "30px",
+                  maxWidth: "30px"
+                }}
+              >
                
               </Grid>
             );
           }
-        } else {
+        }
+
+
+
+
+
+        else if (this.state.attacks.includes(cellKey)) {
+          {
+            enemyChildren.push(
+              <Grid
+                item
+                value={cellKey}
+                xs={1}
+                align="center"
+                style={{
+                  backgroundColor: "blue",
+                  paddingTop: "1px",
+                  border: "1px solid black",
+                  minHeight: "30px",
+                  maxHeight: "30px",
+                  minWidth: "30px",
+                  maxWidth: "30px"
+                }}
+              >
+               
+              </Grid>
+            );
+          }
+        }
+
+
+        
+        
+        
+        else {
           enemyChildren.push(
             <Grid
               item
@@ -451,16 +543,17 @@ postShots=()=>{
   };
   render() {
 
-    this.state && console.log(this.state);
+    this.state.myHits && console.log(this.state.myHits.length);
+    this.state.hits && console.log(this.state.hits.length);
     // this.state.locations && console.log(this.state.locations);
 
 
     if (this.state.responstStatus == 401) {
       this.props.history.goBack();
     } else {
-      if (this.state.locations && this.state.attacks) {
+      if (this.state.locations && this.state.attacks && this.state.myHits && this.state.hits) {
         return (
-          <Grid container direction="row" justify="center" alignItems="center">
+          <Grid container direction="row"  >
             <Grid item xs={12} align="center">
               <h2>
                 {this.state.myName} (You) VS {this.state.enemyName}
@@ -478,7 +571,7 @@ postShots=()=>{
             {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate("horizontal")}>horizontal</button></Grid> :null}
             {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate(null)}>vertical</button></Grid> :null}
             {this.state.shipsPlaced===false ? <Grid item><button onClick={()=>this.placeAgain()}>again</button></Grid> : null}
-            {(this.state.shipsPlaced===true && this.state.nextTurn===true) ? <Grid item><button onClick={()=>this.resetShot()}>reset shot</button></Grid> : null}
+            {(this.state.shipsPlaced===true && this.state.nextTurn===true && this.state.shots.length>0) ? <Grid item><button onClick={()=>this.resetShot()}>reset shot</button></Grid> : null}
             {this.state.shotsPlaced ===true ? <Grid item><button onClick={()=>this.postShots()}>post Shots</button></Grid> : null}}
             </Grid>
             </Grid>
@@ -495,6 +588,8 @@ postShots=()=>{
               }}
             >
               <strong>my Board</strong>
+              {this.state.hitMyShip &&
+              <Hitpoints dmg={this.state.hitMyShip.length}/>}
               {this.createOwnBoard()}
             </Grid>
 
@@ -510,7 +605,9 @@ postShots=()=>{
                 marginLeft: "20px"
               }}
             >
-              <strong>enemy Board</strong>
+              <strong>enemy Board</strong> 
+              {this.state.myHits &&
+           <Hitpoints dmg={this.state.myHits.length}/>}
               {this.createEnemyBoard()}
             </Grid>
           </Grid>

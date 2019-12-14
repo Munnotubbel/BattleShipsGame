@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -203,6 +204,15 @@ public class BshipsApplicationController {
     //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
     public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer) {
         Map<String, Object> gameMap = new HashMap<>();
+        List<Integer> myHits=new ArrayList<>();
+        List<Integer> myAttacks=new ArrayList<>();
+        List<Integer> enHits=new ArrayList<>();
+
+        if (gamePlayer.getAttacks().size()>0){
+            gamePlayer.getAttacks().stream().forEach(atk->{
+            atk.getAttackLocations().stream().forEach(pos->myAttacks.add(pos));});
+        };
+
         gameMap.put("turnInfo", checkNextTurn(gamePlayer.getGame()));
         gameMap.put("gmId", gamePlayer.getGame().getGameId());
         gameMap.put("gmPlyId", gamePlayer.getId());
@@ -219,6 +229,35 @@ public class BshipsApplicationController {
                 gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
                 gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame) );
                 gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
+
+                    if (gamePlayerOfGame.getShips().size()>0 && myAttacks.size()>0){
+                        List<Integer> EnShips=new ArrayList<>();
+                        gamePlayerOfGame.getShips().stream().forEach(ship->{
+                            ship.getLocations().stream().forEach(pos->EnShips.add(pos)
+                               );
+                        });
+                            Collection<Integer> similar = new HashSet<Integer>( EnShips );
+                            similar.retainAll( myAttacks );
+                                myHits.addAll(similar);
+                    }
+                if (AttacksOfGamePlayer(gamePlayerOfGame).size()>0){
+                    List<Integer> EnAttacks=new ArrayList<>();
+                        gamePlayerOfGame.getAttacks().stream().forEach(atck->{
+                            atck.getAttackLocations().stream().forEach(pos->EnAttacks.add(pos));
+                        });
+                    List<Integer> myShipsPos=new ArrayList<>();
+                    gamePlayer.getShips().stream().forEach(ship->{
+                        ship.getLocations().stream().forEach(pos->myShipsPos.add(pos));
+                    });
+
+                    Collection<Integer> similar = new HashSet<Integer>( EnAttacks );
+                    similar.retainAll( myShipsPos );
+                    enHits.addAll(similar);
+                }
+
+                gameMap.put("EnHits", enHits);
+                gameMap.put("myHits", myHits);
+
             }});
 
         return gameMap;
