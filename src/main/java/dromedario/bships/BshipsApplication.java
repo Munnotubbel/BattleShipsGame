@@ -166,28 +166,28 @@ public class BshipsApplication {
 			List<Integer> attackLocations3 = Arrays.asList(804, 803, 802);
 			List<Integer> attackLocations4 = Arrays.asList(706, 707,708);
 			List<Integer> attackLocations5 = Arrays.asList(609, 610, 604);
-			List<Integer> attackLocations11 = Arrays.asList(101, 205, 601);
+//			List<Integer> attackLocations11 = Arrays.asList(101, 205, 601);
 
 			Attack attack1 = new Attack(1, attackLocations1);
 			Attack attack2 = new Attack(2, attackLocations2);
 			Attack attack3 = new Attack(3, attackLocations3);
 			Attack attack4 = new Attack(4, attackLocations4);
 			Attack attack5 = new Attack(5, attackLocations5);
-			Attack attack11 = new Attack(6, attackLocations11);
+//			Attack attack11 = new Attack(6, attackLocations11);
 
 			gmPly1.addAttack(attack1);
 			gmPly1.addAttack(attack2);
 			gmPly1.addAttack(attack3);
 			gmPly1.addAttack(attack4);
 			gmPly1.addAttack(attack5);
-			gmPly1.addAttack(attack11);
+//			gmPly1.addAttack(attack11);
 
 			attackRepository.save(attack1);
 			attackRepository.save(attack2);
 			attackRepository.save(attack3);
 			attackRepository.save(attack4);
 			attackRepository.save(attack5);
-			attackRepository.save(attack11);
+//			attackRepository.save(attack11);
 
 			gamePlayerRepository.save(gmPly1);
 
@@ -218,8 +218,8 @@ public class BshipsApplication {
 
 			gamePlayerRepository.save(gmPly2);
 //--------------------------------------------------------------Winner Winner Chickendinner
-			Score score1 = new Score(1.0,new Date());
-			Score score2 = new Score(0.0,new Date());
+//			Score score1 = new Score(1.0,new Date());
+//			Score score2 = new Score(0.0,new Date());
 			Score score3 = new Score(1.0,new Date());
 			Score score4 = new Score(0.0,new Date());
 			Score score5 = new Score(0.0,new Date());
@@ -227,8 +227,8 @@ public class BshipsApplication {
 			Score score7 = new Score(0.0,new Date());
 			Score score8 = new Score(1.0,new Date());
 
-			gm1.addScore(score1);
-			gm1.addScore(score2);
+//			gm1.addScore(score1);
+//			gm1.addScore(score2);
 			gm2.addScore(score3);
 			gm2.addScore(score4);
 			gm3.addScore(score5);
@@ -237,16 +237,16 @@ public class BshipsApplication {
 			gm4.addScore(score8);
 
 
-			ply1.addScore(score1);
-			ply2.addScore(score2);
+//			ply1.addScore(score1);
+//			ply2.addScore(score2);
 			ply3.addScore(score3);
 			ply4.addScore(score4);
 			ply1.addScore(score5);
 			ply3.addScore(score6);
 			ply2.addScore(score7);
 			ply4.addScore(score8);
-			scoreRepository.save(score1);
-			scoreRepository.save(score2);
+//			scoreRepository.save(score1);
+//			scoreRepository.save(score2);
 			scoreRepository.save(score3);
 			scoreRepository.save(score4);
 			scoreRepository.save(score5);

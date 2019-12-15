@@ -159,92 +159,151 @@ public class BshipsApplicationController {
         return gameMap;
     }
     //--------------------------------------------------------------Check next Turn
-   Map<String,Object> checkNextTurn(Game game) {
-        List<Integer> turns = new ArrayList<>();
-        boolean checkNext =false;
-        if (game.gamePlayers.size()==2){
+   Map<String,Object> checkNextTurn(Game game,GamePlayer gamePlayer,Authentication authentication) {
+        List<Integer> myTurns = new ArrayList<>();
+        List<Integer> enTurns= new ArrayList<>();
+
         game.gamePlayers.stream().forEach(gp->{
+            if (gp.getPlayer().getUserName()==authentication.getName()){
 
-            List<Integer> atckTurns=new ArrayList<>();
+                if (gp.getAttacks().size()>1){
+                    gp.getAttacks().stream().forEach(atck-> {
+                        myTurns.add(atck.getTurn());
+                    });}
+                else {myTurns.add(1);}
+                }
+            else {
+                if (gp.getAttacks().size()>1){
+                gp.getAttacks().stream().forEach(atck-> {
+                    enTurns.add(atck.getTurn());
+                });}
+                else {enTurns.add(1);}}
 
-            if (gp.getAttacks().size()>1){
-                        gp.getAttacks().stream().forEach(atck-> {
-                        atckTurns.add(atck.getTurn());
-                        });
+    });
+       Integer myMax=(Collections.max(myTurns));
+       Integer enMax=(Collections.max(enTurns));
 
-         turns.add(Collections.max(atckTurns));}
-            else {atckTurns.add(1);
-                turns.add(Collections.max(atckTurns));}
-    });}
-        if (turns.size()>1){
-       if(turns.get(0)==turns.get(1))
-       { checkNext= true;}
-       else {checkNext= false;}}
+       Boolean enCanFire;
+       Boolean selfCanFire;
+
+       if(myMax==enMax)
+       { enCanFire= true;
+            selfCanFire=true;}
+       else if(myMax<enMax){
+           enCanFire= false;
+           selfCanFire=true;
+       }
+       else {enCanFire= true;
+           selfCanFire=false;}
 
        Map<String, Object> turnInfo = new HashMap<>();
-       turnInfo.put("nextTurn",checkNext );
-       if (turns.size()>0)
-       {turnInfo.put("round", Collections.min(turns)+1);}
-       else{turnInfo.put("round", Collections.min(turns));}
+       turnInfo.put("selfCanFire", selfCanFire );
+       turnInfo.put("EnCanFire", enCanFire );
+       turnInfo.put("round", myMax);
+       turnInfo.put("myAtmTurn", myMax);
+       turnInfo.put("EnAtmTurn", enMax);
+       turnInfo.putAll(gameProgress(gamePlayer, authentication));
        return turnInfo;
     }
-
-
+    //--------------------------------------------------------------Next Turn request
+    @RequestMapping("/game_view/{gamePlayerId}/checkNext")
+    public Map<String,Object> shotChecker(@PathVariable Long gamePlayerId,Authentication authentication) {
+        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+        Map<String, Object> nextMap = new HashMap<>();
+        nextMap.putAll(checkNextTurn(gamePlayer.getGame(), gamePlayer, authentication));
+        return nextMap;
+    }
     //--------------------------------------------------------------#games_view route for gamePlayer ID
     @RequestMapping("/game_view/{gamePlayerId}")
     public Object gameView(@PathVariable Long gamePlayerId, Authentication authentication) {
         GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
         if (gamePlayer.getPlayer().getUserName() == authentication.getName()){
 
-        return showGamePlayerGame(gamePlayer);}
+        return showGamePlayerGame(gamePlayer, authentication);}
 
         else { return new ResponseEntity<>(doMap("error", "this is not your Gameplayer! cheater!"), HttpStatus.UNAUTHORIZED);}
     }
 
     //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
-    public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer) {
+    public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer,Authentication authentication) {
         Map<String, Object> gameMap = new HashMap<>();
-        List<Integer> myHits=new ArrayList<>();
-        List<Integer> myAttacks=new ArrayList<>();
-        List<Integer> enHits=new ArrayList<>();
 
-        if (gamePlayer.getAttacks().size()>0){
-            gamePlayer.getAttacks().stream().forEach(atk->{
-            atk.getAttackLocations().stream().forEach(pos->myAttacks.add(pos));});
-        };
-
-        gameMap.put("turnInfo", checkNextTurn(gamePlayer.getGame()));
+        gameMap.put("turnInfo", checkNextTurn(gamePlayer.getGame(),gamePlayer,authentication));
         gameMap.put("gmId", gamePlayer.getGame().getGameId());
         gameMap.put("gmPlyId", gamePlayer.getId());
         gameMap.put("created", gamePlayer.getGame().getDate().toString());
         gameMap.put("player", PlayerOfGamePlayer(gamePlayer));
         gameMap.put("ships", ShipsOfGamePlayer(gamePlayer));
         gameMap.put("attacks", AttacksOfGamePlayer(gamePlayer));
-//        gameMap.put("enemy", getEnemyInfo(gamePlayer));
 
-            Long gameId = gamePlayer.getGame().getGameId();
+        gamePlayer.getGame().getGamePlayers().forEach(gamePlayerOfGame -> {
+            if (gamePlayerOfGame.getId()!= gamePlayer.getId()) {
+                gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
+                gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame));
+                gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
+            }});
+
+                gameMap.putAll(gameProgress(gamePlayer,authentication));
+
+        return gameMap;
+    }
+    //--------------------------------------------------------------game Progress
+
+    public  Map<String, Object> gameProgress(GamePlayer gamePlayer, Authentication authentication){
+        Map<String, Object>  gameOverMap = new HashMap<>();
+        List<Integer> myHits=new ArrayList<>();
+        List<Integer> myAttacks=new ArrayList<>();
+        List<Integer> enHits=new ArrayList<>();
+        Long gameId = gamePlayer.getGame().getGameId();
         Game game = gameRepository.findGameByGameId(gameId);
+
+        List<Integer> myTurns = new ArrayList<>();
+        List<Integer> enTurns= new ArrayList<>();
+
+        game.gamePlayers.stream().forEach(gp->{
+            if (gp.getPlayer().getUserName()==authentication.getName()){
+
+                if (gp.getAttacks().size()>1){
+                    gp.getAttacks().stream().forEach(atck-> {
+                        myTurns.add(atck.getTurn());
+                    });}
+                else {myTurns.add(1);}
+            }
+            else {
+                if (gp.getAttacks().size()>1){
+                    gp.getAttacks().stream().forEach(atck-> {
+                        enTurns.add(atck.getTurn());
+                    });}
+                else {enTurns.add(1);}}
+
+        });
+        Integer myMax=(Collections.max(myTurns));
+        Integer enMax=(Collections.max(enTurns));
+
+        if (gamePlayer.getAttacks().size()>0){
+            gamePlayer.getAttacks().stream().forEach(atk->{
+                atk.getAttackLocations().stream().forEach(pos->myAttacks.add(pos));});
+        };
+
         game.getGamePlayers().forEach(gamePlayerOfGame -> {
             if (gamePlayerOfGame.getId()!= gamePlayer.getId()){
-                gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
-                gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame) );
-                gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
 
-                    if (gamePlayerOfGame.getShips().size()>0 && myAttacks.size()>0){
-                        List<Integer> EnShips=new ArrayList<>();
-                        gamePlayerOfGame.getShips().stream().forEach(ship->{
-                            ship.getLocations().stream().forEach(pos->EnShips.add(pos)
-                               );
-                        });
-                            Collection<Integer> similar = new HashSet<Integer>( EnShips );
-                            similar.retainAll( myAttacks );
-                                myHits.addAll(similar);
-                    }
+
+                if (gamePlayerOfGame.getShips().size()>0 && myAttacks.size()>0){
+                    List<Integer> EnShips=new ArrayList<>();
+                    gamePlayerOfGame.getShips().stream().forEach(ship->{
+                        ship.getLocations().stream().forEach(pos->EnShips.add(pos)
+                        );
+                    });
+                    Collection<Integer> similar = new HashSet<Integer>( EnShips );
+                    similar.retainAll( myAttacks );
+                    myHits.addAll(similar);
+                }
                 if (AttacksOfGamePlayer(gamePlayerOfGame).size()>0){
                     List<Integer> EnAttacks=new ArrayList<>();
-                        gamePlayerOfGame.getAttacks().stream().forEach(atck->{
-                            atck.getAttackLocations().stream().forEach(pos->EnAttacks.add(pos));
-                        });
+                    gamePlayerOfGame.getAttacks().stream().forEach(atck->{
+                        atck.getAttackLocations().stream().forEach(pos->EnAttacks.add(pos));
+                    });
                     List<Integer> myShipsPos=new ArrayList<>();
                     gamePlayer.getShips().stream().forEach(ship->{
                         ship.getLocations().stream().forEach(pos->myShipsPos.add(pos));
@@ -255,31 +314,64 @@ public class BshipsApplicationController {
                     enHits.addAll(similar);
                 }
 
-                gameMap.put("EnHits", enHits);
-                gameMap.put("myHits", myHits);
+                gameOverMap.put("EnHits", enHits);
+                gameOverMap.put("myHits", myHits);
+                if(myHits.size()==14 && enHits.size()==14 && myHits.size()==enHits.size() && myMax==enMax){
+                    if (gamePlayer.getGame().getScores().size()==0){
+                        Score score1=new Score(0.5,new Date());
+                        Score score2=new Score(0.5,new Date());
+                        gamePlayer.getGame().addScore(score1);
+                        gamePlayer.getPlayer().addScore(score1);
+                        gamePlayerOfGame.getGame().addScore(score2);
+                        gamePlayerOfGame.getPlayer().addScore(score2);
+                        scoreRepository.save(score1);
+                        scoreRepository.save(score2);
+                        gameRepository.save(gamePlayer.getGame());
+                        playerRepository.save(gamePlayer.getPlayer());
+                        playerRepository.save(gamePlayerOfGame.getPlayer());}
+                    gameOverMap.put("gameOver", true);
+                    gameOverMap.put("gameResult", "it's a tie");
+                }
+                else if ((myHits.size()==14 && enHits.size()<14 && myMax==enMax)||(myHits.size()<14 && enHits.size()==14)){
+                    if (myHits.size()==14){
+                        if (gamePlayer.getGame().getScores().size()==0){
+                            Score score1=new Score(1.0,new Date());
+                            Score score2=new Score(0.0,new Date());
+                            gamePlayer.getGame().addScore(score1);
+                            gamePlayer.getPlayer().addScore(score1);
+                            gamePlayerOfGame.getGame().addScore(score2);
+                            gamePlayerOfGame.getPlayer().addScore(score2);
+                            scoreRepository.save(score1);
+                            scoreRepository.save(score2);
+                            gameRepository.save(gamePlayer.getGame());
+                            playerRepository.save(gamePlayer.getPlayer());
+                            playerRepository.save(gamePlayerOfGame.getPlayer());}
+                        gameOverMap.put("gameOver", true);
+                        gameOverMap.put("gameResult", "you win");
+                    }
+                    else if (myAttacks.size()<14 && enHits.size()==14 && myMax==enMax){
+                        if (gamePlayer.getGame().getScores().size()==0){
+                            Score score1=new Score(0.0,new Date());
+                            Score score2=new Score(1.0,new Date());
+                            gamePlayer.getGame().addScore(score1);
+                            gamePlayer.getPlayer().addScore(score1);
+                            gamePlayerOfGame.getGame().addScore(score2);
+                            gamePlayerOfGame.getPlayer().addScore(score2);
+                            scoreRepository.save(score1);
+                            scoreRepository.save(score2);
+                            gameRepository.save(gamePlayer.getGame());
+                            playerRepository.save(gamePlayer.getPlayer());
+                            playerRepository.save(gamePlayerOfGame.getPlayer());}
+                        gameOverMap.put("gameOver", true);
+                        gameOverMap.put("gameResult", "you lose");
+                    };
+                }
+                else { gameOverMap.put("gameOver", false);}
 
             }});
-
-        return gameMap;
+        return  gameOverMap;
     }
-
     //--------------------------------------------------------------get Enemy GamePlayer
-    public Map<String, Object> getEnemyInfo(GamePlayer gamePlayer) {
-        Long gameId = gamePlayer.getGame().getGameId();
-        Game game = gameRepository.findGameByGameId(gameId);
-        List<Object> enemyPlayer = new ArrayList<>();
-        game.getGamePlayers().forEach(gamePlayerOfGame -> {
-            Map<String, Object> gmPlyMap = new HashMap<>();
-            if (gamePlayerOfGame.getId() != gamePlayer.getId()) {
-                gmPlyMap.put("EnGmPlyId", gamePlayerOfGame.getId());
-                gmPlyMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame));
-                gmPlyMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
-                enemyPlayer.add(gmPlyMap);
-            }
-        });
-
-        return doMap("enemyGmPly", enemyPlayer);
-    }
 
     //--------------------------------------------------------------#ranking route
     @CrossOrigin(origins = "http://localhost:3000")
@@ -365,8 +457,8 @@ public class BshipsApplicationController {
     public ResponseEntity<Map<String, Object>> postShips(@PathVariable Long gamePlayerId,@RequestBody List<Ship> ships, Authentication authentication) {
         GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
 
-  System.out.println("INCOMING SHIPNUMBER = " +ships.size());
-        System.out.println(ships);
+
+
 
         if (authentication.getName() == null) {
             return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);
@@ -376,13 +468,8 @@ public class BshipsApplicationController {
            gamePlayerRepository.save(gamePlayer);
             shipRepository.save(ship);
 
-  System.out.println("--------------------------------------------------------");
-  System.out.println(ship.getLocations());
-  System.out.println(ship.getShipType());
-  System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         });
-  System.out.println("Number of Ships in Repository"+gamePlayer.getShips().size());
-  System.out.println(gamePlayer.getShips());
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -392,20 +479,22 @@ public class BshipsApplicationController {
     public ResponseEntity<Map<String, Object>> postAttacks(@PathVariable Long gamePlayerId,@RequestBody List<Attack> attacks, Authentication authentication) {
         GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
 
-        System.out.println("INCOMING ATTACKS = " +attacks.size());
-        System.out.println(attacks);
 
         if (authentication.getName() == null) {
             return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);
         }
         attacks.forEach(attack -> {
-            gamePlayer.addAttack(attack);
-            attackRepository.save(attack);
+            Attack fire = new Attack(attack.getTurn()+1, attack.getAttackLocations() );
+            System.out.println("FIRE IN THE HOLE -<-<-<-<-<-<-<-<-<-<-<-<");
+            System.out.println(attack.getTurn());
+            System.out.println(fire.getTurn());
+            System.out.println(attack.getAttackLocations());
+
+            gamePlayer.addAttack(fire);
+            attackRepository.save(fire);
             gamePlayerRepository.save(gamePlayer);
 
-            System.out.println("--------------------------------------------------------");
-            System.out.println(attack.getAttackLocations());
-            System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
         });
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

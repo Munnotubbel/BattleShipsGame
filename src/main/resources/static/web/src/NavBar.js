@@ -71,7 +71,7 @@ export default function CustomizedMenus() {
       method: "POST"
     }).then(response => {
       if (response.status == 201) {
-        return <NavLink to="/web/games"></NavLink>;
+        window.location.reload()
       } else {
         console.log("something went wrong");
       }
@@ -156,10 +156,11 @@ export default function CustomizedMenus() {
         </StyledMenuItem>
 
         <StyledMenuItem>
-          <ListItemIcon onClick={lookForGame}>
+          <NavLink to="/web/games" onClick={lookForGame}>
+          <ListItemIcon>
             <InboxIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="create Game" />
+          <ListItemText primary="create Game" /></NavLink>
         </StyledMenuItem>
       </StyledMenu>
       <GoBack></GoBack>

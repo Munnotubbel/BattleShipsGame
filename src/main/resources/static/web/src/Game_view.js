@@ -8,6 +8,9 @@ import { withRouter } from "react-router-dom";
 
 class Game extends Component {
   state = {
+    selfCanFire: false,
+    gameOver: false,
+    gameResult: "",
     myHits:[],
     shotsTemp: [],
     shots: [],
@@ -77,6 +80,8 @@ class Game extends Component {
 
 
           this.setState({
+            gameOver: response.gameOver ? response.gameOver : false,
+            gameResult: response.gameResult ? response.gameResult :"",
             myHits: response.myHits ? response.myHits : [],
             responstStatus: response.status,
             gameName: response.gmName,
@@ -85,10 +90,10 @@ class Game extends Component {
             locations: myShipLocations, 
             attacks: myAttacks,
             hits: hits,
-            hitMyShip: response.EnHits ? response.EnHits:null,
+            hitMyShip: response.EnHits ? response.EnHits: [],
             shipTypes: shipTypes,
-            round: response.turnInfo? response.turnInfo.round : 1,
-            nextTurn: response.turnInfo? response.turnInfo.nextTurn :false,
+            round: response.turnInfo ? response.turnInfo.round : 1,
+            selfCanFire: response.turnInfo ? response.turnInfo.selfCanFire : false,
           },()=>{this.state.locations[1] && this.setState({shipsPlaced: true,fleetInPosition:false,shipsToPlace:{ship1:false}});console.log(this.state)});
         }
       });
@@ -244,7 +249,7 @@ handleClick=(cellKey)=>{
  handleShot=(cellKey)=>{
    console.log("FIRE IN THE HOLE" + cellKey)
    const location = []
-if (this.state.shipsPlaced ===true && this.state.shots.length<3){
+if (this.state.shipsPlaced ===true && this.state.shots.length<3 && this.state.gameOver==false){
   location.push(cellKey)
 this.setState({shots:[...this.state.shots,...location]}, ()=>{if(this.state.shots.length===3){this.setState({shotsPlaced: true})}})
 }
@@ -253,7 +258,14 @@ this.setState({shots:[...this.state.shots,...location]}, ()=>{if(this.state.shot
 resetShot=()=>{this.setState({shots: [],shotsPlaced:false})}
 
 postShots=()=>{
-  const attacks =[{"turn":this.state.round,"attackLocations":this.state.shots}];
+
+  
+    fetch(`api/game_view/${this.state.gamePlayerId}/checkNext`)
+      .then(response => response.json())
+      .then(response => {
+        if(response.selfCanFire==true && response.myAtmTurn<=response.EnAtmTurn){
+
+  const attacks =[{"turn": response.myAtmTurn,"attackLocations": this.state.shots}];
 
     fetch(`/api/game_view/${this.props.gamePlayer}/attacks`, {
       method: "POST",
@@ -267,15 +279,20 @@ postShots=()=>{
       .then(response => {
         console.log(response)
         if (response.status == 201) {
-          this.fetchData();
-          this.setState({shots:[]})
+          
+          this.setState({shots:[],shotsPlaced: false},()=>this.fetchData())
           return response.json();
           
         }
       })
       .catch(err => console.log("err", err));
-  };
-  
+  }
+  else if( response.gameOver==true){
+   this.fetchData();
+  }
+else {alert("wait for opponent")}
+});}
+
 
 hitpoints=(hits)=>{
 switch (hits){
@@ -283,14 +300,6 @@ case 0: return <Grid item xs={12}></Grid>
 }
 
 }  
-gameOver=()=>{
-  if(this.state.myHits.length===10 && this.state.hits.length===10){
-    
-    return <h2>it's a tie</h2>
-
-
-  }
-}
 
 
   createOwnBoard = () => {
@@ -558,6 +567,7 @@ gameOver=()=>{
               <h2>
                 {this.state.myName} (You) VS {this.state.enemyName}
               </h2>
+              {this.state.gameOver==true ? <h2>{this.state.gameResult}</h2> : null}
               {this.state.round &&<h2>Round {this.state.round}</h2>}
             </Grid>
             <Grid item>
@@ -571,8 +581,8 @@ gameOver=()=>{
             {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate("horizontal")}>horizontal</button></Grid> :null}
             {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate(null)}>vertical</button></Grid> :null}
             {this.state.shipsPlaced===false ? <Grid item><button onClick={()=>this.placeAgain()}>again</button></Grid> : null}
-            {(this.state.shipsPlaced===true && this.state.nextTurn===true && this.state.shots.length>0) ? <Grid item><button onClick={()=>this.resetShot()}>reset shot</button></Grid> : null}
-            {this.state.shotsPlaced ===true ? <Grid item><button onClick={()=>this.postShots()}>post Shots</button></Grid> : null}}
+            {(this.state.shipsPlaced===true && this.state.selfCanFire===true && this.state.shots.length>0) ? <Grid item><button onClick={()=>this.resetShot()}>reset shot</button></Grid> : null}
+            {this.state.shotsPlaced ===true ? <Grid item><button onClick={()=>this.postShots()}>post Shots</button></Grid> : null}
             </Grid>
             </Grid>
             <Grid
