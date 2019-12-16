@@ -5,7 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { responsiveFontSizes } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
-
+import EnemyBoard from "./EnemyBoard";
+import MyBoard from "./MyBoard";
 class Game extends Component {
   state = {
     selfCanFire: false,
@@ -126,6 +127,7 @@ class Game extends Component {
   };
 
 placeShip =(number)=>{
+  console.log("RICHTIG PLATZ " +number)
   switch (number){
     case 1: 
     if(this.state.shipLogTemp.length===2) 
@@ -170,7 +172,7 @@ checkValid=(arr)=>{
   if (checkboth.length===0){return true}
 }
 
-handleClick=(cellKey)=>{
+putShip=(cellKey)=>{
   if (this.state.shipsPlaced===false){   
           
         if (this.state.shipsToPlace.ship1===true){
@@ -263,7 +265,7 @@ postShots=()=>{
     fetch(`api/game_view/${this.state.gamePlayerId}/checkNext`)
       .then(response => response.json())
       .then(response => {
-        if(response.selfCanFire==true && response.myAtmTurn<=response.EnAtmTurn){
+        if(response.selfCanFire==true && response.myAtmTurn<=response.EnAtmTurn && response.gameOver===false){
 
   const attacks =[{"turn": response.myAtmTurn,"attackLocations": this.state.shots}];
 
@@ -287,269 +289,18 @@ postShots=()=>{
       })
       .catch(err => console.log("err", err));
   }
-  else if( response.gameOver==true){
+  else if( response.gameOver===true){
    this.fetchData();
   }
-else {alert("wait for opponent")}
+else {alert("wait for opponent");this.fetchData()}
 });}
 
 
-hitpoints=(hits)=>{
-switch (hits){
-case 0: return <Grid item xs={12}></Grid>
-}
-
-}  
 
 
-  createOwnBoard = () => {
-  
  
-    let board = [];
 
-    // Outer loop to create parent
-    for (let i = 100; i < 1001; i+=100) {
-       let children = [];
-      //Inner loop to create children
-      for (let j = 1; j < 11; j++) {
-       
-        let cellKey =  j+i;
-        
-        if (
-          this.state.hitMyShip.includes(cellKey)          
-        ) {
-          {
-            children.push(
-              <Grid
-                item
-                item
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "darkred",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-              >
-                <strong>X</strong>
-              </Grid>
-            );
-          }
-        } else if (this.state.locations.includes(cellKey) ||this.state.shipLog.includes(cellKey)||this.state.shipLogTemp.includes(cellKey)) {
-          {
-            children.push(
-              <Grid
-                item
-                item
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "yellow",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-              >
-                
-              </Grid>
-            );
-          }
-        } else if (this.state.hits.includes(cellKey)) {
-          {
-            children.push(
-              <Grid
-                item
-                value={cellKey}
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "orange",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",  
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-                
-              >
-                
-              </Grid>
-            );
-          }
-        } else {
-          children.push(
-            <Grid
-            
-              item
-              value={cellKey}
-              xs={1}
-              align="center"
-              style={{
-                paddingTop: "1px",
-                border: "1px solid black",
-                minHeight: "30px",
-                maxHeight: "30px",
-                minWidth: "30px",
-                maxWidth: "30px"
-              }}
-              onClick={()=>this.handleClick(cellKey)}
-            >
-              
-            </Grid>
-          );
-        }
-      }
-      //Create the parent and add the children
-      board.push(
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          flexWrap="nowrap"
-        >
-          {children}
-        </Grid>
-      );
-    }
-    return board;
-  };
-
-  createEnemyBoard = () => {
-    let enemyBoard = [];
-
-    // Outer loop to create parent
-    for (let i = 100; i < 1001; i+=100) {
-      
-      let enemyChildren = [];
-      //Inner loop to create children
-      for (let j = 1; j <11; j++) {
-        let cellKey = i + j;
-        if (this.state.myHits.includes(cellKey)) {
-          {
-            enemyChildren.push(
-              <Grid
-                item
-                value={cellKey}
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "red",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-              >
-              <strong>X</strong>
-              </Grid>
-            );
-          }
-        }
-
-        else if (this.state.shots.includes(cellKey)) {
-          {
-            enemyChildren.push(
-              <Grid
-                item
-                value={cellKey}
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "gray",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-              >
-               
-              </Grid>
-            );
-          }
-        }
-
-
-
-
-
-        else if (this.state.attacks.includes(cellKey)) {
-          {
-            enemyChildren.push(
-              <Grid
-                item
-                value={cellKey}
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "blue",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-              >
-               
-              </Grid>
-            );
-          }
-        }
-
-
-        
-        
-        
-        else {
-          enemyChildren.push(
-            <Grid
-              item
-              item
-              xs={1}
-              align="center"
-              style={{
-                paddingTop: "1px",
-                border: "1px solid black",
-                minHeight: "30px",
-                maxHeight: "30px",
-                minWidth: "30px",
-                maxWidth: "30px"
-              }}
-              onClick={()=>this.handleShot(cellKey)}
-            >
-            
-            </Grid>
-          );
-        }
-      }
-      //Create the parent and add the children
-      enemyBoard.push(
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          flexWrap="nowrap"
-        >
-          {enemyChildren}
-        </Grid>
-      );
-    }
-    return enemyBoard;
-  };
+  
   render() {
 
     this.state.myHits && console.log(this.state.myHits.length);
@@ -562,7 +313,7 @@ case 0: return <Grid item xs={12}></Grid>
     } else {
       if (this.state.locations && this.state.attacks && this.state.myHits && this.state.hits) {
         return (
-          <Grid container direction="row"  >
+          <Grid container direction="row"  justify="center">
             <Grid item xs={12} align="center">
               <h2>
                 {this.state.myName} (You) VS {this.state.enemyName}
@@ -585,41 +336,23 @@ case 0: return <Grid item xs={12}></Grid>
             {this.state.shotsPlaced ===true ? <Grid item><button onClick={()=>this.postShots()}>post Shots</button></Grid> : null}
             </Grid>
             </Grid>
-            <Grid
-              item
-              align="center"
-              xs={5}
-              style={{
-                minHeight: "300px",
-                maxHeight: "300px",
-                minWidth: "300px",
-                maxWidth: "300px",
-                marginRight: "20px"
-              }}
-            >
-              <strong>my Board</strong>
-              {this.state.hitMyShip &&
-              <Hitpoints dmg={this.state.hitMyShip.length}/>}
-              {this.createOwnBoard()}
-            </Grid>
+       <MyBoard
+        enShots={this.state.hits}
+         enHits={this.state.hitMyShip}
+          myShipLocations={this.state.locations}
+           placedShips={this.state.shipLog}
+            placedShipsTemp={this.state.shipLogTemp}
+            putShip={this.putShip}>
+            </MyBoard>
 
-            <Grid
-              item
-              align="center"
-              xs={5}
-              style={{
-                minHeight: "300px",
-                maxHeight: "300px",
-                minWidth: "300px",
-                maxWidth: "300px",
-                marginLeft: "20px"
-              }}
-            >
-              <strong>enemy Board</strong> 
-              {this.state.myHits &&
-           <Hitpoints dmg={this.state.myHits.length}/>}
-              {this.createEnemyBoard()}
-            </Grid>
+       <EnemyBoard 
+       myHits={this.state.myHits} 
+       myShots={this.state.shots} 
+       myMiss={this.state.attacks}
+       fireInTheHole={this.handleShot}>
+       </EnemyBoard>
+
+         
           </Grid>
         );
       } else {

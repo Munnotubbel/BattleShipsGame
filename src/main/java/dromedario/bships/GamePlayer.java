@@ -67,7 +67,7 @@ public class GamePlayer {
     }
 //----------------------------------------------------------------Attacks
     public void addAttack(Attack attack) {
-        attack.setGamePlayer(this);
+        attack.setGamePlayer(this); 
         attacks.add(attack);
     }
     public Set<Attack> getAttacks() {

@@ -162,6 +162,11 @@ public class BshipsApplicationController {
    Map<String,Object> checkNextTurn(Game game,GamePlayer gamePlayer,Authentication authentication) {
         List<Integer> myTurns = new ArrayList<>();
         List<Integer> enTurns= new ArrayList<>();
+        Integer myShipNum = gamePlayer.getShips().size();
+        Integer enShipNum = enGamePlayer(gamePlayer).getShips().size();
+
+
+
 
         game.gamePlayers.stream().forEach(gp->{
             if (gp.getPlayer().getUserName()==authentication.getName()){
@@ -254,8 +259,12 @@ public class BshipsApplicationController {
         List<Integer> myHits=new ArrayList<>();
         List<Integer> myAttacks=new ArrayList<>();
         List<Integer> enHits=new ArrayList<>();
+        List<Integer> EnAttacks=new ArrayList<>();
+        GamePlayer enPlayer = enGamePlayer(gamePlayer);
         Long gameId = gamePlayer.getGame().getGameId();
         Game game = gameRepository.findGameByGameId(gameId);
+
+
 
         List<Integer> myTurns = new ArrayList<>();
         List<Integer> enTurns= new ArrayList<>();
@@ -289,6 +298,7 @@ public class BshipsApplicationController {
             if (gamePlayerOfGame.getId()!= gamePlayer.getId()){
 
 
+
                 if (gamePlayerOfGame.getShips().size()>0 && myAttacks.size()>0){
                     List<Integer> EnShips=new ArrayList<>();
                     gamePlayerOfGame.getShips().stream().forEach(ship->{
@@ -300,7 +310,7 @@ public class BshipsApplicationController {
                     myHits.addAll(similar);
                 }
                 if (AttacksOfGamePlayer(gamePlayerOfGame).size()>0){
-                    List<Integer> EnAttacks=new ArrayList<>();
+
                     gamePlayerOfGame.getAttacks().stream().forEach(atck->{
                         atck.getAttackLocations().stream().forEach(pos->EnAttacks.add(pos));
                     });
@@ -313,62 +323,82 @@ public class BshipsApplicationController {
                     similar.retainAll( myShipsPos );
                     enHits.addAll(similar);
                 }
-
                 gameOverMap.put("EnHits", enHits);
                 gameOverMap.put("myHits", myHits);
-                if(myHits.size()==14 && enHits.size()==14 && myHits.size()==enHits.size() && myMax==enMax){
-                    if (gamePlayer.getGame().getScores().size()==0){
-                        Score score1=new Score(0.5,new Date());
-                        Score score2=new Score(0.5,new Date());
-                        gamePlayer.getGame().addScore(score1);
-                        gamePlayer.getPlayer().addScore(score1);
-                        gamePlayerOfGame.getGame().addScore(score2);
-                        gamePlayerOfGame.getPlayer().addScore(score2);
-                        scoreRepository.save(score1);
-                        scoreRepository.save(score2);
-                        gameRepository.save(gamePlayer.getGame());
-                        playerRepository.save(gamePlayer.getPlayer());
-                        playerRepository.save(gamePlayerOfGame.getPlayer());}
-                    gameOverMap.put("gameOver", true);
-                    gameOverMap.put("gameResult", "it's a tie");
-                }
-                else if ((myHits.size()==14 && enHits.size()<14 && myMax==enMax)||(myHits.size()<14 && enHits.size()==14)){
-                    if (myHits.size()==14){
-                        if (gamePlayer.getGame().getScores().size()==0){
-                            Score score1=new Score(1.0,new Date());
-                            Score score2=new Score(0.0,new Date());
-                            gamePlayer.getGame().addScore(score1);
-                            gamePlayer.getPlayer().addScore(score1);
-                            gamePlayerOfGame.getGame().addScore(score2);
-                            gamePlayerOfGame.getPlayer().addScore(score2);
-                            scoreRepository.save(score1);
-                            scoreRepository.save(score2);
-                            gameRepository.save(gamePlayer.getGame());
-                            playerRepository.save(gamePlayer.getPlayer());
-                            playerRepository.save(gamePlayerOfGame.getPlayer());}
-                        gameOverMap.put("gameOver", true);
-                        gameOverMap.put("gameResult", "you win");
-                    }
-                    else if (myAttacks.size()<14 && enHits.size()==14 && myMax==enMax){
-                        if (gamePlayer.getGame().getScores().size()==0){
-                            Score score1=new Score(0.0,new Date());
-                            Score score2=new Score(1.0,new Date());
-                            gamePlayer.getGame().addScore(score1);
-                            gamePlayer.getPlayer().addScore(score1);
-                            gamePlayerOfGame.getGame().addScore(score2);
-                            gamePlayerOfGame.getPlayer().addScore(score2);
-                            scoreRepository.save(score1);
-                            scoreRepository.save(score2);
-                            gameRepository.save(gamePlayer.getGame());
-                            playerRepository.save(gamePlayer.getPlayer());
-                            playerRepository.save(gamePlayerOfGame.getPlayer());}
-                        gameOverMap.put("gameOver", true);
-                        gameOverMap.put("gameResult", "you lose");
-                    };
-                }
-                else { gameOverMap.put("gameOver", false);}
+                System.out.println("MY HITS: " +myHits);
+                System.out.println("MY HITS size: " +myHits.size());
+                System.out.println(authentication.getName());
+                System.out.println("MY TURN: "+myMax);
+                System.out.println("EN HITS: " +enHits);
+                System.out.println("EN HITS size: " +enHits.size());
+                System.out.println(authentication.getName());
+                System.out.println("EN TURN: "+enMax);
+
+
 
             }});
+        if(myHits.size()==enHits.size() && myHits.size()==14 && enHits.size()==14 &&  myMax==enMax){
+            System.out.println("TIE TIE TIE TIE TIE TIE TIE TIE TIE");
+            System.out.println(authentication.getName());
+            System.out.println("---------------------------------------------");
+            if (gamePlayer.getGame().getScores().size()==0){
+                Score score1=new Score(0.5,new Date());
+                Score score2=new Score(0.5,new Date());
+                gamePlayer.getGame().addScore(score1);
+                gamePlayer.getPlayer().addScore(score1);
+                enPlayer.getGame().addScore(score2);
+                enPlayer.getPlayer().addScore(score2);
+                scoreRepository.save(score1);
+                scoreRepository.save(score2);
+                gameRepository.save(gamePlayer.getGame());
+                playerRepository.save(gamePlayer.getPlayer());
+                playerRepository.save(enPlayer.getPlayer());}
+            gameOverMap.put("gameOver", true);
+            gameOverMap.put("gameResult", "it's a tie");
+        }
+//                else if ((myHits.size()==14 && enHits.size()<14 && myMax==enMax)||(myHits.size()<14 && enHits.size()==14)){
+
+        else if (myHits.size()==14 && enHits.size()!=14 && myMax==enMax){
+            System.out.println("IM A WARRIO IM A GONNA WINNA");
+            System.out.println(authentication.getName());
+            System.out.println("---------------------------------------------");
+            if (gamePlayer.getGame().getScores().size()==0){
+                Score score1=new Score(1.0,new Date());
+                Score score2=new Score(0.0,new Date());
+                gamePlayer.getGame().addScore(score1);
+                gamePlayer.getPlayer().addScore(score1);
+                enPlayer.getGame().addScore(score2);
+                enPlayer.getPlayer().addScore(score2);
+                scoreRepository.save(score1);
+                scoreRepository.save(score2);
+                gameRepository.save(gamePlayer.getGame());
+                playerRepository.save(gamePlayer.getPlayer());
+                playerRepository.save(enPlayer.getPlayer());}
+            gameOverMap.put("gameOver", true);
+            gameOverMap.put("gameResult", "you win");
+        }
+        else if (enHits.size()==14 &&  myHits.size()!=14  && myMax==enMax){
+            System.out.println("NOOB NOOB OMG");
+            System.out.println(authentication.getName());
+            System.out.println("---------------------------------------------");
+            if (gamePlayer.getGame().getScores().size()==0){
+                Score score1=new Score(0.0,new Date());
+                Score score2=new Score(1.0,new Date());
+                gamePlayer.getGame().addScore(score1);
+                gamePlayer.getPlayer().addScore(score1);
+                enPlayer.getGame().addScore(score2);
+                enPlayer.getPlayer().addScore(score2);
+                scoreRepository.save(score1);
+                scoreRepository.save(score2);
+                gameRepository.save(gamePlayer.getGame());
+                playerRepository.save(gamePlayer.getPlayer());
+                playerRepository.save(enPlayer.getPlayer());}
+            gameOverMap.put("gameOver", true);
+            gameOverMap.put("gameResult", "you lose");
+        }
+//                }
+        else { gameOverMap.put("gameOver", false);}
+
         return  gameOverMap;
     }
     //--------------------------------------------------------------get Enemy GamePlayer
@@ -397,6 +427,23 @@ public class BshipsApplicationController {
         } else {
             return null;
         }
+    }
+    //--------------------------------------------------------------Enemy GamePlayer
+    private GamePlayer enGamePlayer(GamePlayer gamePlayer){
+        Map<String, GamePlayer> enGmPly = new HashMap<>();
+        if(gamePlayer.getGame().getGamePlayers().size() == 2){
+            gamePlayer.getGame().getGamePlayers()
+                    .stream()
+                    .forEach(gp -> {
+                        if(gp.getId() != gamePlayer.getId()){
+                            enGmPly.put("opponent", gp);
+                        }
+                    });
+        }else{
+            enGmPly.put("opponent", null);
+        }
+
+        return enGmPly.get("opponent");
     }
 
 //--------------------------------------------------------------POST player

@@ -1,7 +1,7 @@
-.meter { 
-    height: 20px;  /* Can be anything */
+/* .meter { 
+    height: 20px;  
     position: relative;
-    margin: 60px 0 20px 0; /* Just for demo spacing */
+    margin: 60px 0 20px 0;
     background: #555;
     -moz-border-radius: 25px;
     -webkit-border-radius: 25px;
@@ -122,4 +122,167 @@
 
 .nostripes > span > span, .nostripes > span:after {
     -webkit-animation: none;
-    background-image: none;}
+    background-image: none;} */
+
+  
+    
+
+
+    *{margin:0;
+   padding: 0;
+box-sizing: border-box;}
+
+
+.progress-bar {
+   position: relative;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%,-50%);
+   width: 30vw;
+   height: 30px;
+   background-color: navy;
+   overflow: hidden;
+}
+
+.progress-bar-inner-bar{
+   position: relative;
+   float: left;
+   left: 0;
+   top:0;
+  height: 100%;
+   background-color: red;
+   border-right: 2px solid white;
+}
+
+.energy-bar-fade{
+position: absolute;
+height: 100%;
+width: 40%;
+min-width: 80px;
+top: 0;
+right: 0;
+background: linear-gradient(to right, red 0%, red 100%);
+
+}
+
+span.small-energy-bar-1,
+span.small-energy-bar-2,
+span.small-energy-bar-3,
+span.small-energy-bar-4,
+span.small-energy-bar-5{
+         position: absolute;
+         max-width: 20px;
+         max-height: 20px;
+         min-width: 10px;
+         min-height: 10px;
+    
+         border-radius: 20px;
+         
+         top: 0;
+         right: 0;
+         background-color: white;
+         animation: floating-right 3s infinite linear;
+         /* animation: shake 5s cubic-bezier(.36, .07, .19, .97);
+         transform: translate3d(0,0,0); */
+}
+span.small-energy-bar-2{
+   top: 15%;
+   width: 15px;
+   height: 15px;
+   animation-delay: 0.75s;
+}
+span.small-energy-bar-3{
+   top: 30%;
+   width: 18px;
+   height: 18px;
+   animation-delay: -1.5s;
+}
+span.small-energy-bar-4{
+   top: 45%;
+   animation-delay: -0.4s;
+}
+span.small-energy-bar-5{
+   width: 8px;
+   height: 8px;
+   top: 60%;
+   animation-delay: -0.2s;
+}
+span.small-energy-bar-6{
+   width: 8px;
+   height: 8px;
+   top: 5%;
+   animation-delay: -0.3s;
+}
+span.small-energy-bar-7{
+   width: 8px;
+   height: 8px;
+   top: 85%;
+   animation-delay: -0.35s;
+}
+
+
+@keyframes floating-right {
+   0% {
+      transform: translate3d(0, -2px, 0);
+   }
+   10% {
+      transform: translate3d(17px, 2px, 0);
+   }
+   20% {
+      transform: translate3d(34px, -4px, 0);
+   }
+   30% {
+      transform: translate3d(51px, 1px, 0);
+   }
+   40% {
+      transform: translate3d(68px, -3px, 0);
+   }
+   50% {
+      transform: translate3d(85px, 2px, 0);
+   }
+   60% {
+      transform: translate3d(102px, -2px, 0);
+   }
+   70% {
+      transform: translate3d(119px, 2px, 0);
+   }
+   80% {
+      transform: translate3d(136px, -2px, 0);
+   }
+   90% {
+      transform: translate3d(153px, 2px, 0);
+   }
+   100%{
+      transform: translate3d(170px, -2px, 0);
+      /* transform: translateX(170px); */
+      
+   }
+}
+
+.energy-bar-cover-up {
+   position: absolute;
+   height: 100%;
+   width: 58%;
+   top: 0;
+   left: 0;
+   background: linear-gradient(to right, #ff0000 60%, transparent 100%);
+   z-index: 50;
+}
+
+@keyframes shake {
+   10%, 90% {
+     transform: translate3d(-1px, 0, 0);
+   }
+   
+   20%, 80% {
+     transform: translate3d(2px, 0, 0);
+   }
+ 
+   30%, 50%, 70% {
+     transform: translate3d(-4px, 0, 0);
+   }
+ 
+   40%, 60% {
+     transform: translate3d(4px, 0, 0);
+   }
+ }

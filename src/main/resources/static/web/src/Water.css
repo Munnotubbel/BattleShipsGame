@@ -1,0 +1,65 @@
+.background{
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    background-image: url("https://s3.envato.com/files/241017453/preview.jpg");
+    background-size: cover;
+}
+
+.background .water{
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    background-image: url("https://s3.envato.com/files/241017453/preview.jpg");
+    background-size: cover;
+    filter: url("#turbulence");
+}
+
+.gridBoardCell {
+    min-width: 2.9vw;
+    min-height: 2.9vw;
+    max-width: 2.9vw;
+    max-height: 2.9vw;
+}
+
+.gridBoardContainer{
+   
+        min-width: 30vw;
+        min-height: 30vw;
+        max-width: 30vw;
+        max-height: 30vw;
+    
+}
+
+.LowerSelf{
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    }
+
+    .LowerEnemy{
+        position: absolute;
+        top: 25%;
+        left: 60%;
+        }
+
+.boardContainerTop {
+    padding-top: 2%;
+}
+
+.healthBarSelf {
+    position: absolute;
+    top: 20%;
+    left: 11.5%;}
+
+.healthBarEnemy {
+    position: absolute;
+    top: 20%;
+    left: 61.5% }
+
+.myName{
+
+}
+.enemyNAme{}
+
+.versus{}
