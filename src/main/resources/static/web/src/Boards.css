@@ -1,0 +1,44 @@
+.allCells {
+border-width: 0.5px;
+border-style: solid;
+border-color: black;
+padding-top: 1px;
+min-width: 2.5vw;
+max-width: 2.5vw;
+min-height: 2.5vw;
+max-height: 2.5vw
+
+}
+
+.boardContainer{
+    margin: 20px;
+min-height: 25vw;
+max-height: 25vw;
+min-width: 25vw;
+max-width: 25vw;
+/* margin-left: 20px; */
+
+}
+
+.bojeRed{
+   
+    width: 2.5vw;
+        height: 2.5vw;}
+
+       
+
+        .wiggle {
+            display: inline-block;
+           
+            transform-origin: bottom center;
+            animation: moveIt 2.5s ease-in-out infinite;
+           
+          }
+          @keyframes moveIt {
+            0%, 100% {
+              transform: rotate(10deg);
+            }
+            50% {
+              transform: rotate(-10deg);
+            }
+          }

@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Hitpoints from "./Hitpoints";
 import "./Water.css"
+import "./Boards.css"
 
 export default function MyBoard(props) {
   function createOwnBoard() {
@@ -19,17 +20,11 @@ export default function MyBoard(props) {
             children.push(
               <Grid
                 item
-                item
+                className="allCells"
                 xs={1}
                 align="center"
                 style={{
-                  backgroundColor: "darkred",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
+                  backgroundColor: "darkred"           
                 }}
               >
                 <strong>X</strong>
@@ -45,18 +40,12 @@ export default function MyBoard(props) {
             children.push(
               <Grid
                 item
-                item
+                className="allCells"
                 xs={1}
                 align="center"
                 style={{
                   backgroundColor: "yellow",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
+                     }}
               ></Grid>
             );
           }
@@ -65,35 +54,27 @@ export default function MyBoard(props) {
             children.push(
               <Grid
                 item
+                className="allCells"
                 value={cellKey}
                 xs={1}
                 align="center"
-                style={{
-                  backgroundColor: "orange",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-                  minHeight: "30px",
-                  maxHeight: "30px",
-                  minWidth: "30px",
-                  maxWidth: "30px"
-                }}
-              ></Grid>
+                
+              >
+              <img className="bojeRed wiggle" src="https://res.cloudinary.com/munnotubbel/image/upload/v1576514944/javaProject/boje-removebg-preview-removebg-preview_acxmc4.png" ></img>
+              </Grid>
             );
           }
         } else {
           children.push(
             <Grid
               item
+              className="allCells"
               value={cellKey}
               xs={1}
               align="center"
               style={{
                 paddingTop: "1px",
-                border: "1px solid black",
-                minHeight: "30px",
-                maxHeight: "30px",
-                minWidth: "30px",
-                maxWidth: "30px"
+               
               }}
               onClick={() => props.putShip(cellKey)}
             ></Grid>
@@ -117,22 +98,15 @@ export default function MyBoard(props) {
   }
 
   return (
-      <Grid>
+      <Grid item style={{marginRight:"20px"}}>
            <strong>my Board</strong>
     {props.enHits && <Hitpoints dmg={props.enHits.length} />}
 
     <Grid
       item
-      className="waterBackground"
+      className="boardContainer"
       align="center"
-      xs={5}
-      style={{
-        minHeight: "300px",
-        maxHeight: "300px",
-        minWidth: "300px",
-        maxWidth: "300px",
-        marginRight: "20px"
-      }}
+      xs={5}  
     >
      
     

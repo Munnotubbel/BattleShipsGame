@@ -130,16 +130,19 @@
 
     *{margin:0;
    padding: 0;
-box-sizing: border-box;}
+;}
 
 
 .progress-bar {
+   margin-bottom: 20px;
    position: relative;
-   top: 50%;
+   /* top: 50%;
    left: 50%;
-   transform: translate(-50%,-50%);
-   width: 30vw;
-   height: 30px;
+   transform: translate(-50%,-50%); */ 
+   width: 25vw;
+   min-width: 20vw;
+   height: 3vw;
+   min-height: 2vw;
    background-color: navy;
    overflow: hidden;
 }
@@ -150,7 +153,7 @@ box-sizing: border-box;}
    left: 0;
    top:0;
   height: 100%;
-   background-color: red;
+   background-color: green;
    border-right: 2px solid white;
 }
 
@@ -161,7 +164,7 @@ width: 40%;
 min-width: 80px;
 top: 0;
 right: 0;
-background: linear-gradient(to right, red 0%, red 100%);
+background: linear-gradient(to right, green 0%, green 100%);
 
 }
 
@@ -179,7 +182,7 @@ span.small-energy-bar-5{
          border-radius: 20px;
          
          top: 0;
-         right: 0;
+         right: -5%;
          background-color: white;
          animation: floating-right 3s infinite linear;
          /* animation: shake 5s cubic-bezier(.36, .07, .19, .97);
@@ -223,7 +226,7 @@ span.small-energy-bar-7{
 
 @keyframes floating-right {
    0% {
-      transform: translate3d(0, -2px, 0);
+      transform: translate3d(10, -2px, 0);
    }
    10% {
       transform: translate3d(17px, 2px, 0);
@@ -265,7 +268,7 @@ span.small-energy-bar-7{
    width: 58%;
    top: 0;
    left: 0;
-   background: linear-gradient(to right, #ff0000 60%, transparent 100%);
+   background: linear-gradient(to right, red 20%, transparent 100%);
    z-index: 50;
 }
 

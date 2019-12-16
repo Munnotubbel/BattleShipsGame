@@ -19,30 +19,23 @@ class Game extends Component {
     fleetInPosition: false,
     shipLog:[],
     shipLogTemp:[],
-    boardCol: [1,2,3,4,5,6,7,8,9,10],
-    boardRow: [100,200,300,400,500,600,700,800,900,1000],
     shipsPlaced: false,
     shipsToPlace: { ship1:true, ship2:false, ship3:false, ship4:false},
     myShip1: null,
     myShip2: null,
     myShip3: null,
     myShip4: null,
-
-    ships: [
-      { "locations": [101, 102], "shipType": "Submarine" },
-      { "locations": [203, 204, 205], "shipType": "Destroyer" },
-      { "locations": [306, 307, 308, 309], "shipType": "Cruise Ship" },
-      {
-        "locations": [405, 404, 403, 402, 401],
-        "shipType": "Battleship"
-      }
-    ]
   };
   componentDidMount = () => {
     this.setState({ gamePlayerId: this.props.gamePlayer }, () => {
       this.fetchData();
     });
   };
+
+  componentWillUnmount() {
+      this.props.changetitle("Battleships Game");
+  }
+
   fetchData = () => {
     fetch(`api/game_view/${this.state.gamePlayerId}`)
       .then(response =>
@@ -95,7 +88,10 @@ class Game extends Component {
             shipTypes: shipTypes,
             round: response.turnInfo ? response.turnInfo.round : 1,
             selfCanFire: response.turnInfo ? response.turnInfo.selfCanFire : false,
-          },()=>{this.state.locations[1] && this.setState({shipsPlaced: true,fleetInPosition:false,shipsToPlace:{ship1:false}});console.log(this.state)});
+          },
+          ()=>{this.state.locations[1] &&
+             this.setState({shipsPlaced: true,fleetInPosition:false,shipsToPlace:{ship1:false}});
+             this.props.changetitle(`${this.state.myName} (You) VS ${this.state.enemyName}`)});
         }
       });
   };
@@ -296,11 +292,6 @@ else {alert("wait for opponent");this.fetchData()}
 });}
 
 
-
-
- 
-
-  
   render() {
 
     this.state.myHits && console.log(this.state.myHits.length);
@@ -315,10 +306,10 @@ else {alert("wait for opponent");this.fetchData()}
         return (
           <Grid container direction="row"  justify="center">
             <Grid item xs={12} align="center">
-              <h2>
+              {/* <h2>
                 {this.state.myName} (You) VS {this.state.enemyName}
-              </h2>
-              {this.state.gameOver==true ? <h2>{this.state.gameResult}</h2> : null}
+              </h2> */}
+              {this.state.gameOver==true ? <div style={{position:"absolute", left:"30%" ,top:"40%", width:"40%", height:"30%", backgroundColor: "rgba(255, 255, 255, 0.8)", zIndex:"2000" }}><h2 style={{position:"absolute", top:"35%", left:"40%"}}>{this.state.gameResult}</h2></div> : null}
               {this.state.round &&<h2>Round {this.state.round}</h2>}
             </Grid>
             <Grid item>

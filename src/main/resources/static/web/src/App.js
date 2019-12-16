@@ -14,7 +14,7 @@ import Ranking from "./Ranking";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import { withStyles } from "@material-ui/core/styles";
-
+import "./App.css"
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -24,8 +24,10 @@ import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
 import { Route, HashRouter, NavLink } from "react-router-dom";
 import Players from "./Players";
+import "./Water.css"
 export default class App extends Component {
   state = {
+    title: "Battleship Game",
     players: []
   };
   gamePlayerPicked = props => {
@@ -37,20 +39,31 @@ export default class App extends Component {
       <Game_view
         gamePlayer={this.state.gamePlayer.gmPlyId}
         game={this.state.game.gmId}
+        changetitle={this.updateTitle}
       />
     );
   };
+
+  updateTitle = title => {
+  
+      this.setState({ title: title});
+   
+  };
+
   render() {
-    return (
-      <HashRouter>
-        <div style={{ flexGrow: 1 }}>
+    return (<div>
+      <HashRouter>  
+        {/* <div style={{ flexGrow: 1 }}> */}
           <AppBar position="static">
             <Toolbar>
               <NavBar />
-              <Typography variant="h6">Battleships</Typography>
+              <Typography variant="h6">{this.state.title}</Typography>
             </Toolbar>
           </AppBar>
-        </div>
+        {/* </div> */}
+
+   
+
         <Grid
           container
           justify="center"
@@ -66,6 +79,17 @@ export default class App extends Component {
           <Route path="/web/signup" component={SignUp} />
         </Grid>
       </HashRouter>
+      <div className="background">
+        <div className="water"> </div> </div><svg>
+          <filter id="turbulence" x="0" y="0" width="100%" height="100%">
+  <feTurbulence id="sea-filter" numOctaves="4" seed="4" baseFrequency="0.05 0.1">
+      </feTurbulence>
+      <feDisplacementMap scale="10" in="SourceGraphic"></feDisplacementMap>
+      <animate xlinkHref="#sea-filter" attributeName="baseFrequency" dur="60s"
+     keyTimes="0;0.5;1" values="0.03 0.08; 0.05 0.1; 0.03 0.08" repeatCount="indefinite">
+      </animate>
+      </filter>
+      </svg></div>
     );
   }
 }

@@ -26,7 +26,7 @@ public class Ship {
 
     public Ship() {}
 
-    public Ship(String ShipType, List<Integer> shipLocations) {
+        public Ship(String ShipType, List<Integer> shipLocations) {
         this.shipType = ShipType;
         this.shipLocations = shipLocations;
     }

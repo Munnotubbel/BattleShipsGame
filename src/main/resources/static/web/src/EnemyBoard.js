@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Hitpoints from "./Hitpoints";
-import "./Water.css"
+import "./Boards.css"
 
 export default function EnemyBoard(props) {
   function createEnemyBoard() {
@@ -17,15 +17,13 @@ export default function EnemyBoard(props) {
             enemyChildren.push(
               <Grid
                 item
-                className="gridBoardCell"
+                className="allCells"
                 value={cellKey}
                 xs={1}
                 align="center"
                 style={{
                   backgroundColor: "red",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-            
+              
                 }}
               >
                 <strong>X</strong>
@@ -37,14 +35,12 @@ export default function EnemyBoard(props) {
             enemyChildren.push(
               <Grid
                 item
-                className="gridBoardCell"
+                className="allCells"
                 value={cellKey}
                 xs={1}
                 align="center"
                 style={{
                   backgroundColor: "gray",
-                  paddingTop: "1px",
-                  border: "1px solid black",
               
                 }}
               ></Grid>
@@ -53,32 +49,28 @@ export default function EnemyBoard(props) {
         } else if (props.myMiss.includes(cellKey)) {
           {
             enemyChildren.push(
-              <Grid
+             <Grid
                 item
-                className="gridBoardCell"
+                className="allCells"
                 value={cellKey}
                 xs={1}
                 align="center"
-                style={{
-                  backgroundColor: "blue",
-                  paddingTop: "1px",
-                  border: "1px solid black",
-           
-                }}
-              ></Grid>
+                
+              >
+              <img className="bojeRed wiggle" src="https://res.cloudinary.com/munnotubbel/image/upload/v1576514944/javaProject/boje-removebg-preview-removebg-preview_acxmc4.png" ></img>
+              </Grid>
             );
           }
         } else {
           enemyChildren.push(
             <Grid
               item
-              className="gridBoardCell"
+              className="allCells"
               xs={1}
               align="center"
               style={{
                 paddingTop: "1px",
-                border: "1px solid black",
-           
+             
               }}
               onClick={() => props.fireInTheHole(cellKey)}
             ></Grid>
@@ -101,41 +93,18 @@ export default function EnemyBoard(props) {
     return enemyBoard;
   }
 
- 
-    return (
-        <Grid>
-        <strong>my Board</strong>
-      {props.myHits && <div className="healthBarEnemy"><Hitpoints  dmg={props.myHits.length}/></div>}
-      <Grid className="background gridBoardContainer LowerEnemy">
-        <Grid className="water gridBoardContainer" style={{
-         
-        }}> </Grid> <svg>
-          <filter id="turbulence" x="0" y="0" width="100%" height="100%">
-  <feTurbulence id="sea-filter" numOctaves="3" seed="2" baseFrequency="0.03 0.08">
-      </feTurbulence>
-      <feDisplacementMap scale="10" in="SourceGraphic"></feDisplacementMap>
-      <animate xlinkHref="#sea-filter" attributeName="baseFrequency" dur="60s"
-     keyTimes="0;0.5;1" values="0.02 0.06; 0.04 0.08; 0.02 0.06" repeatCount="indefinite">
-      </animate>
-      </filter>
-      </svg>
-      <Grid
-        item
-        className="gridBoardContainer boardContainerTop"
-        align="center"
-        
-        style={{
-            
-          position: "absolute",
-          top: 0,
-          left: 0,
-         
-        }}
-      >     
-    
-        {createEnemyBoard()}
-      </Grid>
-    
-      </Grid></Grid>
-    );
-  }
+  return (<Grid item style={{marginLeft:"20px"}}>
+       <strong>enemy Board</strong>
+      {props.myHits && <Hitpoints dmg={props.myHits.length} />}
+    <Grid
+      item
+      className="boardContainer"
+      align="center"
+      xs={5}
+
+    >
+     
+      {createEnemyBoard()}
+    </Grid></Grid>
+  );
+}
