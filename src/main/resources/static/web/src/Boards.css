@@ -3,27 +3,30 @@ border-width: 0.5px;
 border-style: solid;
 border-color: black;
 padding-top: 1px;
-min-width: 2.5vw;
-max-width: 2.5vw;
-min-height: 2.5vw;
-max-height: 2.5vw
+min-width: 2.6vw;
+max-width: 2.6vw;
+min-height: 2.6vw;
+max-height: 2.6vw;
 
 }
 
 .boardContainer{
-    margin: 20px;
-min-height: 25vw;
-max-height: 25vw;
-min-width: 25vw;
-max-width: 25vw;
+    /* margin: 20px; */
+min-height: 26vw;
+max-height: 26vw;
+min-width: 26vw;
+max-width: 26vw;
 /* margin-left: 20px; */
 
 }
 
 .bojeRed{
-   
-    width: 2.5vw;
-        height: 2.5vw;}
+  position: absolute;
+   left: 0;
+   top:0;
+    width: 2.7vw;
+        height: 2.7vw;}
+        
 
        
 
@@ -41,4 +44,22 @@ max-width: 25vw;
             50% {
               transform: rotate(-10deg);
             }
+          }
+
+          .rotate {
+            display: inline-block;
+
+           
+            transform-origin: center;
+            animation: rotate 5s linear infinite;
+           
+          }
+          @keyframes rotate {
+            from {
+              transform: rotate(0deg);
+            }
+            /* 50% {
+              transform: rotate(180deg);
+            } */
+            to {transform: rotate(360deg)}
           }

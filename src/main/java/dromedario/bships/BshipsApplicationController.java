@@ -79,13 +79,14 @@ public class BshipsApplicationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/games")
     public Map<String, Object> getGames() {
+        System.out.println("------------IN GAMES ROUTE");
         List<Object> gamesList = new ArrayList<>();
         gameRepository.findAll().forEach(game -> {
             Map<String, Object> gameMap = new HashMap<>();
             gameMap.put("playerCount", game.getGamePlayers().stream().count());
             gameMap.put("gmId", game.getGameId());
             gameMap.put("created", game.date.toString());
-            gameMap.put("gamePlayers", GamePlayersOfGame(game));
+           gameMap.put("gamePlayer", GamePlayersOfGame(game));
             gamesList.add(gameMap);
         });
         return doMap("games", gamesList);
@@ -224,7 +225,7 @@ public class BshipsApplicationController {
         GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
         if (gamePlayer.getPlayer().getUserName() == authentication.getName()){
 
-        return showGamePlayerGame(gamePlayer, authentication);}
+            return showGamePlayerGame(gamePlayer, authentication);}
 
         else { return new ResponseEntity<>(doMap("error", "this is not your Gameplayer! cheater!"), HttpStatus.UNAUTHORIZED);}
     }
@@ -407,6 +408,7 @@ public class BshipsApplicationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/ranking")
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
+        System.out.println("------------IN RANKING ROUTE");
         return playerRepository.findAll()
                 .stream().map(player -> new HashMap<String, Object>() {{
                     put("UserName", player.getUserName());

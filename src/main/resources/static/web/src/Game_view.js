@@ -7,6 +7,11 @@ import { responsiveFontSizes } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import EnemyBoard from "./EnemyBoard";
 import MyBoard from "./MyBoard";
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
+
 class Game extends Component {
   state = {
     selfCanFire: false,
@@ -245,12 +250,19 @@ putShip=(cellKey)=>{
  }
 
  handleShot=(cellKey)=>{
-   console.log("FIRE IN THE HOLE" + cellKey)
+  fetch(`api/game_view/${this.state.gamePlayerId}/checkNext`)
+  .then(response => response.json())
+  .then(response => {
+    if(response.selfCanFire==true && response.gameOver===false){
+
+ 
    const location = []
-if (this.state.shipsPlaced ===true && this.state.shots.length<3 && this.state.gameOver==false){
+if (this.state.shipsPlaced ===true && this.state.shots.length<3 && response.gameOver==false){
   location.push(cellKey)
 this.setState({shots:[...this.state.shots,...location]}, ()=>{if(this.state.shots.length===3){this.setState({shotsPlaced: true})}})
 }
+else{this.setState({gameOver: response.gameOver, gameResult: response.gameResult ? response.gameResult :""})}}});
+
  
  }
 resetShot=()=>{this.setState({shots: [],shotsPlaced:false})}
@@ -304,47 +316,64 @@ else {alert("wait for opponent");this.fetchData()}
     } else {
       if (this.state.locations && this.state.attacks && this.state.myHits && this.state.hits) {
         return (
-          <Grid container direction="row"  justify="center">
-            <Grid item xs={12} align="center">
-              {/* <h2>
-                {this.state.myName} (You) VS {this.state.enemyName}
-              </h2> */}
-              {this.state.gameOver==true ? <div style={{position:"absolute", left:"30%" ,top:"40%", width:"40%", height:"30%", backgroundColor: "rgba(255, 255, 255, 0.8)", zIndex:"2000" }}><h2 style={{position:"absolute", top:"35%", left:"40%"}}>{this.state.gameResult}</h2></div> : null}
-              {this.state.round &&<h2>Round {this.state.round}</h2>}
-            </Grid>
-            <Grid item>
-              <Grid container container direction="column" justify="center" alignItems="center">
+          <Container>
+           {this.state.gameOver==true ? <Row>
+             <Col style={{position:"absolute", left:"30%" ,top:"40%", width:"40%", height:"30%", backgroundColor: "rgba(255, 255, 255, 0.8)", zIndex:"2000" }}><h2 style={{position:"absolute", top:"35%", left:"40%"}}>{this.state.gameResult}</h2></Col>   </Row>: null}
+                       
+
+             {this.state.round &&  <Row>
+                 <Col><h2>Round {this.state.round}</h2> </Col>
+                 </Row>}
                 
-              {(this.state.fleetInPosition===true && this.state.shipsPlaced===false) ?<Grid item><button onClick={()=>this.postShips()}>post ships</button></Grid>: null}
-            {this.state.shipsToPlace.ship1===true ?<Grid item><button onClick={()=>this.placeShip(1,2)}>Place First Ship</button></Grid>: null}
-            {this.state.shipsToPlace.ship2===true ?<Grid item><button onClick={()=>this.placeShip(2,3)}>Place Second Ship</button></Grid>: null}
-            {this.state.shipsToPlace.ship3===true ?<Grid item><button onClick={()=>this.placeShip(3,4)}>Place Third Ship</button></Grid>: null}
-            {this.state.shipsToPlace.ship4===true ?<Grid item><button onClick={()=>this.placeShip(4,null)}>Place Fourth Ship</button></Grid>: null}
-            {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate("horizontal")}>horizontal</button></Grid> :null}
-            {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate(null)}>vertical</button></Grid> :null}
-            {this.state.shipsPlaced===false ? <Grid item><button onClick={()=>this.placeAgain()}>again</button></Grid> : null}
-            {(this.state.shipsPlaced===true && this.state.selfCanFire===true && this.state.shots.length>0) ? <Grid item><button onClick={()=>this.resetShot()}>reset shot</button></Grid> : null}
-            {this.state.shotsPlaced ===true ? <Grid item><button onClick={()=>this.postShots()}>post Shots</button></Grid> : null}
-            </Grid>
-            </Grid>
-       <MyBoard
+               
+           <Row>
+      <Col xs={6}> <MyBoard
         enShots={this.state.hits}
          enHits={this.state.hitMyShip}
           myShipLocations={this.state.locations}
            placedShips={this.state.shipLog}
             placedShipsTemp={this.state.shipLogTemp}
             putShip={this.putShip}>
-            </MyBoard>
+            </MyBoard></Col>
 
-       <EnemyBoard 
+       <Col xs={6}><EnemyBoard 
        myHits={this.state.myHits} 
        myShots={this.state.shots} 
        myMiss={this.state.attacks}
        fireInTheHole={this.handleShot}>
-       </EnemyBoard>
+       </EnemyBoard></Col>
+</Row>
+<Row style={{marginTop:"20px"}}>
+
+             
+                
+             <Col xs={2}> {(this.state.fleetInPosition===true && this.state.shipsPlaced===false) ?<Grid item><button onClick={()=>this.postShips()}>post ships</button></Grid>: null}
+            {this.state.shipsToPlace.ship1===true ?<Grid item><button onClick={()=>this.placeShip(1,2)}>Place First Ship</button></Grid>: null}
+            {this.state.shipsToPlace.ship2===true ?<Grid item><button onClick={()=>this.placeShip(2,3)}>Place Second Ship</button></Grid>: null}
+            {this.state.shipsToPlace.ship3===true ?<Grid item><button onClick={()=>this.placeShip(3,4)}>Place Third Ship</button></Grid>: null}
+            {this.state.shipsToPlace.ship4===true ?<Grid item><button onClick={()=>this.placeShip(4,null)}>Place Fourth Ship</button></Grid>: null}
+            </Col>
+            <Col xs={1}> {this.state.shipsPlaced===false ? <Grid item><button onClick={()=>this.placeAgain()}>again</button></Grid> : null}</Col>
+           <Col xs={1}>
+            {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate("horizontal")}>horizontal</button></Grid> :null}
+            </Col>
+            <Col xs={1}>
+            {(this.state.fleetInPosition===false && this.state.shipsPlaced===false) ? <Grid item><button onClick={()=>this.rotate(null)}>vertical</button></Grid> :null}
+            </Col>
+            <Col xs={3}></Col>
+           <Col xs={1}>{(this.state.shipsPlaced===true && this.state.selfCanFire===true && this.state.shots.length>0) ? <Grid item><button onClick={()=>this.resetShot()}>reset shot</button></Grid> : null}
+           </Col>
+           <Col xs={1}>{this.state.shotsPlaced ===true ? <Grid item><button onClick={()=>this.postShots()}>post Shots</button></Grid> : null}
+           </Col>
+             
+            
+
+</Row>
+
+
 
          
-          </Grid>
+       </Container>
         );
       } else {
         return <h1>...loading</h1>;

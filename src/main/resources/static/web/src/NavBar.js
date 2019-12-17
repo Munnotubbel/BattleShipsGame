@@ -1,4 +1,6 @@
-import React from "react";
+import React, { Component, useRef } from "react";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
@@ -9,8 +11,21 @@ import InboxIcon from "@material-ui/icons/MoveToInbox";
 import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
 import MenuIcon from "@material-ui/icons/Menu";
+// import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import { Route, HashRouter, NavLink } from "react-router-dom";
 import GoBack from "./GoBack";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Overlay from "react-bootstrap/Overlay";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import Popover from "react-bootstrap/Popover";
+import PopoverContent from "react-bootstrap/PopoverContent";
+import PopoverTitle from "react-bootstrap/PopoverTitle";
+import Login from "./Login";
+import SignUp from "./SignUp";
+
 const StyledMenu = withStyles({
   paper: {
     border: "1px solid #d3d4d5"
@@ -42,8 +57,11 @@ const StyledMenuItem = withStyles(theme => ({
   }
 }))(MenuItem);
 
-export default function CustomizedMenus() {
+function NavBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const [loginShow, setLoginShow] = React.useState(false);
+  const [registerShow, setRegisterShow] = React.useState(false);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -67,103 +85,89 @@ export default function CustomizedMenus() {
   };
 
   const lookForGame = () => {
+    document.addEventListener("mousedown", overlayTrigger.current.hide());
     fetch("/api/lookForGame", {
       method: "POST"
     }).then(response => {
       if (response.status == 201) {
-        window.location.reload()
+        window.location.reload();
       } else {
+        overlayTrigger.current.show();
         console.log("something went wrong");
       }
     });
   };
 
+  let overlayTrigger = React.createRef();
+
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Content>
+        finish your created Game before starting a new one
+      </Popover.Content>
+    </Popover>
+  );
+
   return (
-    <div>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-      >
-        <MenuIcon />
-      </Button>
-      <StyledMenu
-        id="customized-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <StyledMenuItem>
-          <NavLink to="/">
-            <ListItemIcon>
-              <DraftsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Players" />
-          </NavLink>
-        </StyledMenuItem>
-        <StyledMenuItem>
-          <NavLink to="/web/games">
-            <ListItemIcon>
-              <InboxIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Games" />
-          </NavLink>
-        </StyledMenuItem>
-        <StyledMenuItem>
-          <NavLink to="/web/game">
-            <ListItemIcon>
-              <InboxIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Game view" />
-          </NavLink>
-        </StyledMenuItem>
+    <Navbar bg="light" expand="lg">
+      <Nav className="mr-auto">
+        <Container>
+          <Row>
+            <Col>
+              <NavLink to="/web/games">
+                <Button>Games</Button>
+              </NavLink>
+            </Col>
+            <Col>
+              <OverlayTrigger
+                rootClose="true"
+                rootCloseEvent="mousedown"
+                ref={overlayTrigger}
+                trigger="manual"
+                placement="bottom"
+                overlay={popover}
+              >
+                <Button onClick={lookForGame}>Play</Button>
+              </OverlayTrigger>
+            </Col>
+            <Col>
+              <NavLink to="/web/ranking">
+                <Button>Leaderboard</Button>
+              </NavLink>
+            </Col>
+            <Col>
+              <Button variant="primary" onClick={() => setLoginShow(true)}>
+                Login
+              </Button>
 
-        <StyledMenuItem>
-          <NavLink to="/web/ranking">
-            <ListItemIcon>
-              <InboxIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Ranking" />
-          </NavLink>
-        </StyledMenuItem>
+              <Login show={loginShow} onHide={() => setLoginShow(false)} />
+            </Col>
+            <Col>
+              {/* <Link to="/web/signup"><Button>Register</Button></Link> */}
 
-        <StyledMenuItem>
-          <NavLink to="/web/signup">
-            <ListItemIcon>
-              <InboxIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Sign Up" />
-          </NavLink>
-        </StyledMenuItem>
+              <Button variant="primary" onClick={() => setRegisterShow(true)}>
+                Register
+              </Button>
 
-        <StyledMenuItem>
-          <NavLink to="/web/login">
-            <ListItemIcon>
-              <InboxIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="login" />
-          </NavLink>
-        </StyledMenuItem>
+              <SignUp
+                show={registerShow}
+                onHide={() => setRegisterShow(false)}
+              />
+            </Col>
+          </Row>
+        </Container>
+      </Nav>
 
-        <StyledMenuItem>
-          <ListItemIcon onClick={logOut}>
-            <InboxIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="logout" />
-        </StyledMenuItem>
-
-        <StyledMenuItem>
-          <NavLink to="/web/games" onClick={lookForGame}>
-          <ListItemIcon>
-            <InboxIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="create Game" /></NavLink>
-        </StyledMenuItem>
-      </StyledMenu>
-      <GoBack></GoBack>
-    </div>
+      <Navbar.Brand href="/" className="pageTitle">
+        <img
+          width="200px"
+          height="auto"
+          src="https://res.cloudinary.com/munnotubbel/image/upload/v1576591169/javaProject/bShip_u50r62.png"
+        ></img>
+        Battleships
+      </Navbar.Brand>
+    </Navbar>
   );
 }
+
+export default NavBar;

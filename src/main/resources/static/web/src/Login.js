@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import Axios from "axios";
+
+import Modal from 'react-bootstrap/Modal'
+import Button from "react-bootstrap/Button"
 
 export default class Login extends Component {
   constructor(props) {
@@ -35,6 +37,7 @@ export default class Login extends Component {
         console.log(response);
         if (response.status == 200) {
           console.log("logged in!");
+          this.props.onHide();
         } else {
           console.log("Invalid username or password");
         }
@@ -44,7 +47,19 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div>
+      <Modal
+      className="one-edge-shadow"
+      {...this.props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Login
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <form onSubmit={this.handleSubmit}>
           <label>
             Username:
@@ -67,7 +82,11 @@ export default class Login extends Component {
           </label>
           <input type="submit" value="Login" />
         </form>
-      </div>
+        </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={this.props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Modal>
     );
   }
 }

@@ -1,7 +1,10 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Hitpoints from "./Hitpoints";
-import "./Boards.css"
+import "./Boards.css";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export default function EnemyBoard(props) {
   function createEnemyBoard() {
@@ -15,96 +18,69 @@ export default function EnemyBoard(props) {
         if (props.myHits.includes(cellKey)) {
           {
             enemyChildren.push(
-              <Grid
-                item
-                className="allCells"
-                value={cellKey}
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "red",
-              
-                }}
-              >
+              <Col className="allCells" value={cellKey} xs={1}>
                 <strong>X</strong>
-              </Grid>
+              </Col>
             );
           }
         } else if (props.myShots.includes(cellKey)) {
           {
             enemyChildren.push(
-              <Grid
-                item
-                className="allCells"
-                value={cellKey}
-                xs={1}
-                align="center"
-                style={{
-                  backgroundColor: "gray",
-              
-                }}
-              ></Grid>
+              <Col className="allCells" value={cellKey} xs={1}>
+                <img
+                  className="bojeRed rotate"
+                  src="https://res.cloudinary.com/munnotubbel/image/upload/v1576577419/javaProject/crosshair.svg"
+                ></img>
+              </Col>
             );
           }
         } else if (props.myMiss.includes(cellKey)) {
           {
             enemyChildren.push(
-             <Grid
-                item
-                className="allCells"
-                value={cellKey}
-                xs={1}
-                align="center"
-                
-              >
-              <img className="bojeRed wiggle" src="https://res.cloudinary.com/munnotubbel/image/upload/v1576514944/javaProject/boje-removebg-preview-removebg-preview_acxmc4.png" ></img>
-              </Grid>
+              <Col className="allCells" value={cellKey} xs={1}>
+                <img
+                  className="bojeRed wiggle"
+                  src="https://res.cloudinary.com/munnotubbel/image/upload/v1576514944/javaProject/boje-removebg-preview-removebg-preview_acxmc4.png"
+                ></img>
+              </Col>
             );
           }
         } else {
           enemyChildren.push(
-            <Grid
-              item
+            <Col
               className="allCells"
-              xs={1}
-              align="center"
-              style={{
-                paddingTop: "1px",
-             
-              }}
               onClick={() => props.fireInTheHole(cellKey)}
-            ></Grid>
+              xs={1}
+            ></Col>
           );
         }
       }
 
       enemyBoard.push(
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          flexWrap="nowrap"
-        >
+        <Row>
           {enemyChildren}
-        </Grid>
+          <Col xs={2}></Col>
+        </Row>
       );
     }
     return enemyBoard;
   }
 
-  return (<Grid item style={{marginLeft:"20px"}}>
-       <strong>enemy Board</strong>
-      {props.myHits && <Hitpoints dmg={props.myHits.length} />}
-    <Grid
-      item
-      className="boardContainer"
-      align="center"
-      xs={5}
-
-    >
-     
-      {createEnemyBoard()}
-    </Grid></Grid>
+  return (
+    <Container>
+      <Row>
+        <Col>
+          <strong>enemy Board</strong>
+        </Col>
+      </Row>
+      <Row>
+        <Col> {props.myHits && <Hitpoints dmg={props.myHits.length} />}</Col>
+      </Row>
+      <Row>
+        <Col>
+          <Container className="boardContainer">{createEnemyBoard()}</Container>
+        </Col>
+      </Row>
+    </Container>
   );
 }
