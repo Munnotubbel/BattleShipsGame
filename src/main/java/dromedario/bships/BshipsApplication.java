@@ -286,8 +286,6 @@ public class BshipsApplication {
 				}
 			});
 		}
-
-
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")

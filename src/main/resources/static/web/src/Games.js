@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import Grid from "@material-ui/core/Grid";
-import { Route, HashRouter, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,8 +9,10 @@ import CardDeck from "react-bootstrap/CardDeck";
 import CardColumns from "react-bootstrap/CardColumns";
 import Button from "react-bootstrap/Button";
 import ReactTimeAgo from "react-time-ago";
+import { ThemeContext } from "./ThemeContext";
 
 export default class Games extends Component {
+  static contextType = ThemeContext;
   state = {};
 
   componentWillMount = () => {
@@ -19,12 +20,24 @@ export default class Games extends Component {
   };
 
   fetchGames = () => {
+    const { updateValue } = this.context;
     fetch(`api/games`)
       .then(response => response.json())
-      .then(response => this.setState(response));
+      .then(response =>
+        this.setState({ ...response }, () => {
+          if (response.loggedPly !== this.context.logged) {
+            updateValue("logged", response.loggedPly);
+          }
+        })
+      );
   };
 
   render() {
+    const { updateValue } = this.context;
+
+    console.log("-------------------------------------");
+    console.log(this.context);
+
     if (this.state.games) {
       return (
         <CardDeck>
@@ -35,7 +48,6 @@ export default class Games extends Component {
             let gamePlayer1;
             let gamePlayer2;
             game.gamePlayer.map((gamePly, index) => {
-              console.log(gamePly);
               if (index === 0) {
                 gamePlayer1 = gamePly.gmPlyId;
                 player1 = gamePly.player.name;
@@ -44,10 +56,9 @@ export default class Games extends Component {
                 gamePlayer2 = gamePly.gmPlyId;
                 player2 = gamePly.player.name;
               }
-              console.log(player1 + player2);
             });
             return (
-              <Card className="text-center one-edge-shadow">
+              <Card className="text-center one-edge-shadow gameCards">
                 <Card.Header>Game {game.gmId}</Card.Header>
                 {game.gamePlayer && (
                   <Card.Body>
@@ -87,8 +98,22 @@ export default class Games extends Component {
                         </Row>
                       </Container>
                     </Card.Title>
-
-                    <Button variant="primary">Enter Game</Button>
+                    {this.state.myGameIds !== [null] &&
+                    this.state.myGameIds.includes(gameId) ? (
+                      <NavLink
+                        to={{
+                          pathname: "/web/game_view"
+                        }}
+                        onClick={() => updateValue("gmId", gameId)}
+                      >
+                        <Button
+                          variant="primary"
+                          onClick={() => updateValue("gmId", gameId)}
+                        >
+                          Enter Game
+                        </Button>
+                      </NavLink>
+                    ) : null}
                   </Card.Body>
                 )}
 

@@ -1,5 +1,4 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
 import Hitpoints from "./Hitpoints";
 import "./Boards.css";
 import Container from "react-bootstrap/Container";

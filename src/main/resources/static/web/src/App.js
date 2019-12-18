@@ -1,43 +1,29 @@
 import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import NavBar from "./NavBar";
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import Games from "./Games";
 import Game_view from "./Game_view";
 import Ranking from "./Ranking";
 import Login from "./Login";
 import SignUp from "./SignUp";
-import { withStyles } from "@material-ui/core/styles";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-// import { Route, Link, BrowserRouter as Router } from "react-router-dom";
-import { Route, HashRouter, NavLink } from "react-router-dom";
-import Players from "./Players";
+import { Route, HashRouter } from "react-router-dom";
 import "./Water.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import ThemeContextProvider from "./ThemeContext";
+import { ThemeContext } from "./ThemeContext";
+
 export default class App extends Component {
+  static contextType = ThemeContext;
   state = {
     title: "Battleship Game",
     players: []
   };
-  gamePlayerPicked = props => {
-    if (props.location) {
-      this.state.gamePlayer = props.location.gamePlayer;
-      this.state.game = props.location.game;
-    }
-    return (
-      <Game_view
-        gamePlayer={this.state.gamePlayer.gmPlyId}
-        game={this.state.game.gmId}
-        changetitle={this.updateTitle}
-      />
-    );
+
+  gamePicked = () => {
+    console.log("SCHABBER SCHABBER SCHABBER SCHABBER");
+    return <Game_view changetitle={this.updateTitle} />;
   };
 
   updateTitle = title => {
@@ -45,26 +31,30 @@ export default class App extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <div>
         <HashRouter>
-          <NavBar title={this.state.title} />
+          <ThemeContextProvider>
+            <NavBar gameCreated={this.gamePicked} title={this.state.title} />
 
-          <Grid
-            container
-            justify="center"
-            alignItems="center"
-            style={{ marginTop: "20px" }}
-          >
-            <Route exact path="/" component={Games} />
-            <Route path="/web/games" component={Games} />
-            <Route path="/web/game_view" component={this.gamePlayerPicked} />
-            <Route path="/web/game" component={Game_view} />
-            <Route path="/web/ranking" component={Ranking} />
-            <Route path="/web/login" component={Login} />
-            <Route path="/web/signup" component={SignUp} />
-          </Grid>
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              style={{ marginTop: "20px" }}
+            >
+              <Route exact path="/" component={Games} />
+              <Route path="/web/games" component={Games} />
+
+              <Route path="/web/game_view" component={this.gamePicked} />
+
+              <Route path="/web/game" component={Game_view} />
+
+              <Route path="/web/ranking" component={Ranking} />
+              <Route path="/web/login" component={Login} />
+              <Route path="/web/signup" component={SignUp} />
+            </Grid>
+          </ThemeContextProvider>
         </HashRouter>
         <div className="background">
           <div className="water"> </div>{" "}

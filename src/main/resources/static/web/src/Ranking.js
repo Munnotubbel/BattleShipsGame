@@ -1,17 +1,11 @@
 import React, { Component } from "react";
-import Grid from "@material-ui/core/Grid";
 import BootstrapTable from "react-bootstrap-table-next";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-
 import Card from "react-bootstrap/Card";
-import CardDeck from "react-bootstrap/CardDeck";
-import CardColumns from "react-bootstrap/CardColumns";
-import Button from "react-bootstrap/Button";
-import ReactTimeAgo from "react-time-ago";
+
 export default class Ranking extends Component {
+
   state = {};
+  
   componentDidMount = () => {
     this.fetchRanking();
   };

@@ -15,6 +15,11 @@
   box-shadow: 0 8px 6px -6px black;
 }
 
-/* .navButton {
-  display: inline;
-} */
+.gameCards {
+  min-width: 150px;
+  max-width: 20%;
+}
+
+.navButtons button {
+  font-size: calc(5px + 0.3vw);
+}

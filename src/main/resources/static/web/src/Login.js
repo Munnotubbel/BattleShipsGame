@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-
-import Modal from 'react-bootstrap/Modal'
-import Button from "react-bootstrap/Button"
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 export default class Login extends Component {
+  
   constructor(props) {
     super(props);
     this.state = { value: "" };
@@ -38,6 +38,7 @@ export default class Login extends Component {
         if (response.status == 200) {
           console.log("logged in!");
           this.props.onHide();
+          window.location.reload();
         } else {
           console.log("Invalid username or password");
         }
@@ -48,45 +49,43 @@ export default class Login extends Component {
   render() {
     return (
       <Modal
-      className="one-edge-shadow"
-      {...this.props}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Login
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Username:
-            <input
-              type="text"
-              id="username"
-              value={this.state.username}
-              onChange={this.handleChange}
-            />
-          </label>
+        className="one-edge-shadow"
+        {...this.props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">Login</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={this.handleSubmit}>
+            <label>
+              Username:
+              <input
+                type="text"
+                id="username"
+                value={this.state.username}
+                onChange={this.handleChange}
+              />
+            </label>
 
-          <label>
-            Password:
-            <input
-              type="password"
-              id="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </label>
-          <input type="submit" value="Login" />
-        </form>
+            <label>
+              Password:
+              <input
+                type="password"
+                id="password"
+                value={this.state.password}
+                onChange={this.handleChange}
+              />
+            </label>
+            <input type="submit" value="Login" />
+          </form>
         </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={this.props.onHide}>Close</Button>
-      </Modal.Footer>
-    </Modal>
+        <Modal.Footer>
+          <Button onClick={this.props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     );
   }
 }

@@ -1,13 +1,10 @@
 import React from "react";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import "./Hitpoints.css";
 import HpBar from "./HpBar";
 export default function Hitpoints(props) {
-  console.log(props);
   function createHitpoints() {
     switch (props.dmg) {
       case 0:

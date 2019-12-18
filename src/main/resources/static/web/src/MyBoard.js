@@ -81,7 +81,7 @@ export default function MyBoard(props) {
     <Container>
       <Row>
         <Col>
-          <strong>enemy Board</strong>
+          <strong>my Board</strong>
         </Col>
       </Row>
       <Row>

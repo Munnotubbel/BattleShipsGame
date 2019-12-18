@@ -3,6 +3,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -81,7 +83,8 @@ public class BshipsApplicationController {
     public Map<String, Object> getGames() {
         System.out.println("------------IN GAMES ROUTE");
         List<Object> gamesList = new ArrayList<>();
-        gameRepository.findAll().forEach(game -> {
+
+        gameRepository.findAll(Sort.by(Sort.Direction.DESC, "gameId")).stream().forEach(game -> {
             Map<String, Object> gameMap = new HashMap<>();
             gameMap.put("playerCount", game.getGamePlayers().stream().count());
             gameMap.put("gmId", game.getGameId());
@@ -89,7 +92,14 @@ public class BshipsApplicationController {
            gameMap.put("gamePlayer", GamePlayersOfGame(game));
             gamesList.add(gameMap);
         });
-        return doMap("games", gamesList);
+
+
+        HashMap<String, Object> moreInfos = new HashMap<>();
+        moreInfos.put("games", gamesList);
+        moreInfos.put("myGameIds",getLoggedPlayerGameIds());
+            moreInfos.put("loggedPly",loggedPlayer());
+
+        return moreInfos;
 
     }
 
@@ -212,22 +222,30 @@ public class BshipsApplicationController {
        return turnInfo;
     }
     //--------------------------------------------------------------Next Turn request
-    @RequestMapping("/game_view/{gamePlayerId}/checkNext")
-    public Map<String,Object> shotChecker(@PathVariable Long gamePlayerId,Authentication authentication) {
-        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+    @RequestMapping("/game_view/{gameId}/checkNext")
+    public Map<String,Object> shotChecker(@PathVariable Long gameId,Authentication authentication) {
+
+        Game game = gameRepository.findGameByGameId(gameId);
+        GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
+//        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+//
+
         Map<String, Object> nextMap = new HashMap<>();
         nextMap.putAll(checkNextTurn(gamePlayer.getGame(), gamePlayer, authentication));
         return nextMap;
     }
-    //--------------------------------------------------------------#games_view route for gamePlayer ID
-    @RequestMapping("/game_view/{gamePlayerId}")
-    public Object gameView(@PathVariable Long gamePlayerId, Authentication authentication) {
-        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
-        if (gamePlayer.getPlayer().getUserName() == authentication.getName()){
+    //--------------------------------------------------------------#games_view route for game ID
+    @RequestMapping("/game_view/{gameId}")
+    public Object gameView(@PathVariable Long gameId, Authentication authentication) {
+
+        Game game = gameRepository.findGameByGameId(gameId);
+        GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
+        if (gamePlayer!=null){
 
             return showGamePlayerGame(gamePlayer, authentication);}
 
-        else { return new ResponseEntity<>(doMap("error", "this is not your Gameplayer! cheater!"), HttpStatus.UNAUTHORIZED);}
+        else {
+           return new ResponseEntity<>(doMap("error", "this is not your Gameplayer!"), HttpStatus.UNAUTHORIZED);}
     }
 
     //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
@@ -430,7 +448,62 @@ public class BshipsApplicationController {
             return null;
         }
     }
+
+    //--------------------------------------------------------------#logged Players Game Id'S
+    public List<Long> getLoggedPlayerGameIds(){
+        List<Long> myGmIdList = new ArrayList<>();
+        if(loggedPlayer()!=null){
+            Player player = playerRepository.findByUserName(loggedPlayer());
+            if(player.getGamePlayers().size()>0){
+                player.getGamePlayers().stream().forEach(gmPly-> {
+                    myGmIdList.add(gmPly.getGame().getGameId());
+
+                });}}
+        else {myGmIdList.add(null);}
+        return myGmIdList;
+
+    }
     //--------------------------------------------------------------Enemy GamePlayer
+
+    private GamePlayer myGamePlayerOfGame(Game game,Authentication authentication){
+        Map<String, GamePlayer> myGmPly = new HashMap<>();
+        if(game.getGamePlayers().size() >0){
+            game.getGamePlayers()
+                    .stream()
+                    .forEach(gp -> {
+                        if(gp.getPlayer().getUserName() ==authentication.getName() ){
+                            myGmPly.put("myself", gp);
+                        }
+                    });
+        }else{
+            myGmPly.put("myself", null);
+        }
+
+        return myGmPly.get("myself");
+    }
+
+
+
+
+    private GamePlayer enGamePlayerByGame(Game game,Authentication authentication){
+        Map<String, GamePlayer> enGmPly = new HashMap<>();
+        if(game.getGamePlayers().size() == 2){
+            game.getGamePlayers()
+                    .stream()
+                    .forEach(gp -> {
+                        if(gp.getPlayer().getUserName() !=authentication.getName() ){
+                            enGmPly.put("opponent", gp);
+                        }
+                    });
+        }else{
+            enGmPly.put("opponent", null);
+        }
+
+        return enGmPly.get("opponent");
+    }
+
+
+
     private GamePlayer enGamePlayer(GamePlayer gamePlayer){
         Map<String, GamePlayer> enGmPly = new HashMap<>();
         if(gamePlayer.getGame().getGamePlayers().size() == 2){
@@ -488,23 +561,36 @@ public class BshipsApplicationController {
         if (getEmptyGame().stream().count() >0 &&
             getEmptyGame().get(0).getGamePlayers().retainAll(listOne) && authentication.getName() != null){
                  GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(playerRepository.findByUserName(loggedPlayer()),getEmptyGame().get(0)));
-                 return new ResponseEntity<>(doMap("newGmPly", newGamePlayer.getGame()), HttpStatus.CREATED);
+//                 Long gameId=newGamePlayer.getGame().getGameId();
+//                 String gameIdStr=""+gameId;
+//            HttpHeaders responseHeaders = new HttpHeaders();
+//            responseHeaders.set("gameId",gameIdStr);
+                 return new ResponseEntity<>(doMap("gameId", newGamePlayer.getGame().getGameId()), HttpStatus.CREATED);
                 }
 
         if (getEmptyGame().stream().count() ==0 && authentication.getName() != null){
                 System.out.println(authentication.getName() + " MACH NEUES GAME ALLA");
                 Game newGame = gameRepository.save(new Game(new Date()));
                 GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(playerRepository.findByUserName(loggedPlayer()),newGame));
-                return new ResponseEntity<>(doMap("newGm", newGame.getGameId()), HttpStatus.CREATED);
+//            Long gameId=newGame.getGameId();
+//            String gameIdStr=""+gameId;
+//            HttpHeaders responseHeaders = new HttpHeaders();
+//            responseHeaders.set("gameId",gameIdStr);
+
+                return new ResponseEntity<>(doMap("gameId", newGame.getGameId()), HttpStatus.CREATED);
                 }
 
         else {return new ResponseEntity<>(doMap("error", "spiel zu ende du hoden"), HttpStatus.UNAUTHORIZED);}
             };
 //--------------------------------------------------------------Post Ships
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(path = "/game_view/{gamePlayerId}/ships", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> postShips(@PathVariable Long gamePlayerId,@RequestBody List<Ship> ships, Authentication authentication) {
-        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+    @RequestMapping(path = "/game_view/{gameId}/ships", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> postShips(@PathVariable Long gameId,@RequestBody List<Ship> ships, Authentication authentication) {
+
+        Game game = gameRepository.findGameByGameId(gameId);
+        GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
+
+//        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
 
 
 
@@ -524,9 +610,14 @@ public class BshipsApplicationController {
 
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(path = "/game_view/{gamePlayerId}/attacks", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> postAttacks(@PathVariable Long gamePlayerId,@RequestBody List<Attack> attacks, Authentication authentication) {
-        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+    @RequestMapping(path = "/game_view/{gameId}/attacks", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> postAttacks(@PathVariable Long gameId,@RequestBody List<Attack> attacks, Authentication authentication) {
+        Game game = gameRepository.findGameByGameId(gameId);
+        GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
+
+
+//        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
+
 
 
         if (authentication.getName() == null) {
