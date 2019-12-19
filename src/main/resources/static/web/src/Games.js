@@ -113,7 +113,11 @@ export default class Games extends Component {
                         onClick={() => updateValue("gmId", game.gmId)}
                       >
                         <Button
-                          variant="primary"
+                          style={{
+                            position: "relative",
+                            fontSize: "12px"
+                          }}
+                          className="enterGameBtn"
                           onClick={() => updateValue("gmId", game.gmId)}
                         >
                           Enter Game
