@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { ThemeContext } from "./ThemeContext";
+import ThemeContextProvider from "./ThemeContext";
 
 class Game extends Component {
   static contextType = ThemeContext;
@@ -107,9 +108,10 @@ class Game extends Component {
                   fleetInPosition: false,
                   shipsToPlace: { ship1: false }
                 });
-              this.props.changetitle(
-                `${this.state.myName} (You) VS ${this.state.enemyName}`
-              );
+              if (response.logged !== this.context.logged) {
+                const { updateValue } = this.context;
+                updateValue("logged", response.logged);
+              }
             }
           );
         }
@@ -125,7 +127,7 @@ class Game extends Component {
     ];
 
     console.log(JSON.stringify(post));
-    fetch(`/api/game_view/${this.props.game}/ships`, {
+    fetch(`/api/game_view/${this.context.gmId}/ships`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -212,7 +214,7 @@ class Game extends Component {
     const unvalid = [
       111,
       211,
-      311,      
+      311,
       411,
       511,
       611,
@@ -360,16 +362,12 @@ class Game extends Component {
   };
 
   handleShot = cellKey => {
-    fetch(`api/game_view/${this.state.game}/checkNext`)
+    fetch(`/api/game_view/${this.context.gmId}/checkNext`)
       .then(response => response.json())
       .then(response => {
         if (response.selfCanFire == true && response.gameOver === false) {
           const location = [];
-          if (
-            this.state.shipsPlaced === true &&
-            this.state.shots.length < 3 &&
-            response.gameOver == false
-          ) {
+          if (this.state.shipsPlaced === true && this.state.shots.length < 3) {
             location.push(cellKey);
             this.setState({ shots: [...this.state.shots, ...location] }, () => {
               if (this.state.shots.length === 3) {
@@ -377,6 +375,15 @@ class Game extends Component {
               }
             });
           }
+        } else if (
+          response.selfCanFire == false &&
+          response.EnCanFire == true
+        ) {
+          alert("wait for your opponent");
+          this.setState({
+            gameOver: response.gameOver,
+            gameResult: response.gameResult ? response.gameResult : ""
+          });
         } else {
           this.setState({
             gameOver: response.gameOver,
@@ -390,7 +397,7 @@ class Game extends Component {
   };
 
   postShots = () => {
-    fetch(`api/game_view/${this.state.game}/checkNext`)
+    fetch(`/api/game_view/${this.context.gmId}/checkNext`)
       .then(response => response.json())
       .then(response => {
         if (
@@ -402,7 +409,7 @@ class Game extends Component {
             { turn: response.myAtmTurn, attackLocations: this.state.shots }
           ];
 
-          fetch(`/api/game_view/${this.state.game}/attacks`, {
+          fetch(`/api/game_view/${this.context.gmId}/attacks`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -433,7 +440,6 @@ class Game extends Component {
   render() {
     console.log("-------------------------------------");
     console.log(this.context);
-   
 
     if (this.state.responstStatus == 401) {
       this.props.history.goBack();
@@ -489,6 +495,7 @@ class Game extends Component {
 
               <Col xs={6}>
                 <EnemyBoard
+                  enemyName={this.state.enemyName}
                   myHits={this.state.myHits}
                   myShots={this.state.shots}
                   myMiss={this.state.attacks}

@@ -23,3 +23,77 @@
 .navButtons button {
   font-size: calc(5px + 0.3vw);
 }
+
+
+div.winlos {
+  z-index: 500;
+  width: 200px;
+  height: 50px;
+
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 10px;
+
+  position: absolute;
+}
+
+div.winlos.sunk:after {
+  content: "Sunk";
+  position: absolute;
+  top: -5px;
+  left: 34%;
+  z-index: 100;
+  font-family: Arial, sans-serif;
+  -webkit-transform: rotate(-15deg);
+  /* Safari */
+  -moz-transform: rotate(-15deg);
+  /* Firefox */
+  -ms-transform: rotate(-15deg);
+  /* IE */
+  -o-transform: rotate(-15deg);
+  /* Opera */
+  transform: rotate(-15deg);
+  font-size: 17px;
+  color: #c00;
+  background: transparent;
+  border: solid 4px #c00;
+  padding: 5px;
+  border-radius: 5px;
+  zoom: 1;
+  filter: alpha(opacity=30);
+  opacity: 0.5;
+  -webkit-text-shadow: 0 0 2px #c00;
+  text-shadow: 0 0 2px #c00;
+  box-shadow: 0 0 2px #c00;
+}
+
+div.winlos.stalemate:after {
+  content: "stalemate";
+  position: absolute;
+  top: 0;
+  left: 25%;
+  z-index: 1;
+  font-family: Arial, sans-serif;
+  -webkit-transform: rotate(-15deg);
+  /* Safari */
+  -moz-transform: rotate(-15deg);
+  /* Firefox */
+  -ms-transform: rotate(-15deg);
+  /* IE */
+  -o-transform: rotate(-15deg);
+  /* Opera */
+  transform: rotate(-15deg);
+  font-size: 17px;
+  color: #c00;
+  background: #fff;
+  border: solid 4px #c00;
+  padding: 5px;
+  border-radius: 5px;
+  zoom: 1;
+  filter: alpha(opacity=20);
+  opacity: 0.5;
+  -webkit-text-shadow: 0 0 2px #c00;
+  text-shadow: 0 0 2px #c00;
+  box-shadow: 0 0 2px #c00;
+}

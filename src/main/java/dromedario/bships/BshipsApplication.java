@@ -261,7 +261,18 @@ public class BshipsApplication {
 			playerRepository.save(ply2);
 			playerRepository.save(ply3);
 			playerRepository.save(ply4);
-
+			gmPly3.setScore(score3);
+			gmPly4.setScore(score4);
+			gmPly3.setScore(score5);
+			gmPly4.setScore(score6);
+			gmPly3.setScore(score7);
+			gmPly4.setScore(score8);
+			gamePlayerRepository.save(gmPly3);
+			gamePlayerRepository.save(gmPly4);
+			gamePlayerRepository.save(gmPly5);
+			gamePlayerRepository.save(gmPly6);
+			gamePlayerRepository.save(gmPly7);
+			gamePlayerRepository.save(gmPly8);
 
 		};
 	}

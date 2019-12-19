@@ -84,11 +84,14 @@ public class BshipsApplicationController {
         System.out.println("------------IN GAMES ROUTE");
         List<Object> gamesList = new ArrayList<>();
 
+
         gameRepository.findAll(Sort.by(Sort.Direction.DESC, "gameId")).stream().forEach(game -> {
             Map<String, Object> gameMap = new HashMap<>();
-            gameMap.put("playerCount", game.getGamePlayers().stream().count());
             gameMap.put("gmId", game.getGameId());
+            gameMap.put("playerCount", game.getGamePlayers().stream().count());
             gameMap.put("created", game.date.toString());
+
+            gameMap.put("ingamePlayer", getPlayerWithGameScore(game));
            gameMap.put("gamePlayer", GamePlayersOfGame(game));
             gamesList.add(gameMap);
         });
@@ -101,7 +104,22 @@ public class BshipsApplicationController {
 
         return moreInfos;
 
+
+
     }
+    public List< Object> getPlayerWithGameScore(Game game) {
+            List <Object>ingamePlayer = new ArrayList<>();
+        game.getGamePlayers().stream().forEach(gmPly->{
+            HashMap<String, Object> gmPlyResults = new HashMap<>();
+            gmPlyResults.put("name", gmPly.getPlayer().getUserName());
+            gmPlyResults.put("score", gamePlayerScore(gmPly, game));
+            ingamePlayer.add(gmPlyResults);
+        });
+
+
+      return ingamePlayer ;
+    };
+
 
     //--------------------------------------------------------------#games route GET GAMEPLAYERS
     public List<Object> GamePlayersOfGame(Game game) {
@@ -112,11 +130,12 @@ public class BshipsApplicationController {
             gmPlyMap.put("player", PlayerOfGamePlayer(gamePlayerOfGame));
 //            gmPlyMap.put("ships", ShipsOfGamePlayer(gamePlayerOfGame));
 //            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
-            gmPlyMap.put("score", gamePlayerOfGame.getGmPlyScore(game));
+            gmPlyMap.put("score", gamePlayerScore(gamePlayerOfGame, game));
             gamePlys.add(gmPlyMap);
         });
         return gamePlys;
     }
+
 
     //--------------------------------------------------------------#games route GET PLAYERS
     public Object PlayerOfGamePlayer(GamePlayer gamePlayer) {
@@ -251,7 +270,7 @@ public class BshipsApplicationController {
     //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
     public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer,Authentication authentication) {
         Map<String, Object> gameMap = new HashMap<>();
-
+        gameMap.put("logged", loggedPlayer());
         gameMap.put("turnInfo", checkNextTurn(gamePlayer.getGame(),gamePlayer,authentication));
         gameMap.put("gmId", gamePlayer.getGame().getGameId());
         gameMap.put("gmPlyId", gamePlayer.getId());
@@ -428,12 +447,28 @@ public class BshipsApplicationController {
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
         System.out.println("------------IN RANKING ROUTE");
         return playerRepository.findAll()
-                .stream().map(player -> new HashMap<String, Object>() {{
+                .stream().map(player ->
+                        new HashMap<String, Object>() {{
                     put("UserName", player.getUserName());
                     put("scores", player.getScores()
                             .stream()
                             .map(score -> score.getScore()).collect(toList()));
                 }}).collect(toList());
+    }
+
+    //--------------------------------------------------------------#Rating for GamePlayer
+    public List<Object> gamePlayerScore(GamePlayer gamePlayer,Game game) {
+        List<Object> gamePlayerScores = new ArrayList<>();
+        gamePlayer.getPlayer().getScores().stream().forEach(score->{
+            if (score.getGame().getGameId()==game.getGameId()){
+                Double scoreDoub = score.getScore();
+                String scoreStr=String.valueOf(scoreDoub);
+                gamePlayerScores.add(scoreStr);
+            }
+
+        });
+        return gamePlayerScores;
+
     }
 
     //--------------------------------------------------------------#logged Player

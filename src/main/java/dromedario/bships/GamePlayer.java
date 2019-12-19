@@ -24,6 +24,9 @@ public class GamePlayer {
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     Set<Attack> attacks = new HashSet<>();
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="score_id")
+    private Score score;
 
     public GamePlayer() {
     };
@@ -93,4 +96,11 @@ public class GamePlayer {
     }
 
 
+    public Score getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+    }
 }

@@ -22,6 +22,10 @@ public class Score {
     @JoinColumn(name="game_id")
     private Game game;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="gamePlayer_id")
+    private GamePlayer gamePlayer;
+
     public Score() {}
 
     public Score(Double score, Date endDate) {
@@ -45,6 +49,11 @@ public class Score {
     public Player getPlayer() {
         return this.player;
     }
+    //--------------------------------------------------------------GamePlayer
+    public void setGamePlayer(GamePlayer gamePlayer){ this.gamePlayer  = gamePlayer; }
+    public GamePlayer getGamePlayer() {
+        return this.gamePlayer;
+    }
     //--------------------------------------------------------------Game
     public void setGame(Game game){ this.game  = game; }
     public Game getGame() {
@@ -57,6 +66,8 @@ public class Score {
     public Double getScore() {
         return this.score;
     }
+
+
 
 
 

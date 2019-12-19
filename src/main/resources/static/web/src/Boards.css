@@ -1,65 +1,500 @@
 .allCells {
-border-width: 0.5px;
-border-style: solid;
-border-color: black;
-padding-top: 1px;
-min-width: 2.6vw;
-max-width: 2.6vw;
-min-height: 2.6vw;
-max-height: 2.6vw;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: black;
+
+  padding-top: 1px;
+  min-width: 2.6vw;
+  max-width: 2.6vw;
+  min-height: 2.6vw;
+  max-height: 2.6vw;
 
 }
 
-.boardContainer{
-    /* margin: 20px; */
-min-height: 26vw;
-max-height: 26vw;
-min-width: 26vw;
-max-width: 26vw;
-/* margin-left: 20px; */
+.boardContainer {
+
+  /* margin: 20px; */
+  min-height: 26vw;
+  max-height: 26vw;
+  min-width: 26vw;
+  max-width: 26vw;
+  /* margin-left: 20px; */
 
 }
 
-.bojeRed{
+.bojeRed {
   position: absolute;
-   left: 0;
-   top:0;
-    width: 2.7vw;
-        height: 2.7vw;}
-        
+  left: 0;
+  top: 0;
+  width: 2.7vw;
+  height: 2.7vw;
+}
 
-       
 
-        .wiggle {
-            display: inline-block;
-           
-            transform-origin: bottom center;
-            animation: moveIt 2.5s ease-in-out infinite;
-           
-          }
-          @keyframes moveIt {
-            0%, 100% {
-              transform: rotate(10deg);
-            }
-            50% {
-              transform: rotate(-10deg);
-            }
-          }
 
-          .rotate {
-            display: inline-block;
 
-           
-            transform-origin: center;
-            animation: rotate 5s linear infinite;
-           
-          }
-          @keyframes rotate {
-            from {
-              transform: rotate(0deg);
-            }
-            /* 50% {
+.wiggle {
+  display: inline-block;
+
+  transform-origin: bottom center;
+  animation: moveIt 2.5s ease-in-out infinite;
+
+}
+
+@keyframes moveIt {
+
+  0%,
+  100% {
+    transform: rotate(10deg);
+  }
+
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+
+.rotate {
+  display: inline-block;
+
+
+  transform-origin: center;
+  animation: rotate 5s linear infinite;
+
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  /* 50% {
               transform: rotate(180deg);
             } */
-            to {transform: rotate(360deg)}
-          }
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+
+
+
+.watergrid {
+  /* transform: rotateX(-0.2turn); */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+}
+
+.oil1 {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  top: 23%;
+  left: 17%;
+
+  background-color: black;
+  animation-duration: 6.4s;
+  animation-delay: -2.7s;
+}
+
+.oil2 {
+  position: absolute;
+
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 45%;
+  left: 40%;
+  background-color: black;
+  animation-duration: 6.5s;
+  animation-delay: -2.5s;
+}
+
+.oil3 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 45%;
+  left: 5%;
+  background-color: black;
+  animation-duration: 6.5s;
+  animation-delay: -4;
+}
+
+.oil4 {
+  position: absolute;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  top: 25%;
+  left: 25%;
+  background-color: black;
+  animation-duration: 4s;
+  animation-delay: 0;
+}
+
+.oil5 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 8%;
+  left: 30%;
+  background-color: black;
+  animation-duration: 6s;
+  animation-delay: -3;
+}
+
+.oil6 {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  top: 60%;
+  left: 30%;
+  background-color: black;
+  animation-duration: 6s;
+  animation-delay: -3;
+
+}
+
+.oil7 {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  top: 15%;
+  left: 20%;
+  background-color: black;
+  animation-duration: 34s;
+  animation-delay: -2;
+}
+
+
+.oil8 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  top: 19%;
+  left: 90%;
+  background-color: black;
+  animation-duration: 14.5s;
+  animation-delay: -2;
+}
+
+
+.oil9 {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  top: 20%;
+  left: 90%;
+  background-color: black;
+  animation-duration: 14.5s;
+  animation-delay: -2;
+}
+
+
+.oil10 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  top: 35%;
+  left: 90%;
+  background-color: black;
+  animation-duration: 14.5s;
+  animation-delay: -2;
+}
+
+.oil8,
+.oil9,
+.oil10 {
+  animation-name: smallspills;
+  animation-timing-function: linear ease-in;
+
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+
+
+.oil1,
+.oil2,
+.oil3,
+.oil4,
+.oil5,
+.oil6 {
+  animation-name: stretch;
+  animation-timing-function: ease-in;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+.oil7 {
+  animation-name: inandout;
+  animation-timing-function: linear ease-in;
+
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+@keyframes inandout {
+
+  0% {
+    transform: translate3d(0, 0, 0)
+  }
+
+  50% {
+    transform: translate3d(4px, 4px, 0)
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0)
+  }
+
+
+}
+
+@keyframes smallspills {
+
+  0% {
+    transform: scale(1.1);
+    transform: translate3d(0, 0, 0)
+  }
+
+  50% {
+    transform: scale(0.9);
+    transform: translate3d(-4px, 4px, 0)
+  }
+
+  100% {
+    transform: scale(1.1);
+    transform: translate3d(0, 0, 0)
+  }
+
+
+}
+
+@keyframes stretch {
+  0% {
+    transform: scale(1.2);
+
+  }
+
+
+
+  100% {
+    transform: scale(0.8);
+
+  }
+}
+
+
+
+
+@keyframes scaleUpDown {
+
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1);
+  }
+
+  50%,
+  90% {
+    transform: scaleY(1.4);
+  }
+
+  75% {
+    transform: scaleY(0.90);
+  }
+
+  80% {
+    transform: scaleX(0.90);
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: skewX(0) scale(1);
+  }
+
+  50% {
+    transform: skewX(5deg) scale(0.9);
+  }
+}
+
+@keyframes particleUp {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    top: -100%;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    background-color: #ef5a00;
+  }
+
+  50% {
+    background-color: #ff7800;
+  }
+}
+
+.fire {
+  /* transform: rotateX(0.0turn); */
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  width: 1.3vw;
+  height: 1.3vw;
+  background-color: transparent;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fire-main {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  animation: scaleUpDown 3s ease-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-main .main-fire {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(farthest-corner at 10px 0, #d43300 0%, #ef5a00 95%);
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 60% 40%;
+  filter: drop-shadow(0 0 10px #d43322);
+}
+
+.fire-main .particle-fire {
+  position: absolute;
+  top: 60%;
+  left: 45%;
+  width: 2px;
+  height: 2px;
+  background-color: #ef5a00;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 1px #d43322);
+  animation: particleUp 2s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-right {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  animation: shake 5s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-right .main-fire {
+  position: absolute;
+  top: 15%;
+  right: -25%;
+  width: 80%;
+  height: 80%;
+  background-color: #ef5a00;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 60% 40%;
+  filter: drop-shadow(0 0 10px #d43322);
+}
+
+.fire-right .particle-fire {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background-color: #ef5a00;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 50%;
+  filter: drop-shadow(0 0 1px #d43322);
+  animation: particleUp 2s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-left {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  animation: shake 3s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-left .main-fire {
+  position: absolute;
+  top: 15%;
+  left: -20%;
+  width: 80%;
+  height: 80%;
+  background-color: #ef5a00;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 60% 40%;
+  filter: drop-shadow(0 0 10px #d43322);
+}
+
+.fire-left .particle-fire {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 10%;
+  height: 10%;
+  background-color: #ef5a00;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px #d43322);
+  animation: particleUp 3s infinite ease-out 0;
+  animation-fill-mode: both;
+}
+
+.fire-bottom .main-fire {
+  position: absolute;
+  top: 30%;
+  left: 20%;
+  width: 75%;
+  height: 75%;
+  background-color: #ff7800;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 100% 40%;
+  filter: blur(5px);
+  animation: glow 2s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}

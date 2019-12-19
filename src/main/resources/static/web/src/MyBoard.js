@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import Hitpoints from "./Hitpoints";
 import "./Water.css";
@@ -7,8 +7,10 @@ import "./Boards.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
+import { ThemeContext } from "./ThemeContext";
 export default function MyBoard(props) {
+  const themecon = useContext(ThemeContext);
+
   function createOwnBoard() {
     let board = [];
 
@@ -23,7 +25,35 @@ export default function MyBoard(props) {
           {
             children.push(
               <Col className="allCells" xs={1}>
-                <strong>X</strong>
+                <div class="watergrid">
+                  <div class="oil1"></div>
+                  <div class="oil2"></div>
+                  <div class="oil3"></div>
+                  <div class="oil4"></div>
+                  <div class="oil5"></div>
+                  <div class="oil6"></div>
+                  <div class="oil7"></div>
+                  <div class="oil8"></div>
+                  <div class="oil9"></div>
+                  <div class="oil10"></div>
+                  <div class="fire">
+                    <div class="fire-left">
+                      <div class="main-fire"></div>
+                      <div class="particle-fire"></div>
+                    </div>
+                    <div class="fire-main">
+                      <div class="main-fire"></div>
+                      <div class="particle-fire"></div>
+                    </div>
+                    <div class="fire-right">
+                      <div class="main-fire"></div>
+                      <div class="particle-fire"></div>
+                    </div>
+                    <div class="fire-bottom">
+                      <div class="main-fire"></div>
+                    </div>
+                  </div>
+                </div>
               </Col>
             );
           }
@@ -81,7 +111,7 @@ export default function MyBoard(props) {
     <Container>
       <Row>
         <Col>
-          <strong>my Board</strong>
+          <strong>{themecon.logged} (you)</strong>
         </Col>
       </Row>
       <Row>
