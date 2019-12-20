@@ -8,9 +8,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { ThemeContext } from "./ThemeContext";
-import ThemeContextProvider from "./ThemeContext";
 
-class Game extends Component {
+class GameView extends Component {
   static contextType = ThemeContext;
 
   state = {
@@ -52,35 +51,29 @@ class Game extends Component {
           let enemyName = null;
           const shipTypes = [];
 
-          {
-            response.ships &&
-              response.ships.forEach(element => {
-                shipTypes.push(element.shipType);
-                for (var i = 0; i < element.location.length; i++) {
-                  myShipLocations.push(element.location[i]);
-                }
-              });
-          }
-          {
-            response.attacks &&
-              response.attacks.forEach(element => {
-                for (var i = 0; i < element.attackLocations.length; i++) {
-                  myAttacks.push(element.attackLocations[i]);
-                }
-              });
-          }
+          response.ships &&
+            response.ships.forEach(element => {
+              shipTypes.push(element.shipType);
+              for (var i = 0; i < element.location.length; i++) {
+                myShipLocations.push(element.location[i]);
+              }
+            });
 
-          {
-            response.EnAttacks &&
-              response.EnAttacks.forEach(element => {
-                for (var i = 0; i < element.attackLocations.length; i++) {
-                  hits.push(element.attackLocations[i]);
-                }
-              });
-          }
-          {
-            response.EnPlayer && (enemyName = response.EnPlayer.name);
-          }
+          response.attacks &&
+            response.attacks.forEach(element => {
+              for (var i = 0; i < element.attackLocations.length; i++) {
+                myAttacks.push(element.attackLocations[i]);
+              }
+            });
+
+          response.EnAttacks &&
+            response.EnAttacks.forEach(element => {
+              for (var i = 0; i < element.attackLocations.length; i++) {
+                hits.push(element.attackLocations[i]);
+              }
+            });
+
+          response.EnPlayer && (enemyName = response.EnPlayer.name);
 
           this.setState(
             {
@@ -138,7 +131,7 @@ class Game extends Component {
     })
       .then(response => {
         console.log(response);
-        if (response.status == 201) {
+        if (response.status === 201) {
           this.setState({ shipsPlaced: true }, () => this.fetchData());
           return response.json();
         }
@@ -192,12 +185,15 @@ class Game extends Component {
           alert("place fourth ship");
         }
         break;
+
+      default:
+        break;
     }
   };
 
   placeAgain = () => {
     this.setState({
-      shipsToPlace: { ship1: true, ship2: false, ship2: false, ship2: false },
+      shipsToPlace: { ship1: true, ship2: false },
       fleetInPosition: false,
       shipLog: [],
       shipLogTemp: []
@@ -365,7 +361,7 @@ class Game extends Component {
     fetch(`/api/game_view/${this.context.gmId}/checkNext`)
       .then(response => response.json())
       .then(response => {
-        if (response.selfCanFire == true && response.gameOver === false) {
+        if (response.selfCanFire === true && response.gameOver === false) {
           const location = [];
           if (this.state.shipsPlaced === true && this.state.shots.length < 3) {
             location.push(cellKey);
@@ -376,8 +372,8 @@ class Game extends Component {
             });
           }
         } else if (
-          response.selfCanFire == false &&
-          response.EnCanFire == true
+          response.selfCanFire === false &&
+          response.EnCanFire === true
         ) {
           alert("wait for your opponent");
           this.setState({
@@ -401,7 +397,7 @@ class Game extends Component {
       .then(response => response.json())
       .then(response => {
         if (
-          response.selfCanFire == true &&
+          response.selfCanFire === true &&
           response.myAtmTurn <= response.EnAtmTurn &&
           response.gameOver === false
         ) {
@@ -420,7 +416,7 @@ class Game extends Component {
           })
             .then(response => {
               console.log(response);
-              if (response.status == 201) {
+              if (response.status === 201) {
                 this.setState({ shots: [], shotsPlaced: false }, () =>
                   this.fetchData()
                 );
@@ -441,7 +437,7 @@ class Game extends Component {
     console.log("-------------------------------------");
     console.log(this.context);
 
-    if (this.state.responstStatus == 401) {
+    if (this.state.responstStatus === 401) {
       this.props.history.goBack();
     } else {
       if (
@@ -452,7 +448,7 @@ class Game extends Component {
       ) {
         return (
           <Container>
-            {this.state.gameOver == true ? (
+            {this.state.gameOver === true ? (
               <Row>
                 <Col
                   style={{
@@ -594,4 +590,4 @@ class Game extends Component {
   }
 }
 
-export default withRouter(Game);
+export default withRouter(GameView);

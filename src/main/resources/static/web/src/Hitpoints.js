@@ -51,6 +51,9 @@ export default function Hitpoints(props) {
 
       case 14:
         return <HpBar hp={0} />;
+
+      default:
+        return <HpBar hp={0} />;
     }
   }
   return (

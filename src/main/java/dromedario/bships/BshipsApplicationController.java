@@ -61,52 +61,33 @@ public class BshipsApplicationController {
         return map;
     }
 
-    //--------------------------------------------------------------players route
-    @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(path = "/players", method = RequestMethod.GET)
-    public Map<String, Object> getPlayers() {
-        List<Object> playerList = new ArrayList<>();
-        playerRepository.findAll().forEach(player -> {
-            Map<String, Object> playerMap = new HashMap<>();
-            playerMap.put("LOGGED", loggedPlayer());
-            playerMap.put("username", player.getUserName());
-            playerMap.put("id", player.getId());
-            playerList.add(playerMap);
-        });
-
-        return doMap("players", playerList);
-    }
-
     //--------------------------------------------------------------games route
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/games")
     public Map<String, Object> getGames() {
-        System.out.println("------------IN GAMES ROUTE");
-        List<Object> gamesList = new ArrayList<>();
-
+            System.out.println("------------IN GAMES ROUTE");
+            List<Object> gamesList = new ArrayList<>();
 
         gameRepository.findAll(Sort.by(Sort.Direction.DESC, "gameId")).stream().forEach(game -> {
             Map<String, Object> gameMap = new HashMap<>();
             gameMap.put("gmId", game.getGameId());
             gameMap.put("playerCount", game.getGamePlayers().stream().count());
             gameMap.put("created", game.date.toString());
-
             gameMap.put("ingamePlayer", getPlayerWithGameScore(game));
-           gameMap.put("gamePlayer", GamePlayersOfGame(game));
             gamesList.add(gameMap);
         });
 
-
         HashMap<String, Object> moreInfos = new HashMap<>();
-        moreInfos.put("games", gamesList);
-        moreInfos.put("myGameIds",getLoggedPlayerGameIds());
+            moreInfos.put("games", gamesList);
+            moreInfos.put("myGameIds",getLoggedPlayerGameIds());
             moreInfos.put("loggedPly",loggedPlayer());
 
-        return moreInfos;
-
-
+    return moreInfos;
 
     }
+
+    //--------------------------------------------------------------#get Gamescore of Player
+
     public List< Object> getPlayerWithGameScore(Game game) {
             List <Object>ingamePlayer = new ArrayList<>();
         game.getGamePlayers().stream().forEach(gmPly->{
@@ -119,23 +100,6 @@ public class BshipsApplicationController {
 
       return ingamePlayer ;
     };
-
-
-    //--------------------------------------------------------------#games route GET GAMEPLAYERS
-    public List<Object> GamePlayersOfGame(Game game) {
-        List<Object> gamePlys = new ArrayList<>();
-        game.getGamePlayers().stream().forEach(gamePlayerOfGame -> {
-            Map<String, Object> gmPlyMap = new HashMap<>();
-            gmPlyMap.put("gmPlyId", gamePlayerOfGame.getId());
-            gmPlyMap.put("player", PlayerOfGamePlayer(gamePlayerOfGame));
-//            gmPlyMap.put("ships", ShipsOfGamePlayer(gamePlayerOfGame));
-//            gmPlyMap.put("attacks", AttacksOfGamePlayer(gamePlayerOfGame));
-            gmPlyMap.put("score", gamePlayerScore(gamePlayerOfGame, game));
-            gamePlys.add(gmPlyMap);
-        });
-        return gamePlys;
-    }
-
 
     //--------------------------------------------------------------#games route GET PLAYERS
     public Object PlayerOfGamePlayer(GamePlayer gamePlayer) {
@@ -170,89 +134,6 @@ public class BshipsApplicationController {
         return listOfAttacks;
     }
 
-    //--------------------------------------------------------------#games route for Game ID
-    @RequestMapping("/game/{gameId}")
-    public Object findGame(@PathVariable Long gameId) {
-
-        Game game = gameRepository.findGameByGameId(gameId);
-        return showGame(game);
-    }
-
-    public Map<String, Object> showGame(Game game) {
-        Authentication authentication;
-        Map<String, Object> gameMap = new HashMap<>();
-        gameMap.put("LOGGED", loggedPlayer());
-        gameMap.put("id", game.getGameId());
-        gameMap.put("created", game.date.toString());
-        gameMap.put("gamePlayers", GamePlayersOfGame(game));
-
-        return gameMap;
-    }
-    //--------------------------------------------------------------Check next Turn
-   Map<String,Object> checkNextTurn(Game game,GamePlayer gamePlayer,Authentication authentication) {
-        List<Integer> myTurns = new ArrayList<>();
-        List<Integer> enTurns= new ArrayList<>();
-        Integer myShipNum = gamePlayer.getShips().size();
-        Integer enShipNum = enGamePlayer(gamePlayer).getShips().size();
-
-
-
-
-        game.gamePlayers.stream().forEach(gp->{
-            if (gp.getPlayer().getUserName()==authentication.getName()){
-
-                if (gp.getAttacks().size()>1){
-                    gp.getAttacks().stream().forEach(atck-> {
-                        myTurns.add(atck.getTurn());
-                    });}
-                else {myTurns.add(1);}
-                }
-            else {
-                if (gp.getAttacks().size()>1){
-                gp.getAttacks().stream().forEach(atck-> {
-                    enTurns.add(atck.getTurn());
-                });}
-                else {enTurns.add(1);}}
-
-    });
-       Integer myMax=(Collections.max(myTurns));
-       Integer enMax=(Collections.max(enTurns));
-
-       Boolean enCanFire;
-       Boolean selfCanFire;
-
-       if(myMax==enMax)
-       { enCanFire= true;
-            selfCanFire=true;}
-       else if(myMax<enMax){
-           enCanFire= false;
-           selfCanFire=true;
-       }
-       else {enCanFire= true;
-           selfCanFire=false;}
-
-       Map<String, Object> turnInfo = new HashMap<>();
-       turnInfo.put("selfCanFire", selfCanFire );
-       turnInfo.put("EnCanFire", enCanFire );
-       turnInfo.put("round", myMax);
-       turnInfo.put("myAtmTurn", myMax);
-       turnInfo.put("EnAtmTurn", enMax);
-       turnInfo.putAll(gameProgress(gamePlayer, authentication));
-       return turnInfo;
-    }
-    //--------------------------------------------------------------Next Turn request
-    @RequestMapping("/game_view/{gameId}/checkNext")
-    public Map<String,Object> shotChecker(@PathVariable Long gameId,Authentication authentication) {
-
-        Game game = gameRepository.findGameByGameId(gameId);
-        GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
-//        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
-//
-
-        Map<String, Object> nextMap = new HashMap<>();
-        nextMap.putAll(checkNextTurn(gamePlayer.getGame(), gamePlayer, authentication));
-        return nextMap;
-    }
     //--------------------------------------------------------------#games_view route for game ID
     @RequestMapping("/game_view/{gameId}")
     public Object gameView(@PathVariable Long gameId, Authentication authentication) {
@@ -264,10 +145,10 @@ public class BshipsApplicationController {
             return showGamePlayerGame(gamePlayer, authentication);}
 
         else {
-           return new ResponseEntity<>(doMap("error", "this is not your Gameplayer!"), HttpStatus.UNAUTHORIZED);}
+            return new ResponseEntity<>(doMap("error", "this is not your Gameplayer!"), HttpStatus.UNAUTHORIZED);}
     }
 
-    //--------------------------------------------------------------#games_view route for gamePlayer ID GET SINGLE GAME
+    //--------------------------------------------------------------#games_view route for Game ID GET SINGLE GAME
     public Map<String, Object> showGamePlayerGame(GamePlayer gamePlayer,Authentication authentication) {
         Map<String, Object> gameMap = new HashMap<>();
         gameMap.put("logged", loggedPlayer());
@@ -286,7 +167,7 @@ public class BshipsApplicationController {
                 gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
             }});
 
-                gameMap.putAll(gameProgress(gamePlayer,authentication));
+        gameMap.putAll(gameProgress(gamePlayer,authentication));
 
         return gameMap;
     }
@@ -294,18 +175,17 @@ public class BshipsApplicationController {
 
     public  Map<String, Object> gameProgress(GamePlayer gamePlayer, Authentication authentication){
         Map<String, Object>  gameOverMap = new HashMap<>();
+
         List<Integer> myHits=new ArrayList<>();
         List<Integer> myAttacks=new ArrayList<>();
+        List<Integer> myTurns = new ArrayList<>();
         List<Integer> enHits=new ArrayList<>();
         List<Integer> EnAttacks=new ArrayList<>();
+        List<Integer> enTurns= new ArrayList<>();
+
         GamePlayer enPlayer = enGamePlayer(gamePlayer);
         Long gameId = gamePlayer.getGame().getGameId();
         Game game = gameRepository.findGameByGameId(gameId);
-
-
-
-        List<Integer> myTurns = new ArrayList<>();
-        List<Integer> enTurns= new ArrayList<>();
 
         game.gamePlayers.stream().forEach(gp->{
             if (gp.getPlayer().getUserName()==authentication.getName()){
@@ -335,8 +215,6 @@ public class BshipsApplicationController {
         game.getGamePlayers().forEach(gamePlayerOfGame -> {
             if (gamePlayerOfGame.getId()!= gamePlayer.getId()){
 
-
-
                 if (gamePlayerOfGame.getShips().size()>0 && myAttacks.size()>0){
                     List<Integer> EnShips=new ArrayList<>();
                     gamePlayerOfGame.getShips().stream().forEach(ship->{
@@ -363,22 +241,10 @@ public class BshipsApplicationController {
                 }
                 gameOverMap.put("EnHits", enHits);
                 gameOverMap.put("myHits", myHits);
-                System.out.println("MY HITS: " +myHits);
-                System.out.println("MY HITS size: " +myHits.size());
-                System.out.println(authentication.getName());
-                System.out.println("MY TURN: "+myMax);
-                System.out.println("EN HITS: " +enHits);
-                System.out.println("EN HITS size: " +enHits.size());
-                System.out.println(authentication.getName());
-                System.out.println("EN TURN: "+enMax);
-
-
 
             }});
         if(myHits.size()==enHits.size() && myHits.size()==14 && enHits.size()==14 &&  myMax==enMax){
-            System.out.println("TIE TIE TIE TIE TIE TIE TIE TIE TIE");
-            System.out.println(authentication.getName());
-            System.out.println("---------------------------------------------");
+
             if (gamePlayer.getGame().getScores().size()==0){
                 Score score1=new Score(0.5,new Date());
                 Score score2=new Score(0.5,new Date());
@@ -394,12 +260,9 @@ public class BshipsApplicationController {
             gameOverMap.put("gameOver", true);
             gameOverMap.put("gameResult", "it's a tie");
         }
-//                else if ((myHits.size()==14 && enHits.size()<14 && myMax==enMax)||(myHits.size()<14 && enHits.size()==14)){
 
         else if (myHits.size()==14 && enHits.size()!=14 && myMax==enMax){
-            System.out.println("IM A WARRIO IM A GONNA WINNA");
-            System.out.println(authentication.getName());
-            System.out.println("---------------------------------------------");
+
             if (gamePlayer.getGame().getScores().size()==0){
                 Score score1=new Score(1.0,new Date());
                 Score score2=new Score(0.0,new Date());
@@ -415,10 +278,9 @@ public class BshipsApplicationController {
             gameOverMap.put("gameOver", true);
             gameOverMap.put("gameResult", "you win");
         }
+
         else if (enHits.size()==14 &&  myHits.size()!=14  && myMax==enMax){
-            System.out.println("NOOB NOOB OMG");
-            System.out.println(authentication.getName());
-            System.out.println("---------------------------------------------");
+
             if (gamePlayer.getGame().getScores().size()==0){
                 Score score1=new Score(0.0,new Date());
                 Score score2=new Score(1.0,new Date());
@@ -434,12 +296,74 @@ public class BshipsApplicationController {
             gameOverMap.put("gameOver", true);
             gameOverMap.put("gameResult", "you lose");
         }
-//                }
+
         else { gameOverMap.put("gameOver", false);}
 
         return  gameOverMap;
     }
-    //--------------------------------------------------------------get Enemy GamePlayer
+
+    //--------------------------------------------------------------Next Turn request
+    @RequestMapping("/game_view/{gameId}/checkNext")
+    public Map<String,Object> shotChecker(@PathVariable Long gameId,Authentication authentication) {
+
+        Game game = gameRepository.findGameByGameId(gameId);
+        GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
+
+        Map<String, Object> nextMap = new HashMap<>();
+        nextMap.putAll(checkNextTurn(gamePlayer.getGame(), gamePlayer, authentication));
+        return nextMap;
+    }
+
+
+    //--------------------------------------------------------------Check next Turn
+    Map<String,Object> checkNextTurn(Game game,GamePlayer gamePlayer,Authentication authentication) {
+        List<Integer> myTurns = new ArrayList<>();
+        List<Integer> enTurns= new ArrayList<>();
+        Integer myShipNum = gamePlayer.getShips().size();
+        Integer enShipNum = enGamePlayer(gamePlayer).getShips().size();
+
+        game.gamePlayers.stream().forEach(gp->{
+            if (gp.getPlayer().getUserName()==authentication.getName()){
+
+                if (gp.getAttacks().size()>1){
+                    gp.getAttacks().stream().forEach(atck-> {
+                        myTurns.add(atck.getTurn());
+                    });}
+                else {myTurns.add(1);}
+            }
+            else {
+                if (gp.getAttacks().size()>1){
+                    gp.getAttacks().stream().forEach(atck-> {
+                        enTurns.add(atck.getTurn());
+                    });}
+                else {enTurns.add(1);}}
+
+        });
+        Integer myMax=(Collections.max(myTurns));
+        Integer enMax=(Collections.max(enTurns));
+
+        Boolean enCanFire;
+        Boolean selfCanFire;
+
+        if(myMax==enMax)
+        { enCanFire= true;
+            selfCanFire=true;}
+        else if(myMax<enMax){
+            enCanFire= false;
+            selfCanFire=true;
+        }
+        else {enCanFire= true;
+            selfCanFire=false;}
+
+        Map<String, Object> turnInfo = new HashMap<>();
+        turnInfo.put("selfCanFire", selfCanFire );
+        turnInfo.put("EnCanFire", enCanFire );
+        turnInfo.put("round", myMax);
+        turnInfo.put("myAtmTurn", myMax);
+        turnInfo.put("EnAtmTurn", enMax);
+        turnInfo.putAll(gameProgress(gamePlayer, authentication));
+        return turnInfo;
+    }
 
     //--------------------------------------------------------------#ranking route
     @CrossOrigin(origins = "http://localhost:3000")
@@ -478,7 +402,6 @@ public class BshipsApplicationController {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             return currentUserName;
-
         } else {
             return null;
         }
@@ -496,10 +419,9 @@ public class BshipsApplicationController {
                 });}}
         else {myGmIdList.add(null);}
         return myGmIdList;
-
     }
-    //--------------------------------------------------------------Enemy GamePlayer
 
+    //--------------------------------------------------------------Enemy GamePlayer
     private GamePlayer myGamePlayerOfGame(Game game,Authentication authentication){
         Map<String, GamePlayer> myGmPly = new HashMap<>();
         if(game.getGamePlayers().size() >0){
@@ -517,28 +439,6 @@ public class BshipsApplicationController {
         return myGmPly.get("myself");
     }
 
-
-
-
-    private GamePlayer enGamePlayerByGame(Game game,Authentication authentication){
-        Map<String, GamePlayer> enGmPly = new HashMap<>();
-        if(game.getGamePlayers().size() == 2){
-            game.getGamePlayers()
-                    .stream()
-                    .forEach(gp -> {
-                        if(gp.getPlayer().getUserName() !=authentication.getName() ){
-                            enGmPly.put("opponent", gp);
-                        }
-                    });
-        }else{
-            enGmPly.put("opponent", null);
-        }
-
-        return enGmPly.get("opponent");
-    }
-
-
-
     private GamePlayer enGamePlayer(GamePlayer gamePlayer){
         Map<String, GamePlayer> enGmPly = new HashMap<>();
         if(gamePlayer.getGame().getGamePlayers().size() == 2){
@@ -555,23 +455,6 @@ public class BshipsApplicationController {
 
         return enGmPly.get("opponent");
     }
-
-//--------------------------------------------------------------POST player
-
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(
-            @RequestParam String userName, @RequestParam String password) {
-        if (userName.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>(doMap("error", "something is missing"), HttpStatus.UNAUTHORIZED);
-        }
-        if (playerRepository.findByUserName(userName) != null) {
-            return new ResponseEntity<>(doMap("error", "user exists"), HttpStatus.UNAUTHORIZED);
-        } else {
-            Player newPlayer = playerRepository.save(new Player(userName, passwordEncoderCont().encode(password)));
-            return new ResponseEntity<>(doMap("userName", newPlayer.getUserName()), HttpStatus.CREATED);
-        }
-    }
-
 
 //--------------------------------------------------------------get Empty Game
     public List<Game> getEmptyGame() {
@@ -596,10 +479,7 @@ public class BshipsApplicationController {
         if (getEmptyGame().stream().count() >0 &&
             getEmptyGame().get(0).getGamePlayers().retainAll(listOne) && authentication.getName() != null){
                  GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(playerRepository.findByUserName(loggedPlayer()),getEmptyGame().get(0)));
-//                 Long gameId=newGamePlayer.getGame().getGameId();
-//                 String gameIdStr=""+gameId;
-//            HttpHeaders responseHeaders = new HttpHeaders();
-//            responseHeaders.set("gameId",gameIdStr);
+
                  return new ResponseEntity<>(doMap("gameId", newGamePlayer.getGame().getGameId()), HttpStatus.CREATED);
                 }
 
@@ -607,16 +487,30 @@ public class BshipsApplicationController {
                 System.out.println(authentication.getName() + " MACH NEUES GAME ALLA");
                 Game newGame = gameRepository.save(new Game(new Date()));
                 GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(playerRepository.findByUserName(loggedPlayer()),newGame));
-//            Long gameId=newGame.getGameId();
-//            String gameIdStr=""+gameId;
-//            HttpHeaders responseHeaders = new HttpHeaders();
-//            responseHeaders.set("gameId",gameIdStr);
 
                 return new ResponseEntity<>(doMap("gameId", newGame.getGameId()), HttpStatus.CREATED);
                 }
 
         else {return new ResponseEntity<>(doMap("error", "spiel zu ende du hoden"), HttpStatus.UNAUTHORIZED);}
             };
+
+
+//--------------------------------------------------------------POST player
+
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(
+            @RequestParam String userName, @RequestParam String password) {
+        if (userName.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>(doMap("error", "something is missing"), HttpStatus.UNAUTHORIZED);
+        }
+        if (playerRepository.findByUserName(userName) != null) {
+            return new ResponseEntity<>(doMap("error", "user exists"), HttpStatus.UNAUTHORIZED);
+        } else {
+            Player newPlayer = playerRepository.save(new Player(userName, passwordEncoderCont().encode(password)));
+            return new ResponseEntity<>(doMap("userName", newPlayer.getUserName()), HttpStatus.CREATED);
+        }
+    }
+
 //--------------------------------------------------------------Post Ships
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping(path = "/game_view/{gameId}/ships", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -625,11 +519,6 @@ public class BshipsApplicationController {
         Game game = gameRepository.findGameByGameId(gameId);
         GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
 
-//        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
-
-
-
-
         if (authentication.getName() == null) {
             return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);
         }
@@ -637,7 +526,6 @@ public class BshipsApplicationController {
             gamePlayer.addShip(ship);
            gamePlayerRepository.save(gamePlayer);
             shipRepository.save(ship);
-
         });
 
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -650,32 +538,42 @@ public class BshipsApplicationController {
         Game game = gameRepository.findGameByGameId(gameId);
         GamePlayer gamePlayer = myGamePlayerOfGame(game, authentication);
 
-
-//        GamePlayer gamePlayer = gamePlayerRepository.findGamePlayerById(gamePlayerId);
-
-
-
         if (authentication.getName() == null) {
             return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);
         }
         attacks.forEach(attack -> {
             Attack fire = new Attack(attack.getTurn()+1, attack.getAttackLocations() );
-            System.out.println("FIRE IN THE HOLE -<-<-<-<-<-<-<-<-<-<-<-<");
-            System.out.println(attack.getTurn());
-            System.out.println(fire.getTurn());
-            System.out.println(attack.getAttackLocations());
 
             gamePlayer.addAttack(fire);
             attackRepository.save(fire);
             gamePlayerRepository.save(gamePlayer);
-
-
         });
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
-        }
+
+//    private GamePlayer enGamePlayerByGame(Game game,Authentication authentication){
+//        Map<String, GamePlayer> enGmPly = new HashMap<>();
+//        if(game.getGamePlayers().size() == 2){
+//            game.getGamePlayers()
+//                    .stream()
+//                    .forEach(gp -> {
+//                        if(gp.getPlayer().getUserName() !=authentication.getName() ){
+//                            enGmPly.put("opponent", gp);
+//                        }
+//                    });
+//        }else{
+//            enGmPly.put("opponent", null);
+//        }
+//
+//        return enGmPly.get("opponent");
+//    }
+
+
+
+
+}
 
 
 

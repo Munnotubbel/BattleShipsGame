@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
-import CardColumns from "react-bootstrap/CardColumns";
+// import CardColumns from "react-bootstrap/CardColumns";
 import Button from "react-bootstrap/Button";
 import ReactTimeAgo from "react-time-ago";
 import { ThemeContext } from "./ThemeContext";
@@ -41,6 +39,7 @@ export default class Games extends Component {
             <img
               width="20px"
               height="auto"
+              alt="winnersMedal"
               style={{ position: "absolute", left: "5%" }}
               src="https://res.cloudinary.com/munnotubbel/image/upload/v1576767846/javaProject/Navy_Cross_xzfzf7.png"
             />
@@ -51,6 +50,9 @@ export default class Games extends Component {
 
         case "0.0":
           return <div className="winlos sunk"></div>;
+
+        default:
+          return "";
       }
     }
     return "";
@@ -67,7 +69,10 @@ export default class Games extends Component {
         <CardDeck>
           {this.state.games.map(game => {
             return (
-              <Card className="text-center one-edge-shadow gameCards">
+              <Card
+                key={game.gmId}
+                className="text-center one-edge-shadow gameCards"
+              >
                 <Card.Header>Game {game.gmId}</Card.Header>
                 {game.ingamePlayer && (
                   <Card.Body>
@@ -76,7 +81,7 @@ export default class Games extends Component {
                         {game.ingamePlayer.map((ply, index) => {
                           if (index === 0) {
                             return (
-                              <div>
+                              <div key="player1">
                                 <Row className="justify-content-md-center">
                                   <div>{ply.name}</div>
                                   {this.getResult(ply.score)}
@@ -93,9 +98,12 @@ export default class Games extends Component {
                                 </Row>
                               </div>
                             );
-                          } else if (index === 1) {
+                          } else {
                             return (
-                              <Row className="justify-content-md-center">
+                              <Row
+                                key="player2"
+                                className="justify-content-md-center"
+                              >
                                 <div>{ply.name}</div>
                                 {this.getResult(ply.score)}
                               </Row>

@@ -3,7 +3,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 export default class Login extends Component {
-  
   constructor(props) {
     super(props);
     this.state = { value: "" };
@@ -35,7 +34,7 @@ export default class Login extends Component {
     })
       .then(response => {
         console.log(response);
-        if (response.status == 200) {
+        if (response.status === 200) {
           console.log("logged in!");
           this.props.onHide();
           window.location.reload();

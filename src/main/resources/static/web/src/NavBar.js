@@ -37,7 +37,7 @@ function NavBar(props, history) {
     fetch("/api/logout", {
       method: "POST"
     }).then(response => {
-      if (response.status == 200) {
+      if (response.status === 200) {
         window.location.reload();
       } else {
         console.log("something went wrong");
@@ -127,6 +127,7 @@ function NavBar(props, history) {
         <img
           width="200px"
           height="auto"
+          alt="bshioLogo"
           src="https://res.cloudinary.com/munnotubbel/image/upload/v1576591169/javaProject/bShip_u50r62.png"
         ></img>
         Battleships

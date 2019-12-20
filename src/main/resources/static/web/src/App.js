@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import NavBar from "./NavBar";
 import Games from "./Games";
-import Game_view from "./Game_view";
+import GameView from "./GameView";
 import Ranking from "./Ranking";
 import Login from "./Login";
 import SignUp from "./SignUp";
@@ -23,7 +23,7 @@ export default class App extends Component {
 
   gamePicked = () => {
     console.log("SCHABBER SCHABBER SCHABBER SCHABBER");
-    return <Game_view changetitle={this.updateTitle} />;
+    return <GameView changetitle={this.updateTitle} />;
   };
 
   updateTitle = title => {
@@ -48,7 +48,7 @@ export default class App extends Component {
 
               <Route path="/web/game_view" component={this.gamePicked} />
 
-              <Route path="/web/game" component={Game_view} />
+              <Route path="/web/game" component={GameView} />
 
               <Route path="/web/ranking" component={Ranking} />
               <Route path="/web/login" component={Login} />
@@ -59,6 +59,7 @@ export default class App extends Component {
         <div className="background">
           <div className="water"> </div>{" "}
         </div>
+
         <svg>
           <filter id="turbulence" x="0" y="0" width="100%" height="100%">
             <feTurbulence
