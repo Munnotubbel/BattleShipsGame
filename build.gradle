@@ -21,7 +21,7 @@ apply plugin: 'org.springframework.boot'
 
 group = 'dromedario'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '8'
 
 repositories {
 	mavenCentral()
@@ -36,4 +36,8 @@ dependencies {
 	runtimeOnly('com.h2database:h2')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	compile("org.springframework.boot:spring-boot-starter-security")
+}
+
+task stage {
+	dependsOn build
 }

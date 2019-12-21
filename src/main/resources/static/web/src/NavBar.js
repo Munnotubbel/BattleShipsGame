@@ -11,12 +11,11 @@ import Popover from "react-bootstrap/Popover";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import { withRouter } from "react-router-dom";
-import { ThemeContext } from "./ThemeContext";
+import { InfoContext } from "./InfoContext";
 
 function NavBar(props, history) {
-  const themecon = useContext(ThemeContext);
+  const themecon = useContext(InfoContext);
   const { updateValue } = themecon;
-  console.log(themecon);
 
   const [loginShow, setLoginShow] = React.useState(false);
   const [registerShow, setRegisterShow] = React.useState(false);

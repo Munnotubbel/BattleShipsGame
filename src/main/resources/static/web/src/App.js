@@ -11,18 +11,17 @@ import "./App.css";
 import { Route, HashRouter } from "react-router-dom";
 import "./Water.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import ThemeContextProvider from "./ThemeContext";
-import { ThemeContext } from "./ThemeContext";
+import InfoContextProvider from "./InfoContext";
+import { InfoContext } from "./InfoContext";
 
 export default class App extends Component {
-  static contextType = ThemeContext;
+  static contextType = InfoContext;
   state = {
     title: "Battleship Game",
     players: []
   };
 
   gamePicked = () => {
-    console.log("SCHABBER SCHABBER SCHABBER SCHABBER");
     return <GameView changetitle={this.updateTitle} />;
   };
 
@@ -34,7 +33,7 @@ export default class App extends Component {
     return (
       <div>
         <HashRouter>
-          <ThemeContextProvider>
+          <InfoContextProvider>
             <NavBar gameCreated={this.gamePicked} title={this.state.title} />
 
             <Grid
@@ -54,7 +53,7 @@ export default class App extends Component {
               <Route path="/web/login" component={Login} />
               <Route path="/web/signup" component={SignUp} />
             </Grid>
-          </ThemeContextProvider>
+          </InfoContextProvider>
         </HashRouter>
         <div className="background">
           <div className="water"> </div>{" "}

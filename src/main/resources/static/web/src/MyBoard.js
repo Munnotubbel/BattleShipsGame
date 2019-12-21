@@ -6,9 +6,9 @@ import "./Boards.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { ThemeContext } from "./ThemeContext";
+import { InfoContext } from "./InfoContext";
 export default function MyBoard(props) {
-  const themecon = useContext(ThemeContext);
+  const themecon = useContext(InfoContext);
 
   function createOwnBoard() {
     let board = [];
@@ -71,6 +71,9 @@ export default function MyBoard(props) {
           children.push(
             <Col className="allCells" value={cellKey} xs={1}>
               <img
+                style={{
+                  animationDelay: `${Math.floor(Math.random() * -30) + "s"}`
+                }}
                 className="bojeRed wiggle"
                 alt="boje"
                 src="https://res.cloudinary.com/munnotubbel/image/upload/v1576514944/javaProject/boje-removebg-preview-removebg-preview_acxmc4.png"
@@ -105,11 +108,14 @@ export default function MyBoard(props) {
     <Container>
       <Row>
         <Col>
-          <strong>{themecon.logged} (you)</strong>
+          {" "}
+          {props.enHits && (
+            <Hitpoints
+              name={themecon.logged + " (you)"}
+              dmg={props.enHits.length}
+            />
+          )}
         </Col>
-      </Row>
-      <Row>
-        <Col> {props.enHits && <Hitpoints dmg={props.enHits.length} />}</Col>
       </Row>
       <Row>
         <Col>

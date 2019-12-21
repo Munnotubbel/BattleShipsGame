@@ -1,41 +1,56 @@
-
-    *{margin:0;
+* {
+   margin: 0;
    padding: 0;
-;}
+   ;
+}
 
 
-.progress-bar {
+.health-bar {
    margin-bottom: 20px;
    position: relative;
+
    /* top: 50%;
    left: 50%;
-   transform: translate(-50%,-50%); */ 
-   width: 25vw;
-   min-width: 20vw;
-   height: 3vw;
+   transform: translate(-50%,-50%); */
+   width: 28vw;
+   min-width: 28vw;
+   height: 2vw;
+   border-radius: 1vw;
+   border: 2px solid #F8F9FA;
    min-height: 2vw;
-   background-color: navy;
+   background-color: #F8F9FA;
+
    overflow: hidden;
 }
 
-.progress-bar-inner-bar{
+.health-bar-inner-bar {
    position: relative;
    float: left;
-   left: 0;
-   top:0;
-  height: 100%;
-   background-color: green;
-   border-right: 2px solid white;
+   border-radius: 1vw;
+   /* margin: 4px; */
+   height: 100%;
+   background-color: red;
+
 }
 
-.energy-bar-fade{
-position: absolute;
-height: 100%;
-width: 40%;
-min-width: 80px;
-top: 0;
-right: 0;
-background: linear-gradient(to right, green 0%, green 100%);
+.health-bar-name {
+   z-index: 50;
+   font-weight: 600;
+   font-size: 1.2vw;
+   position: absolute;
+   left: 40%;
+   top: -5%;
+}
+
+/* 
+.energy-bar-fade {
+   position: absolute;
+   height: 100%;
+   width: 40%;
+   min-width: 80px;
+   top: 0;
+   right: 0;
+   background: linear-gradient(to right, green 0%, green 100%);
 
 }
 
@@ -43,51 +58,57 @@ span.small-energy-bar-1,
 span.small-energy-bar-2,
 span.small-energy-bar-3,
 span.small-energy-bar-4,
-span.small-energy-bar-5{
-         position: absolute;
-         max-width: 20px;
-         max-height: 20px;
-         min-width: 10px;
-         min-height: 10px;
-    
-         border-radius: 20px;
-         
-         top: 0;
-         right: -5%;
-         background-color: white;
-         animation: floating-right 3s infinite linear;
-         /* animation: shake 5s cubic-bezier(.36, .07, .19, .97);
-         transform: translate3d(0,0,0); */
+span.small-energy-bar-5 {
+   position: absolute;
+   max-width: 20px;
+   max-height: 20px;
+   min-width: 10px;
+   min-height: 10px;
+
+   border-radius: 20px;
+
+   top: 0;
+   right: -5%;
+   background-color: white;
+   animation: floating-right 3s infinite linear;
+   animation: shake 5s cubic-bezier(.36, .07, .19, .97);
+         transform: translate3d(0,0,0);
 }
-span.small-energy-bar-2{
+
+span.small-energy-bar-2 {
    top: 15%;
    width: 15px;
    height: 15px;
    animation-delay: 0.75s;
 }
-span.small-energy-bar-3{
+
+span.small-energy-bar-3 {
    top: 30%;
    width: 18px;
    height: 18px;
    animation-delay: -1.5s;
 }
-span.small-energy-bar-4{
+
+span.small-energy-bar-4 {
    top: 45%;
    animation-delay: -0.4s;
 }
-span.small-energy-bar-5{
+
+span.small-energy-bar-5 {
    width: 8px;
    height: 8px;
    top: 60%;
    animation-delay: -0.2s;
 }
-span.small-energy-bar-6{
+
+span.small-energy-bar-6 {
    width: 8px;
    height: 8px;
    top: 5%;
    animation-delay: -0.3s;
 }
-span.small-energy-bar-7{
+
+span.small-energy-bar-7 {
    width: 8px;
    height: 8px;
    top: 85%;
@@ -99,41 +120,51 @@ span.small-energy-bar-7{
    0% {
       transform: translate3d(10, -2px, 0);
    }
+
    10% {
       transform: translate3d(17px, 2px, 0);
    }
+
    20% {
       transform: translate3d(34px, -4px, 0);
    }
+
    30% {
       transform: translate3d(51px, 1px, 0);
    }
+
    40% {
       transform: translate3d(68px, -3px, 0);
    }
+
    50% {
       transform: translate3d(85px, 2px, 0);
    }
+
    60% {
       transform: translate3d(102px, -2px, 0);
    }
+
    70% {
       transform: translate3d(119px, 2px, 0);
    }
+
    80% {
       transform: translate3d(136px, -2px, 0);
    }
+
    90% {
       transform: translate3d(153px, 2px, 0);
    }
-   100%{
+
+   100% {
       transform: translate3d(170px, -2px, 0);
       /* transform: translateX(170px); */
-      
-   }
-}
 
-.energy-bar-cover-up {
+/* }
+} */
+
+/* .energy-bar-cover-up {
    position: absolute;
    height: 100%;
    width: 58%;
@@ -144,19 +175,27 @@ span.small-energy-bar-7{
 }
 
 @keyframes shake {
-   10%, 90% {
-     transform: translate3d(-1px, 0, 0);
+
+   10%,
+   90% {
+      transform: translate3d(-1px, 0, 0);
    }
-   
-   20%, 80% {
-     transform: translate3d(2px, 0, 0);
+
+   20%,
+   80% {
+      transform: translate3d(2px, 0, 0);
    }
- 
-   30%, 50%, 70% {
-     transform: translate3d(-4px, 0, 0);
+
+   30%,
+   50%,
+   70% {
+      transform: translate3d(-4px, 0, 0);
    }
- 
-   40%, 60% {
-     transform: translate3d(4px, 0, 0);
+
+   40%,
+   60% {
+      transform: translate3d(4px, 0, 0);
    }
- }
+}
+
+*/

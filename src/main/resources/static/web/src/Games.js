@@ -7,10 +7,10 @@ import CardDeck from "react-bootstrap/CardDeck";
 // import CardColumns from "react-bootstrap/CardColumns";
 import Button from "react-bootstrap/Button";
 import ReactTimeAgo from "react-time-ago";
-import { ThemeContext } from "./ThemeContext";
+import { InfoContext } from "./InfoContext";
 
 export default class Games extends Component {
-  static contextType = ThemeContext;
+  static contextType = InfoContext;
   state = {};
 
   componentWillMount = () => {
@@ -31,7 +31,6 @@ export default class Games extends Component {
   };
 
   getResult = score => {
-    console.log(score);
     if (score !== null) {
       switch (score[0]) {
         case "1.0":
@@ -60,9 +59,6 @@ export default class Games extends Component {
 
   render() {
     const { updateValue } = this.context;
-
-    console.log("-------------------------------------");
-    console.log(this.context);
 
     if (this.state.games) {
       return (
@@ -113,7 +109,8 @@ export default class Games extends Component {
                       </Container>
                     </Card.Title>
                     {this.state.myGameIds !== [null] &&
-                    this.state.myGameIds.includes(game.gmId) ? (
+                    this.state.myGameIds.includes(game.gmId) &&
+                    game.ingamePlayer[0].score.length === 0 ? (
                       <NavLink
                         to={{
                           pathname: "/web/game_view"

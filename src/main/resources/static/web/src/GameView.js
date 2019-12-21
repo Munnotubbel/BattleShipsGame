@@ -7,10 +7,11 @@ import MyBoard from "./MyBoard";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { ThemeContext } from "./ThemeContext";
-
+import { InfoContext } from "./InfoContext";
+import TurnCounter from "./TurnCounter";
+import { pollWrapper } from "poll-js";
 class GameView extends Component {
-  static contextType = ThemeContext;
+  static contextType = InfoContext;
 
   state = {
     selfCanFire: false,
@@ -32,12 +33,12 @@ class GameView extends Component {
   };
   componentDidMount = () => {
     this.fetchData();
+    this.context.updateValue("pull", true);
   };
 
-  componentWillUnmount() {
-    this.props.changetitle("Battleships Game");
-  }
-
+  componentWillUnmount = () => {
+    this.context.updateValue("pull", false);
+  };
   fetchData = () => {
     fetch(`api/game_view/${this.context.gmId}`)
       .then(response =>
@@ -357,6 +358,19 @@ class GameView extends Component {
     }
   };
 
+  checkNextTurn = () => {
+    fetch(`/api/game_view/${this.context.gmId}/checkNext`)
+      .then(response => response.json())
+      .then(response =>
+        this.setState({
+          round: response.round,
+          gameOver: response.gameOver,
+          gameResult: response.gameResult,
+          selfCanFire: response.selfCanFire
+        })
+      );
+  };
+
   handleShot = cellKey => {
     fetch(`/api/game_view/${this.context.gmId}/checkNext`)
       .then(response => response.json())
@@ -377,11 +391,13 @@ class GameView extends Component {
         ) {
           alert("wait for your opponent");
           this.setState({
+            round: response.round,
             gameOver: response.gameOver,
             gameResult: response.gameResult ? response.gameResult : ""
           });
         } else {
           this.setState({
+            round: response.round,
             gameOver: response.gameOver,
             gameResult: response.gameResult ? response.gameResult : ""
           });
@@ -428,15 +444,14 @@ class GameView extends Component {
           this.fetchData();
         } else {
           alert("wait for opponent");
-          this.fetchData();
+          this.setState({ selfCanFire: response.selfCanFire }, () =>
+            this.fetchData()
+          );
         }
       });
   };
 
   render() {
-    console.log("-------------------------------------");
-    console.log(this.context);
-
     if (this.state.responstStatus === 401) {
       this.props.history.goBack();
     } else {
@@ -469,10 +484,16 @@ class GameView extends Component {
             ) : null}
 
             {this.state.round && (
-              <Row>
-                <Col>
-                  <h2>Round {this.state.round}</h2>{" "}
+              <Row className="justify-content-md-center">
+                <Col xs="2"></Col>
+                <Col xs="auto">
+                  <TurnCounter
+                    gameOver={this.state.gameOver}
+                    round={this.state.round}
+                    selfCanFire={this.state.selfCanFire}
+                  ></TurnCounter>
                 </Col>
+                <Col xs="2"></Col>
               </Row>
             )}
 

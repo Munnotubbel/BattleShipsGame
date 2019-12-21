@@ -4,7 +4,7 @@ import "./Boards.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
+import TargetLock from "./TargetLock";
 export default function EnemyBoard(props) {
   function createEnemyBoard() {
     let enemyBoard = [];
@@ -51,17 +51,16 @@ export default function EnemyBoard(props) {
         } else if (props.myShots.includes(cellKey)) {
           enemyChildren.push(
             <Col className="allCells" value={cellKey} xs={1}>
-              <img
-                alt="boje"
-                className="bojeRed rotate"
-                src="https://res.cloudinary.com/munnotubbel/image/upload/v1576577419/javaProject/crosshair.svg"
-              ></img>
+              <TargetLock />
             </Col>
           );
         } else if (props.myMiss.includes(cellKey)) {
           enemyChildren.push(
             <Col className="allCells" value={cellKey} xs={1}>
               <img
+                style={{
+                  animationDelay: `${Math.floor(Math.random() * -30) + "s"}`
+                }}
                 className="bojeRed wiggle"
                 alt="boje"
                 src="https://res.cloudinary.com/munnotubbel/image/upload/v1576514944/javaProject/boje-removebg-preview-removebg-preview_acxmc4.png"
@@ -93,11 +92,11 @@ export default function EnemyBoard(props) {
     <Container>
       <Row>
         <Col>
-          <strong>{props.enemyName}</strong>
+          {" "}
+          {props.myHits && (
+            <Hitpoints name={props.enemyName} dmg={props.myHits.length} />
+          )}
         </Col>
-      </Row>
-      <Row>
-        <Col> {props.myHits && <Hitpoints dmg={props.myHits.length} />}</Col>
       </Row>
       <Row>
         <Col>

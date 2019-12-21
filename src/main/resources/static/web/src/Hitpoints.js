@@ -8,52 +8,52 @@ export default function Hitpoints(props) {
   function createHitpoints() {
     switch (props.dmg) {
       case 0:
-        return <HpBar hp={100} />;
+        return <HpBar name={props.name} hp={100} />;
 
       case 1:
-        return <HpBar hp={93} />;
+        return <HpBar name={props.name} hp={93} />;
 
       case 2:
-        return <HpBar hp={86} />;
+        return <HpBar name={props.name} hp={86} />;
 
       case 3:
-        return <HpBar hp={79} />;
+        return <HpBar name={props.name} hp={79} />;
 
       case 4:
-        return <HpBar hp={72} />;
+        return <HpBar name={props.name} hp={72} />;
 
       case 5:
-        return <HpBar hp={65} />;
+        return <HpBar name={props.name} hp={65} />;
 
       case 6:
-        return <HpBar hp={58} />;
+        return <HpBar name={props.name} hp={58} />;
 
       case 7:
-        return <HpBar hp={51} />;
+        return <HpBar name={props.name} hp={51} />;
 
       case 8:
-        return <HpBar hp={44} />;
+        return <HpBar name={props.name} hp={44} />;
 
       case 9:
-        return <HpBar hp={37} />;
+        return <HpBar name={props.name} hp={37} />;
 
       case 10:
-        return <HpBar hp={30} />;
+        return <HpBar name={props.name} hp={30} />;
 
       case 11:
-        return <HpBar hp={23} />;
+        return <HpBar name={props.name} hp={23} />;
 
       case 12:
-        return <HpBar hp={16} />;
+        return <HpBar name={props.name} hp={16} />;
 
       case 13:
-        return <HpBar hp={9} />;
+        return <HpBar name={props.name} hp={9} />;
 
       case 14:
-        return <HpBar hp={0} />;
+        return <HpBar name={props.name} hp={0} />;
 
       default:
-        return <HpBar hp={0} />;
+        return <HpBar name={props.name} hp={0} />;
     }
   }
   return (
