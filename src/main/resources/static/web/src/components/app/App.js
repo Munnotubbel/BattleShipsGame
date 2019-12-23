@@ -1,40 +1,30 @@
 import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
-import NavBar from "./NavBar";
-import Games from "./Games";
-import GameView from "./GameView";
-import Ranking from "./Ranking";
-import Login from "./Login";
-import SignUp from "./SignUp";
+import NavBar from "../routes/navbar/NavBar";
+import Games from "../routes/games/Games";
+import GameView from "../routes/game_view/GameView";
+import Ranking from "../routes/ranking/Ranking";
+import Login from "../routes/navbar/Login";
+import SignUp from "../routes/navbar/SignUp";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
+import "../../css/App.css";
 import { Route, HashRouter } from "react-router-dom";
-import "./Water.css";
+import "../../css/Water.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import InfoContextProvider from "./InfoContext";
-import { InfoContext } from "./InfoContext";
+import InfoContextProvider from "../../InfoContext";
+import { InfoContext } from "../../InfoContext";
 
-export default class App extends Component {
+
+class App extends Component {
   static contextType = InfoContext;
-  state = {
-    title: "Battleship Game",
-    players: []
-  };
-
-  gamePicked = () => {
-    return <GameView changetitle={this.updateTitle} />;
-  };
-
-  updateTitle = title => {
-    this.setState({ title: title });
-  };
+ 
 
   render() {
     return (
       <div>
         <HashRouter>
           <InfoContextProvider>
-            <NavBar gameCreated={this.gamePicked} title={this.state.title} />
+            <NavBar gameCreated={()=>{return <GameView/>}}/>
 
             <Grid
               container
@@ -45,13 +35,14 @@ export default class App extends Component {
               <Route exact path="/" component={Games} />
               <Route path="/web/games" component={Games} />
 
-              <Route path="/web/game_view" component={this.gamePicked} />
+              <Route path="/web/game_view" component={GameView} />
 
               <Route path="/web/game" component={GameView} />
 
               <Route path="/web/ranking" component={Ranking} />
               <Route path="/web/login" component={Login} />
               <Route path="/web/signup" component={SignUp} />
+             
             </Grid>
           </InfoContextProvider>
         </HashRouter>
@@ -85,3 +76,6 @@ export default class App extends Component {
     );
   }
 }
+
+
+export default App

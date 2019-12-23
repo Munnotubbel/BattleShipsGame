@@ -7,28 +7,17 @@ import CardDeck from "react-bootstrap/CardDeck";
 // import CardColumns from "react-bootstrap/CardColumns";
 import Button from "react-bootstrap/Button";
 import ReactTimeAgo from "react-time-ago";
-import { InfoContext } from "./InfoContext";
+import { InfoContext } from "../../../InfoContext";
 
 export default class Games extends Component {
   static contextType = InfoContext;
   state = {};
 
   componentWillMount = () => {
-    this.fetchGames();
+    this.context.fetchGames();
   };
 
-  fetchGames = () => {
-    const { updateValue } = this.context;
-    fetch(`api/games`)
-      .then(response => response.json())
-      .then(response =>
-        this.setState({ ...response }, () => {
-          if (response.loggedPly !== this.context.logged) {
-            updateValue("logged", response.loggedPly);
-          }
-        })
-      );
-  };
+
 
   getResult = score => {
     if (score !== null) {
@@ -58,12 +47,12 @@ export default class Games extends Component {
   };
 
   render() {
-    const { updateValue } = this.context;
-
-    if (this.state.games) {
+    const { updateValue,games,myGameIds } = this.context;
+console.log(this.context)
+    if (games) {
       return (
         <CardDeck>
-          {this.state.games.map(game => {
+          {games.map(game => {
             return (
               <Card
                 key={game.gmId}
@@ -108,8 +97,8 @@ export default class Games extends Component {
                         })}
                       </Container>
                     </Card.Title>
-                    {this.state.myGameIds !== [null] &&
-                    this.state.myGameIds.includes(game.gmId) &&
+                    {myGameIds !== [null] &&
+                    myGameIds.includes(game.gmId) &&
                     game.ingamePlayer[0].score.length === 0 ? (
                       <NavLink
                         to={{

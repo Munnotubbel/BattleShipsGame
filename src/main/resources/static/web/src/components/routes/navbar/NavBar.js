@@ -11,11 +11,11 @@ import Popover from "react-bootstrap/Popover";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import { withRouter } from "react-router-dom";
-import { InfoContext } from "./InfoContext";
+import { InfoContext } from "../../../InfoContext";
 
 function NavBar(props, history) {
-  const themecon = useContext(InfoContext);
-  const { updateValue } = themecon;
+const themecon = useContext(InfoContext);
+  const { updateValue,logOut } = themecon;
 
   const [loginShow, setLoginShow] = React.useState(false);
   const [registerShow, setRegisterShow] = React.useState(false);
@@ -32,17 +32,6 @@ function NavBar(props, history) {
     </Popover>
   );
 
-  const logOut = () => {
-    fetch("/api/logout", {
-      method: "POST"
-    }).then(response => {
-      if (response.status === 200) {
-        window.location.reload();
-      } else {
-        console.log("something went wrong");
-      }
-    });
-  };
 
   const lookForGame = () => {
     fetch("/api/lookForGame", {
@@ -118,6 +107,12 @@ function NavBar(props, history) {
                 />
               </Col>
             ) : null}
+
+            <Col>
+              <NavLink to="/web/babylon">
+                <Button>Babylon</Button>
+              </NavLink>
+            </Col>
           </Row>
         </Container>
       </Nav>

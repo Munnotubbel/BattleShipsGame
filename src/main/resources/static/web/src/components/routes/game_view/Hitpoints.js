@@ -2,7 +2,7 @@ import React from "react";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import "./Hitpoints.css";
+import "../../../css/Hitpoints.css";
 import HpBar from "./HpBar";
 export default function Hitpoints(props) {
   function createHitpoints() {

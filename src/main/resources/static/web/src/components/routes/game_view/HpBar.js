@@ -1,5 +1,5 @@
 import React from "react";
-import "./Hitpoints.css";
+import "../../../css/Hitpoints.css";
 export default function HpBar(props) {
   return (
     <div className="health-bar">

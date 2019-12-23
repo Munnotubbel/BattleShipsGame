@@ -1,6 +1,6 @@
 import React from "react";
 import Hitpoints from "./Hitpoints";
-import "./Boards.css";
+import "../../../css/Boards.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";

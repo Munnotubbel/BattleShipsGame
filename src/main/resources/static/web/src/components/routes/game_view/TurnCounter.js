@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import "./TurnCounter.css";
-import { InfoContext } from "./InfoContext";
+import "../../../css/TurnCounter.css";
+import { InfoContext } from "../../../InfoContext";
 export default function TurnCounter(props) {
   const infoCon = useContext(InfoContext);
 

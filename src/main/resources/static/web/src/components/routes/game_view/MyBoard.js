@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import Hitpoints from "./Hitpoints";
-import "./Water.css";
-import "./Boards.css";
+import "../../../css/Water.css";
+import "../../../css/Boards.css";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { InfoContext } from "./InfoContext";
+import { InfoContext } from "../../../InfoContext";
 export default function MyBoard(props) {
   const themecon = useContext(InfoContext);
 

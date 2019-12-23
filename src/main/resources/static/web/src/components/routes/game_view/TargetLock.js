@@ -1,5 +1,5 @@
 import React from "react";
-import "./Boards.css";
+import "../../../css/Boards.css";
 
 export default function TargetLock() {
   return (

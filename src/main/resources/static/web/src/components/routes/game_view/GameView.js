@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Hitpoints.css";
+import "../../../css/Hitpoints.css";
 import Grid from "@material-ui/core/Grid";
 import { withRouter } from "react-router-dom";
 import EnemyBoard from "./EnemyBoard";
@@ -7,7 +7,7 @@ import MyBoard from "./MyBoard";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { InfoContext } from "./InfoContext";
+import { InfoContext } from "../../../InfoContext";
 import TurnCounter from "./TurnCounter";
 import { pollWrapper } from "poll-js";
 class GameView extends Component {
