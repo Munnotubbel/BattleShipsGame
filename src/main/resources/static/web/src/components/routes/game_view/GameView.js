@@ -15,14 +15,13 @@ class GameView extends Component {
 
   componentDidMount = () => {
     this.context.fetchGameView();
-  
+
     this.context.updateValue("pull", true);
   };
 
   componentWillUnmount = () => {
     this.context.updateValue("pull", false);
   };
-   
 
   render() {
     if (this.context.responstStatus === 401) {
@@ -99,7 +98,9 @@ class GameView extends Component {
                 {this.context.fleetInPosition === true &&
                 this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.postShips()}>post ships</button>
+                    <button onClick={() => this.context.postShips()}>
+                      post ships
+                    </button>
                   </Grid>
                 ) : null}
                 {this.context.shipsToPlace.ship1 === true ? (
@@ -135,7 +136,9 @@ class GameView extends Component {
                 {" "}
                 {this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.placeAgain()}>again</button>
+                    <button onClick={() => this.context.placeAgain()}>
+                      again
+                    </button>
                   </Grid>
                 ) : null}
               </Col>
@@ -153,7 +156,9 @@ class GameView extends Component {
                 {this.context.fleetInPosition === false &&
                 this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.rotate(null)}>vertical</button>
+                    <button onClick={() => this.context.rotate(null)}>
+                      vertical
+                    </button>
                   </Grid>
                 ) : null}
               </Col>
@@ -163,14 +168,18 @@ class GameView extends Component {
                 this.context.selfCanFire === true &&
                 this.context.shots.length > 0 ? (
                   <Grid item>
-                    <button onClick={() => this.context.resetShot()}>reset shot</button>
+                    <button onClick={() => this.context.resetShot()}>
+                      reset shot
+                    </button>
                   </Grid>
                 ) : null}
               </Col>
               <Col xs={1}>
                 {this.context.shotsPlaced === true ? (
                   <Grid item>
-                    <button onClick={() => this.context.postShots()}>post Shots</button>
+                    <button onClick={() => this.context.postShots()}>
+                      post Shots
+                    </button>
                   </Grid>
                 ) : null}
               </Col>

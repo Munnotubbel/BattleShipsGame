@@ -20,9 +20,29 @@ export default function MyBoard(props) {
       for (let j = 1; j < 11; j++) {
         let cellKey = j + i;
 
-        if (props.enHits.includes(cellKey)) {
+        if (
+          themecon.shipsPlaced === true &&
+          (themecon.destroyer.location[0] == cellKey ||
+            themecon.submarine.location[0] == cellKey ||
+            themecon.cruiseShip.location[0] == cellKey ||
+            themecon.battleship.location[0] == cellKey)
+        ) {
           children.push(
-            <Col className="allCells" xs={1}>
+            <Col
+              className="allCells"
+              xs={1}
+              style={{ backgroundColor: "white" }}
+            >
+              x
+            </Col>
+          );
+        } else if (props.enHits.includes(cellKey)) {
+          children.push(
+            <Col
+              className="allCells"
+              xs={1}
+              style={{ backgroundColor: "white" }}
+            >
               <div class="watergrid">
                 <div class="oil1"></div>
                 <div class="oil2"></div>
@@ -55,7 +75,7 @@ export default function MyBoard(props) {
             </Col>
           );
         } else if (
-          props.myShipLocations.includes(cellKey) ||
+          // props.myShipLocations.includes(cellKey) ||
           props.placedShips.includes(cellKey) ||
           props.placedShipsTemp.includes(cellKey)
         ) {
@@ -64,6 +84,21 @@ export default function MyBoard(props) {
               className="allCells"
               value={cellKey}
               style={{ backgroundColor: "yellow" }}
+              xs={1}
+            ></Col>
+          );
+        } else if (
+          themecon.shipsPlaced === true &&
+          (themecon.destroyer.location.includes(cellKey) ||
+            themecon.submarine.location.includes(cellKey) ||
+            themecon.cruiseShip.location.includes(cellKey) ||
+            themecon.battleship.location.includes(cellKey))
+        ) {
+          children.push(
+            <Col
+              className="allCells"
+              value={cellKey}
+              style={{ backgroundColor: "white" }}
               xs={1}
             ></Col>
           );

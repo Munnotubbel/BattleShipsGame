@@ -22,7 +22,11 @@ class InfoContextProvider extends Component {
     myShip4: null,
     gmId: 1,
     logged: null,
-    pull: false
+    pull: false,
+    submarine: {},
+    destroyer: {},
+    cruiseShip: {},
+    battleship: {}
   };
 
   constructor() {
@@ -88,10 +92,29 @@ class InfoContextProvider extends Component {
           const hits = [];
           let enemyName = null;
           const shipTypes = [];
+          var submarine;
+          var destroyer;
+          var cruiseShip;
+          var battleship;
 
           response.ships &&
             response.ships.forEach(element => {
-              shipTypes.push(element.shipType);
+              if (element.ShipType === "Submarine") {
+                console.log("SUUUUUUUUUUUUUUUUUUB");
+                submarine = element;
+              } else if (element.ShipType === "Destroyer") {
+                console.log("DESTROOOOOOY");
+                destroyer = element;
+              } else if (element.ShipType === "Cruise Ship") {
+                console.log("CRUISSEEEEEEEEEE");
+                cruiseShip = element;
+              } else if (element.ShipType === "Battleship") {
+                console.log("BATBATBATBATBAT");
+                battleship = element;
+              }
+              console.log(element);
+
+              shipTypes.push(element.ShipType);
               for (var i = 0; i < element.location.length; i++) {
                 myShipLocations.push(element.location[i]);
               }
@@ -131,32 +154,35 @@ class InfoContextProvider extends Component {
               selfCanFire: response.turnInfo
                 ? response.turnInfo.selfCanFire
                 : false,
-                shipLog: [],
-      shipLogTemp: []
+              shipLog: [],
+              submarine: submarine,
+              destroyer: destroyer,
+              cruiseShip: cruiseShip,
+              battleship: battleship,
+              shipLogTemp: [],
+              shipsPlaced: response.shipsPlaced
             },
-            () => {if(this.state.locations.length===0){
-              this.setState({
-                shipsPlaced: false,
-                fleetInPosition: false,
-                shipsToPlace: { ship1: true }
-              });
-            }
-              this.state.locations[1] &&
+            () => {
+              if (response.shipsPlaced === false) {
                 this.setState({
-                  shipsPlaced: true,
+                  fleetInPosition: false,
+                  shipsToPlace: { ship1: true }
+                });
+              } else {
+                this.setState({
                   fleetInPosition: false,
                   shipsToPlace: { ship1: false }
                 });
+              }
+
               if (response.logged !== this.state.logged) {
-            
-                this.setState({logged: response.logged});
+                this.setState({ logged: response.logged });
               }
             }
           );
         }
       });
   };
-
 
   // lookForGame = () => {
   //   fetch("/api/lookForGame", {
@@ -176,19 +202,17 @@ class InfoContextProvider extends Component {
   //     });
   // };
 
-
-  fetchGames = () => {   
+  fetchGames = () => {
     fetch(`api/games`)
       .then(response => response.json())
       .then(response =>
         this.setState({ ...response }, () => {
           if (response.loggedPly !== this.context.logged) {
-            this.setState({logged: response.loggedPly});
+            this.setState({ logged: response.loggedPly });
           }
         })
       );
   };
-
 
   putShip = cellKey => {
     if (this.state.shipsPlaced === false) {
@@ -201,7 +225,11 @@ class InfoContextProvider extends Component {
 
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip1: { locations: locations, shipType: "Submarine" },
+              myShip1: {
+                locations: locations,
+                shipType: "Submarine",
+                horizontal: true
+              },
               shipLogTemp: [...locations]
             });
           } else {
@@ -211,7 +239,11 @@ class InfoContextProvider extends Component {
           locations.push(cellKey, cellKey + 100);
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip1: { locations: locations, shipType: "Submarine" },
+              myShip1: {
+                locations: locations,
+                shipType: "Submarine",
+                horizontal: false
+              },
               shipLogTemp: [...locations]
             });
           } else {
@@ -225,7 +257,11 @@ class InfoContextProvider extends Component {
           locations.push(cellKey, cellKey + 1, cellKey + 2);
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip2: { locations: locations, shipType: "Destroyer" },
+              myShip2: {
+                locations: locations,
+                shipType: "Destroyer",
+                horizontal: true
+              },
               shipLogTemp: [...locations]
             });
           } else {
@@ -235,7 +271,11 @@ class InfoContextProvider extends Component {
           locations.push(cellKey, cellKey + 100, cellKey + 200);
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip2: { locations: locations, shipType: "Destroyer" },
+              myShip2: {
+                locations: locations,
+                shipType: "Destroyer",
+                horizontal: false
+              },
               shipLogTemp: [...locations]
             });
           } else {
@@ -249,7 +289,11 @@ class InfoContextProvider extends Component {
           locations.push(cellKey, cellKey + 1, cellKey + 2, cellKey + 3);
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip3: { locations: locations, shipType: "Cruise Ship" },
+              myShip3: {
+                locations: locations,
+                shipType: "Cruise Ship",
+                horizontal: true
+              },
 
               shipLogTemp: [...locations]
             });
@@ -260,7 +304,11 @@ class InfoContextProvider extends Component {
           locations.push(cellKey, cellKey + 100, cellKey + 200, cellKey + 300);
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip3: { locations: locations, shipType: "Cruise Ship" },
+              myShip3: {
+                locations: locations,
+                shipType: "Cruise Ship",
+                horizontal: false
+              },
 
               shipLogTemp: [...locations]
             });
@@ -281,7 +329,11 @@ class InfoContextProvider extends Component {
           );
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip4: { locations: locations, shipType: "Battleship" },
+              myShip4: {
+                locations: locations,
+                shipType: "Battleship",
+                horizontal: true
+              },
               shipLogTemp: [...locations]
             });
           } else {
@@ -297,7 +349,11 @@ class InfoContextProvider extends Component {
           );
           if (this.checkValid(locations) === true) {
             this.setState({
-              myShip4: { locations: locations, shipType: "Battleship" },
+              myShip4: {
+                locations: locations,
+                shipType: "Battleship",
+                horizontal: false
+              },
               shipLogTemp: [...locations]
             });
           } else {
@@ -360,7 +416,6 @@ class InfoContextProvider extends Component {
     }
   };
 
-  
   postShips = () => {
     const post = [
       this.state.myShip1,
@@ -382,7 +437,7 @@ class InfoContextProvider extends Component {
       .then(response => {
         console.log(response);
         if (response.status === 201) {
-          this.setState({ shipsPlaced: true }, () => this.fetchGameView());
+          this.fetchGameView();
           return response.json();
         }
       })
@@ -431,14 +486,11 @@ class InfoContextProvider extends Component {
     });
   };
 
-
   rotate = direction => {
     this.setState({ rotate: direction }, () => {
       console.log(direction);
     });
   };
-
-
 
   handleShot = cellKey => {
     fetch(`/api/game_view/${this.state.gmId}/checkNext`)
@@ -520,27 +572,24 @@ class InfoContextProvider extends Component {
       });
   };
 
-
-
-
   render() {
     return (
       <InfoContext.Provider
-        value={{ ...this.state,
-         updateValue: this.updateValue, 
-         logOut: this.logOut, 
-         fetchGames: this.fetchGames, 
-         fetchGameView: this.fetchGameView, 
-         putShip: this.putShip, 
-         rotate: this.rotate,
-         placeShip:this.placeShip,
-         placeAgain:this.placeAgain, 
-         postShips: this.postShips,
-         handleShot: this.handleShot,
-         resetShot: this.resetShot,
-         postShots: this.postShots
-         }}
-
+        value={{
+          ...this.state,
+          updateValue: this.updateValue,
+          logOut: this.logOut,
+          fetchGames: this.fetchGames,
+          fetchGameView: this.fetchGameView,
+          putShip: this.putShip,
+          rotate: this.rotate,
+          placeShip: this.placeShip,
+          placeAgain: this.placeAgain,
+          postShips: this.postShips,
+          handleShot: this.handleShot,
+          resetShot: this.resetShot,
+          postShots: this.postShots
+        }}
       >
         {this.props.children}
       </InfoContext.Provider>

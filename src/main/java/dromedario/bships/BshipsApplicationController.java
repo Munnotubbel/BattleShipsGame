@@ -117,6 +117,7 @@ public class BshipsApplicationController {
             Map<String, Object> shipsMap = new HashMap<>();
             shipsMap.put("ShipType", ship.getShipType());
             shipsMap.put("location", ship.getLocations());
+            shipsMap.put("isHorizontal", ship.getHorizontal());
             shipsList.add(shipsMap);
         });
         return shipsList;
@@ -159,6 +160,13 @@ public class BshipsApplicationController {
         gameMap.put("player", PlayerOfGamePlayer(gamePlayer));
         gameMap.put("ships", ShipsOfGamePlayer(gamePlayer));
         gameMap.put("attacks", AttacksOfGamePlayer(gamePlayer));
+
+        if(gamePlayer.getShips().size()>3){
+            gameMap.put("shipsPlaced", true);
+        }
+        else{
+            gameMap.put("shipsPlaced", false);
+        }
 
         gamePlayer.getGame().getGamePlayers().forEach(gamePlayerOfGame -> {
             if (gamePlayerOfGame.getId()!= gamePlayer.getId()) {
@@ -205,7 +213,9 @@ public class BshipsApplicationController {
 
         });
         Integer myMax=(Collections.max(myTurns));
-        Integer enMax=(Collections.max(enTurns));
+        Integer enMax;
+        if(enGamePlayer(gamePlayer)!=null){enMax=(Collections.max(enTurns));}
+        else{enMax=0;}
 
         if (gamePlayer.getAttacks().size()>0){
             gamePlayer.getAttacks().stream().forEach(atk->{
@@ -295,6 +305,7 @@ public class BshipsApplicationController {
                 playerRepository.save(enPlayer.getPlayer());}
             gameOverMap.put("gameOver", true);
             gameOverMap.put("gameResult", "you lose");
+
         }
 
         else { gameOverMap.put("gameOver", false);}
@@ -320,7 +331,9 @@ public class BshipsApplicationController {
         List<Integer> myTurns = new ArrayList<>();
         List<Integer> enTurns= new ArrayList<>();
         Integer myShipNum = gamePlayer.getShips().size();
-        Integer enShipNum = enGamePlayer(gamePlayer).getShips().size();
+        Integer enShipNum;
+
+        if ( enGamePlayer(gamePlayer)!=null){enShipNum= enGamePlayer(gamePlayer).getShips().size();}
 
         game.gamePlayers.stream().forEach(gp->{
             if (gp.getPlayer().getUserName()==authentication.getName()){
@@ -340,7 +353,10 @@ public class BshipsApplicationController {
 
         });
         Integer myMax=(Collections.max(myTurns));
-        Integer enMax=(Collections.max(enTurns));
+
+        Integer enMax;
+        if(enGamePlayer(gamePlayer)!=null){enMax=(Collections.max(enTurns));}
+        else{enMax=0;}
 
         Boolean enCanFire;
         Boolean selfCanFire;
@@ -449,11 +465,12 @@ public class BshipsApplicationController {
                             enGmPly.put("opponent", gp);
                         }
                     });
+            return enGmPly.get("opponent");
         }else{
-            enGmPly.put("opponent", null);
+            return null;
         }
 
-        return enGmPly.get("opponent");
+
     }
 
 //--------------------------------------------------------------get Empty Game

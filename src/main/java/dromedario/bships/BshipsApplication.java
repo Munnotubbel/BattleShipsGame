@@ -116,25 +116,25 @@ public class BshipsApplication {
 			List<Integer> locSubGmPly1 = Arrays.asList(101,102);
 			List<Integer> locDesGmPly1 = Arrays.asList(203, 204, 205);
 			List<Integer> locCruGmPly1 = Arrays.asList(306, 307, 308, 309);
-			List<Integer> locBatGmPly1 = Arrays.asList(405, 404, 403, 402,401);
+			List<Integer> locBatGmPly1 = Arrays.asList(401, 402, 403, 404, 405);
 
 //--------------------------------------------------------------Ships Locations GamePlayer 2
-			List<Integer> locSubGmPly2 = Arrays.asList(1010, 1009);
-			List<Integer> locDesGmPly2 = Arrays.asList(908, 907, 906);
-			List<Integer> locCruGmPly2 = Arrays.asList(805, 804, 803, 802);
+			List<Integer> locSubGmPly2 = Arrays.asList(1009, 10010);
+			List<Integer> locDesGmPly2 = Arrays.asList(906, 907, 908);
+			List<Integer> locCruGmPly2 = Arrays.asList(802, 803, 804, 805);
 			List<Integer> locBatGmPly2 = Arrays.asList(706, 707,708,709,710);
 
 //--------------------------------------------------------------create Ships GamePlayer 1
-		Ship subGmPly1 = new Ship("Submarine",locSubGmPly1);
-		Ship desGmPly1 = new Ship("Destroyer",locDesGmPly1);
-		Ship cruGmPly1 = new Ship("Cruise Ship",locCruGmPly1);
-		Ship batGmPly1 = new Ship("Battleship",locBatGmPly1);
+		Ship subGmPly1 = new Ship("Submarine",locSubGmPly1,true);
+		Ship desGmPly1 = new Ship("Destroyer",locDesGmPly1,true);
+		Ship cruGmPly1 = new Ship("Cruise Ship",locCruGmPly1,true);
+		Ship batGmPly1 = new Ship("Battleship",locBatGmPly1,true);
 
 //--------------------------------------------------------------create Ships GamePlayer 2
-		Ship subGmPly2 = new Ship("Submarine",locSubGmPly2);
-		Ship desGmPly2 = new Ship("Destroyer",locDesGmPly2);
-		Ship cruGmPly2 = new Ship("Cruise Ship",locCruGmPly2);
-		Ship batGmPly2 = new Ship("Battleship",locBatGmPly2);
+		Ship subGmPly2 = new Ship("Submarine",locSubGmPly2,true);
+		Ship desGmPly2 = new Ship("Destroyer",locDesGmPly2,true);
+		Ship cruGmPly2 = new Ship("Cruise Ship",locCruGmPly2,true);
+		Ship batGmPly2 = new Ship("Battleship",locBatGmPly2,true);
 
 //--------------------------------------------------------------add Ships to GamePlayer 1
 			gmPly1.addShip(subGmPly1);
