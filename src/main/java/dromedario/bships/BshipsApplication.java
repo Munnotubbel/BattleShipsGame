@@ -119,7 +119,7 @@ public class BshipsApplication {
 			List<Integer> locBatGmPly1 = Arrays.asList(401, 402, 403, 404, 405);
 
 //--------------------------------------------------------------Ships Locations GamePlayer 2
-			List<Integer> locSubGmPly2 = Arrays.asList(1009, 10010);
+			List<Integer> locSubGmPly2 = Arrays.asList(1009, 1010);
 			List<Integer> locDesGmPly2 = Arrays.asList(906, 907, 908);
 			List<Integer> locCruGmPly2 = Arrays.asList(802, 803, 804, 805);
 			List<Integer> locBatGmPly2 = Arrays.asList(706, 707,708,709,710);

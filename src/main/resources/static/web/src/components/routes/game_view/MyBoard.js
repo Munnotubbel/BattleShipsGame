@@ -3,13 +3,150 @@ import Hitpoints from "./Hitpoints";
 import "../../../css/Water.css";
 import "../../../css/Boards.css";
 
+import Burning from "./Burning";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { InfoContext } from "../../../InfoContext";
 export default function MyBoard(props) {
   const themecon = useContext(InfoContext);
+  function shipImage(cellKey) {
+    if (themecon.submarine.location[0] === cellKey) {
+      if (themecon.submarine.isHorizontal === true) {
+        return (
+          <img
+            style={{
+              zIndex: 3000,
+              position: "absolute",
+              width: "5.4vw",
+              height: "auto",
+              left: 0,
+              top: "30%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626645/javaProject/submarine_hxr5hf.png"
+          />
+        );
+      } else {
+        return (
+          <img
+            style={{
+              transform: "rotate(90deg)",
+              transformOrigin: "left center ",
+              zIndex: 3000,
+              position: "absolute",
+              width: "5.4vw",
+              height: "auto",
+              left: "50%",
+              top: "-15%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626645/javaProject/submarine_hxr5hf.png"
+          />
+        );
+      }
+    }
 
+    if (themecon.destroyer.location[0] === cellKey) {
+      if (themecon.destroyer.isHorizontal === true) {
+        return (
+          <img
+            style={{
+              zIndex: 3000,
+              position: "absolute",
+              width: "8vw",
+              height: "auto",
+              left: 0,
+              top: "25%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626636/javaProject/destroyer_loejgp.png"
+          />
+        );
+      } else {
+        return (
+          <img
+            style={{
+              transform: "rotate(90deg)",
+              transformOrigin: "left center ",
+              zIndex: 3000,
+              position: "absolute",
+              width: "8vw",
+              height: "auto",
+              left: "50%",
+              top: "-35%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626636/javaProject/destroyer_loejgp.png"
+          />
+        );
+      }
+    }
+
+    if (themecon.cruiseShip.location[0] === cellKey) {
+      if (themecon.cruiseShip.isHorizontal === true) {
+        return (
+          <img
+            style={{
+              zIndex: 3000,
+              position: "absolute",
+              width: "11vw",
+              height: "auto",
+              left: 0,
+              top: "15%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626631/javaProject/cruiseShip_vrszgj.png"
+          />
+        );
+      } else {
+        return (
+          <img
+            style={{
+              transform: "rotate(90deg)",
+              transformOrigin: "left center ",
+              zIndex: 3000,
+              position: "absolute",
+              width: "11vw",
+              height: "auto",
+              left: "50%",
+              top: "-40%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626631/javaProject/cruiseShip_vrszgj.png"
+          />
+        );
+      }
+    }
+
+    if (themecon.battleship.location[0] === cellKey) {
+      if (themecon.battleship.isHorizontal === true) {
+        return (
+          <img
+            style={{
+              zIndex: 3000,
+              position: "absolute",
+              width: "13.5vw",
+              height: "auto",
+              left: 0,
+              top: "5%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626627/javaProject/battleship_trans_k2u0t5.png"
+          />
+        );
+      } else {
+        return (
+          <img
+            style={{
+              transform: "rotate(90deg)",
+              transformOrigin: "left center ",
+              zIndex: 3000,
+              position: "absolute",
+              width: "13.5vw",
+              height: "auto",
+              left: "50%",
+              top: "-50%"
+            }}
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626627/javaProject/battleship_trans_k2u0t5.png"
+          />
+        );
+      }
+    }
+  }
   function createOwnBoard() {
     let board = [];
 
@@ -28,50 +165,15 @@ export default function MyBoard(props) {
             themecon.battleship.location[0] == cellKey)
         ) {
           children.push(
-            <Col
-              className="allCells"
-              xs={1}
-              style={{ backgroundColor: "white" }}
-            >
-              x
+            <Col className="allCells" xs={1}>
+              {shipImage(cellKey)}
+              {props.enHits.includes(cellKey) && <Burning />}
             </Col>
           );
         } else if (props.enHits.includes(cellKey)) {
           children.push(
-            <Col
-              className="allCells"
-              xs={1}
-              style={{ backgroundColor: "white" }}
-            >
-              <div class="watergrid">
-                <div class="oil1"></div>
-                <div class="oil2"></div>
-                <div class="oil3"></div>
-                <div class="oil4"></div>
-                <div class="oil5"></div>
-                <div class="oil6"></div>
-                <div class="oil7"></div>
-                <div class="oil8"></div>
-                <div class="oil9"></div>
-                <div class="oil10"></div>
-                <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-main">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-              </div>
+            <Col className="allCells" xs={1}>
+              <Burning />
             </Col>
           );
         } else if (
@@ -95,12 +197,7 @@ export default function MyBoard(props) {
             themecon.battleship.location.includes(cellKey))
         ) {
           children.push(
-            <Col
-              className="allCells"
-              value={cellKey}
-              style={{ backgroundColor: "white" }}
-              xs={1}
-            ></Col>
+            <Col className="allCells" value={cellKey} xs={1}></Col>
           );
         } else if (props.enShots.includes(cellKey)) {
           children.push(
