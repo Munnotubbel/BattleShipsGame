@@ -45,7 +45,7 @@ class GameView extends Component {
                     width: "40%",
                     height: "30%",
                     backgroundColor: "rgba(255, 255, 255, 0.8)",
-                    zIndex: "2000"
+                    zIndex: "10000"
                   }}
                 >
                   <h2 style={{ position: "absolute", top: "35%", left: "40%" }}>
@@ -182,30 +182,6 @@ class GameView extends Component {
                 ) : null}
               </Col>
             </Row>
-            {this.context.sunk.length !== 0 && (
-              <Row>
-                <Col>
-                  {this.context.sunk[0].Battleship === true
-                    ? "Battleship sunk"
-                    : null}
-                </Col>
-                <Col>
-                  {this.context.sunk[0].CruiseShip === true
-                    ? "Cruise Ship sunk"
-                    : null}
-                </Col>
-                <Col>
-                  {this.context.sunk[0].Destroyer === true
-                    ? "Destroyer sunk"
-                    : null}
-                </Col>
-                <Col>
-                  {this.context.sunk[0].Submarine === true
-                    ? "Submarine sunk"
-                    : null}
-                </Col>
-              </Row>
-            )}
           </Container>
         );
       } else {

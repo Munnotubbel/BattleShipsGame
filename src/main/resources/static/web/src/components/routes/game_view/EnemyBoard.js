@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import Hitpoints from "./Hitpoints";
 import "../../../css/Boards.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TargetLock from "./TargetLock";
+import { InfoContext } from "../../../InfoContext";
 export default function EnemyBoard(props) {
+  const themecon = useContext(InfoContext);
   function createEnemyBoard() {
     let enemyBoard = [];
 
@@ -103,6 +105,22 @@ export default function EnemyBoard(props) {
           <Container className="boardContainer">{createEnemyBoard()}</Container>
         </Col>
       </Row>
+      {themecon.sunk.length !== 0 && (
+        <Row style={{ fontSize: "10px" }}>
+          <Col>
+            {themecon.sunk[0].Battleship === true ? "Battleship sunk" : null}
+          </Col>
+          <Col>
+            {themecon.sunk[0].CruiseShip === true ? "Cruise Ship sunk" : null}
+          </Col>
+          <Col>
+            {themecon.sunk[0].Destroyer === true ? "Destroyer sunk" : null}
+          </Col>
+          <Col>
+            {themecon.sunk[0].Submarine === true ? "Submarine sunk" : null}
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 }
