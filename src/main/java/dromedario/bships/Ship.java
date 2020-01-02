@@ -15,6 +15,7 @@ public class Ship {
     private long id;
     private String shipType ;
     private Boolean horizontal;
+    private Boolean sunk;
 
 
     @ElementCollection
@@ -31,6 +32,7 @@ public class Ship {
         this.shipType = ShipType;
         this.shipLocations = shipLocations;
         this.horizontal = isHorizontal;
+        this.sunk=false;
     }
 
 //----------------------------------------------------------------ID
@@ -60,9 +62,15 @@ public class Ship {
     }
 
 //----------------------------------------------------------------is horizontal
-
-
     public Boolean getHorizontal() {
         return horizontal;
+    }
+//----------------------------------------------------------------sunk
+    public Boolean getSunk() {
+        return sunk;
+    }
+
+    public void setSunk(Boolean sunk) {
+        this.sunk = sunk;
     }
 }

@@ -65,7 +65,7 @@ public class BshipsApplicationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/games")
     public Map<String, Object> getGames() {
-            System.out.println("------------IN GAMES ROUTE");
+
             List<Object> gamesList = new ArrayList<>();
 
         gameRepository.findAll(Sort.by(Sort.Direction.DESC, "gameId")).stream().forEach(game -> {
@@ -190,6 +190,11 @@ public class BshipsApplicationController {
         List<Integer> enHits=new ArrayList<>();
         List<Integer> EnAttacks=new ArrayList<>();
         List<Integer> enTurns= new ArrayList<>();
+        List<Object> enShipStatus=new ArrayList<>();
+        Boolean subSunk=false;
+        Boolean desSunk=false;
+        Boolean cruSunk=false;
+        Boolean batSunk=false;
 
         GamePlayer enPlayer = enGamePlayer(gamePlayer);
         Long gameId = gamePlayer.getGame().getGameId();
@@ -227,10 +232,40 @@ public class BshipsApplicationController {
 
                 if (gamePlayerOfGame.getShips().size()>0 && myAttacks.size()>0){
                     List<Integer> EnShips=new ArrayList<>();
+                    Map<String, Object> enShipSunk = new HashMap<>();
                     gamePlayerOfGame.getShips().stream().forEach(ship->{
+
+                        List <Integer> enShipPos= new ArrayList<>(ship.getLocations());
+                        enShipPos.removeAll(myAttacks);
+                        if (ship.getShipType()=="Submarine" )
+                        {if (enShipPos.size()<1)
+                        {enShipSunk.put("Submarine", true);
+
+                        }else{enShipSunk.put("Submarine", false);}}
+
+                        else if (ship.getShipType()=="Destroyer" )
+                        {if (enShipPos.size()<1)
+                        {enShipSunk.put("Destroyer", true);
+
+                        }else{enShipSunk.put("Destroyer", false);}}
+
+                        else if (ship.getShipType()=="Cruise Ship" )
+                        {if (enShipPos.size()<1)
+                        {enShipSunk.put("CruiseShip", true);
+
+                        }else{enShipSunk.put("CruiseShip", false);}}
+
+                        else if (ship.getShipType()=="Battleship" )
+                        {if (enShipPos.size()<1)
+                        {enShipSunk.put("Battleship", true);
+
+                        }else{enShipSunk.put("Battleship", false);}}
+
+
                         ship.getLocations().stream().forEach(pos->EnShips.add(pos)
                         );
                     });
+                    enShipStatus.add(enShipSunk);
                     Collection<Integer> similar = new HashSet<Integer>( EnShips );
                     similar.retainAll( myAttacks );
                     myHits.addAll(similar);
@@ -249,6 +284,7 @@ public class BshipsApplicationController {
                     similar.retainAll( myShipsPos );
                     enHits.addAll(similar);
                 }
+                gameOverMap.put("sunk", enShipStatus);
                 gameOverMap.put("EnHits", enHits);
                 gameOverMap.put("myHits", myHits);
 
@@ -371,6 +407,8 @@ public class BshipsApplicationController {
         else {enCanFire= true;
             selfCanFire=false;}
 
+
+
         Map<String, Object> turnInfo = new HashMap<>();
         turnInfo.put("selfCanFire", selfCanFire );
         turnInfo.put("EnCanFire", enCanFire );
@@ -437,7 +475,7 @@ public class BshipsApplicationController {
         return myGmIdList;
     }
 
-    //--------------------------------------------------------------Enemy GamePlayer
+    //--------------------------------------------------------------my GamePlayer
     private GamePlayer myGamePlayerOfGame(Game game,Authentication authentication){
         Map<String, GamePlayer> myGmPly = new HashMap<>();
         if(game.getGamePlayers().size() >0){

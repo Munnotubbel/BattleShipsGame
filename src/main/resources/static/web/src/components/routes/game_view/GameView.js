@@ -54,7 +54,6 @@ class GameView extends Component {
                 </Col>{" "}
               </Row>
             ) : null}
-
             {this.context.round && (
               <Row className="justify-content-md-center">
                 <Col xs="2"></Col>
@@ -68,7 +67,6 @@ class GameView extends Component {
                 <Col xs="2"></Col>
               </Row>
             )}
-
             <Row>
               <Col xs={6}>
                 {" "}
@@ -184,6 +182,30 @@ class GameView extends Component {
                 ) : null}
               </Col>
             </Row>
+            {this.context.sunk.length !== 0 && (
+              <Row>
+                <Col>
+                  {this.context.sunk[0].Battleship === true
+                    ? "Battleship sunk"
+                    : null}
+                </Col>
+                <Col>
+                  {this.context.sunk[0].CruiseShip === true
+                    ? "Cruise Ship sunk"
+                    : null}
+                </Col>
+                <Col>
+                  {this.context.sunk[0].Destroyer === true
+                    ? "Destroyer sunk"
+                    : null}
+                </Col>
+                <Col>
+                  {this.context.sunk[0].Submarine === true
+                    ? "Submarine sunk"
+                    : null}
+                </Col>
+              </Row>
+            )}
           </Container>
         );
       } else {

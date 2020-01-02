@@ -8,7 +8,12 @@ export default function TurnCounter(props) {
     <div className="counterBorder">
       {infoCon.selfCanFire ? (
         <div>
-          <div className="counterCenter">{props.round}</div>
+          {infoCon.round < 10 ? (
+            <div className="counterCenter">{props.round}</div>
+          ) : (
+            <div className="counterCenter2">{props.round}</div>
+          )}
+
           <div className="counterCenterText">turn</div>
         </div>
       ) : (

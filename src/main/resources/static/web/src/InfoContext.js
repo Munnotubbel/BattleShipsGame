@@ -26,7 +26,8 @@ class InfoContextProvider extends Component {
     submarine: {},
     destroyer: {},
     cruiseShip: {},
-    battleship: {}
+    battleship: {},
+    sunk: null
   };
 
   constructor() {
@@ -50,20 +51,30 @@ class InfoContextProvider extends Component {
     if (this.state.pull === true) {
       fetch(`/api/game_view/${this.state.gmId}/checkNext`) // Any output from the script will go to the "result" div
         .then(response => response.json())
-        .then(response =>
-          this.setState(
-            {
-              round: response.round,
-              gameOver: response.gameOver,
-              gameResult: response.gameResult,
-              selfCanFire: response.selfCanFire
-            },
-            () => {
-              console.log("POLL!!");
-              console.log(this.state);
-            }
-          )
-        )
+        .then(response => {
+          if (
+            this.state.round !== response.round ||
+            this.state.gameOver !== response.gameOver ||
+            this.state.selfCanFire !== response.selfCanFire ||
+            this.state.gameResult !== response.gameResult
+          ) {
+            this.setState(
+              {
+                round: response.round,
+
+                gameOver: response.gameOver,
+
+                gameResult: response.gameResult,
+
+                selfCanFire: response.selfCanFire
+              },
+              () => {
+                console.log("POLL!!");
+                console.log(this.state);
+              }
+            );
+          }
+        })
         .catch(error => console.log(error));
     }
   };
@@ -138,6 +149,7 @@ class InfoContextProvider extends Component {
 
           this.setState(
             {
+              sunk: response.sunk,
               gameOver: response.gameOver ? response.gameOver : false,
               gameResult: response.gameResult ? response.gameResult : "",
               myHits: response.myHits ? response.myHits : [],

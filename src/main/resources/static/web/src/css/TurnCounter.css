@@ -8,13 +8,21 @@
     position: relative;
 }
 
-.counterCenter {
-
-
+.counterCenter,
+.counterCenter2 {
     position: absolute;
-    font-size: 6vw;
-    top: -30%;
-    left: 25%
+    font-size: calc(15px + 2vw);
+
+}
+
+.counterCenter {
+    top: 10%;
+    left: 35%
+}
+
+.counterCenter2 {
+    top: 10%;
+    left: 22%
 }
 
 .counterCenterText {

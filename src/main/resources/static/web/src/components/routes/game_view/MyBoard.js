@@ -125,7 +125,7 @@ export default function MyBoard(props) {
               left: 0,
               top: "5%"
             }}
-            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577626627/javaProject/battleship_trans_k2u0t5.png"
+            src="https://res.cloudinary.com/munnotubbel/image/upload/v1577986664/javaProject/battleship_trans_zg385u.png"
           />
         );
       } else {
