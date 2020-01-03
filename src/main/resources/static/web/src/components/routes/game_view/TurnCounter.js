@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import "../../../css/TurnCounter.css";
 import { InfoContext } from "../../../InfoContext";
-export default function TurnCounter(props) {
+export default function TurnCounter() {
   const infoCon = useContext(InfoContext);
 
   return (
@@ -9,9 +9,9 @@ export default function TurnCounter(props) {
       {infoCon.selfCanFire ? (
         <div>
           {infoCon.round < 10 ? (
-            <div className="counterCenter">{props.round}</div>
+            <div className="counterCenter">{infoCon.round}</div>
           ) : (
-            <div className="counterCenter2">{props.round}</div>
+            <div className="counterCenter2">{infoCon.round}</div>
           )}
 
           <div className="counterCenterText">turn</div>

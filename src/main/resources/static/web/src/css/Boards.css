@@ -716,3 +716,45 @@
   animation: inandout2 6s ease-in infinite;
 
 }
+
+
+
+.speechbubble {
+  z-index: 100;
+  position: absolute;
+  top: -2.5vw;
+  height: 1.5vw;
+
+  background: white;
+  display: inline-block;
+  padding: 2px;
+  border-radius: 20px;
+  /* margin-top: 50px; */
+  font-size: 0.7vw;
+  text-align: center;
+}
+
+.pointer {
+  z-index: 50;
+  height: 0.9vw;
+  width: 0.9vw;
+  background: white;
+  /* margin: 0 auto; */
+  transform: rotate(45deg);
+  /* border-radius: 0 0 1px 0; */
+  top: -1.5vw;
+  position: absolute;
+  left: 55%
+}
+
+.actionButton {
+  white-space: nowrap;
+  font-size: calc(5px+0.2vw);
+  width: auto;
+  /* display: inline-block; */
+  height: auto;
+  background-color: white;
+  border-radius: 0.5vw;
+  border: 1px solid black;
+  padding: 3px
+}

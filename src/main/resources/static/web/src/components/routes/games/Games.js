@@ -17,8 +17,6 @@ export default class Games extends Component {
     this.context.fetchGames();
   };
 
-
-
   getResult = score => {
     if (score !== null) {
       switch (score[0]) {
@@ -47,8 +45,8 @@ export default class Games extends Component {
   };
 
   render() {
-    const { updateValue,games,myGameIds } = this.context;
-console.log(this.context)
+    const { updateValue, games, myGameIds } = this.context;
+    console.log(this.context);
     if (games) {
       return (
         <CardDeck>

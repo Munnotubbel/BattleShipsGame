@@ -14,8 +14,8 @@ import { withRouter } from "react-router-dom";
 import { InfoContext } from "../../../InfoContext";
 
 function NavBar(props, history) {
-const themecon = useContext(InfoContext);
-  const { updateValue,logOut } = themecon;
+  const themecon = useContext(InfoContext);
+  const { updateValue, logOut } = themecon;
 
   const [loginShow, setLoginShow] = React.useState(false);
   const [registerShow, setRegisterShow] = React.useState(false);
@@ -32,7 +32,6 @@ const themecon = useContext(InfoContext);
     </Popover>
   );
 
-
   const lookForGame = () => {
     fetch("/api/lookForGame", {
       method: "POST"
@@ -44,6 +43,7 @@ const themecon = useContext(InfoContext);
       .then(res => {
         if (res.gameId) {
           updateValue("gmId", res.gameId);
+
           props.history.push("/web/game_view");
         } else {
           overlayTrigger.current.show();

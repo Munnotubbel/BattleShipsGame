@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { InfoContext } from "../../../InfoContext";
 import TurnCounter from "./TurnCounter";
-import { pollWrapper } from "poll-js";
+
 class GameView extends Component {
   static contextType = InfoContext;
 
@@ -58,11 +58,7 @@ class GameView extends Component {
               <Row className="justify-content-md-center">
                 <Col xs="2"></Col>
                 <Col xs="auto">
-                  <TurnCounter
-                    gameOver={this.context.gameOver}
-                    round={this.context.round}
-                    selfCanFire={this.context.selfCanFire}
-                  ></TurnCounter>
+                  <TurnCounter></TurnCounter>
                 </Col>
                 <Col xs="2"></Col>
               </Row>
@@ -96,35 +92,50 @@ class GameView extends Component {
                 {this.context.fleetInPosition === true &&
                 this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.postShips()}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.postShips()}
+                    >
                       post ships
                     </button>
                   </Grid>
                 ) : null}
                 {this.context.shipsToPlace.ship1 === true ? (
                   <Grid item>
-                    <button onClick={() => this.context.placeShip(1, 2)}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.placeShip(1, 2)}
+                    >
                       Place First Ship
                     </button>
                   </Grid>
                 ) : null}
                 {this.context.shipsToPlace.ship2 === true ? (
                   <Grid item>
-                    <button onClick={() => this.context.placeShip(2, 3)}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.placeShip(2, 3)}
+                    >
                       Place Second Ship
                     </button>
                   </Grid>
                 ) : null}
                 {this.context.shipsToPlace.ship3 === true ? (
                   <Grid item>
-                    <button onClick={() => this.context.placeShip(3, 4)}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.placeShip(3, 4)}
+                    >
                       Place Third Ship
                     </button>
                   </Grid>
                 ) : null}
                 {this.context.shipsToPlace.ship4 === true ? (
                   <Grid item>
-                    <button onClick={() => this.context.placeShip(4, null)}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.placeShip(4, null)}
+                    >
                       Place Fourth Ship
                     </button>
                   </Grid>
@@ -134,7 +145,10 @@ class GameView extends Component {
                 {" "}
                 {this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.placeAgain()}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.placeAgain()}
+                    >
                       again
                     </button>
                   </Grid>
@@ -144,29 +158,44 @@ class GameView extends Component {
                 {this.context.fleetInPosition === false &&
                 this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.rotate("horizontal")}>
-                      horizontal
-                    </button>
+                    {this.context.rotate === "horizontal" ? (
+                      <button
+                        className="actionButton"
+                        onClick={() => this.context.rotateShip(null)}
+                      >
+                        to vertical
+                      </button>
+                    ) : (
+                      <button
+                        className="actionButton"
+                        onClick={() => this.context.rotateShip("horizontal")}
+                      >
+                        to horizontal
+                      </button>
+                    )}
                   </Grid>
                 ) : null}
               </Col>
-              <Col xs={1}>
+              {/* <Col xs={1}>
                 {this.context.fleetInPosition === false &&
                 this.context.shipsPlaced === false ? (
                   <Grid item>
-                    <button onClick={() => this.context.rotate(null)}>
+                    <button className="actionButton" onClick={() => this.context.rotate(null)}>
                       vertical
                     </button>
                   </Grid>
                 ) : null}
-              </Col>
+              </Col> */}
               <Col xs={3}></Col>
               <Col xs={1}>
                 {this.context.shipsPlaced === true &&
                 this.context.selfCanFire === true &&
                 this.context.shots.length > 0 ? (
                   <Grid item>
-                    <button onClick={() => this.context.resetShot()}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.resetShot()}
+                    >
                       reset shot
                     </button>
                   </Grid>
@@ -175,7 +204,10 @@ class GameView extends Component {
               <Col xs={1}>
                 {this.context.shotsPlaced === true ? (
                   <Grid item>
-                    <button onClick={() => this.context.postShots()}>
+                    <button
+                      className="actionButton"
+                      onClick={() => this.context.postShots()}
+                    >
                       post Shots
                     </button>
                   </Grid>

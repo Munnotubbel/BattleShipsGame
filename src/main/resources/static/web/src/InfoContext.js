@@ -4,6 +4,7 @@ export const InfoContext = createContext();
 
 class InfoContextProvider extends Component {
   state = {
+    sunk: [],
     selfCanFire: false,
     gameOver: false,
     gameResult: "",
@@ -26,8 +27,7 @@ class InfoContextProvider extends Component {
     submarine: {},
     destroyer: {},
     cruiseShip: {},
-    battleship: {},
-    sunk: null
+    battleship: {}
   };
 
   constructor() {
@@ -111,19 +111,14 @@ class InfoContextProvider extends Component {
           response.ships &&
             response.ships.forEach(element => {
               if (element.ShipType === "Submarine") {
-                console.log("SUUUUUUUUUUUUUUUUUUB");
                 submarine = element;
               } else if (element.ShipType === "Destroyer") {
-                console.log("DESTROOOOOOY");
                 destroyer = element;
               } else if (element.ShipType === "Cruise Ship") {
-                console.log("CRUISSEEEEEEEEEE");
                 cruiseShip = element;
               } else if (element.ShipType === "Battleship") {
-                console.log("BATBATBATBATBAT");
                 battleship = element;
               }
-              console.log(element);
 
               shipTypes.push(element.ShipType);
               for (var i = 0; i < element.location.length; i++) {
@@ -149,7 +144,7 @@ class InfoContextProvider extends Component {
 
           this.setState(
             {
-              sunk: response.sunk,
+              sunk: response.sunk ? response.sunk : null,
               gameOver: response.gameOver ? response.gameOver : false,
               gameResult: response.gameResult ? response.gameResult : "",
               myHits: response.myHits ? response.myHits : [],
@@ -374,6 +369,7 @@ class InfoContextProvider extends Component {
         }
       }
     }
+    console.log(this.state.shipLogTemp);
   };
 
   placeShip = number => {
@@ -498,9 +494,10 @@ class InfoContextProvider extends Component {
     });
   };
 
-  rotate = direction => {
+  rotateShip = direction => {
     this.setState({ rotate: direction }, () => {
       console.log(direction);
+      this.putShip(this.state.shipLogTemp[0]);
     });
   };
 
@@ -594,7 +591,7 @@ class InfoContextProvider extends Component {
           fetchGames: this.fetchGames,
           fetchGameView: this.fetchGameView,
           putShip: this.putShip,
-          rotate: this.rotate,
+          rotateShip: this.rotateShip,
           placeShip: this.placeShip,
           placeAgain: this.placeAgain,
           postShips: this.postShips,

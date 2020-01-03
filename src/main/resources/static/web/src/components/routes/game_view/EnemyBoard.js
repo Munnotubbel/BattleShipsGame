@@ -92,6 +92,43 @@ export default function EnemyBoard(props) {
 
   return (
     <Container>
+      {themecon.sunk && themecon.sunk.length > 0 ? (
+        <Row>
+          <Col>
+            {themecon.sunk[0].Battleship === true ? (
+              <div>
+                <div class="speechbubble">Battleship sunk</div>
+                <div class="pointer"></div>
+              </div>
+            ) : null}
+          </Col>
+          <Col>
+            {themecon.sunk[0].CruiseShip === true ? (
+              <div>
+                <div class="speechbubble">Cruise Ship sunk</div>
+                <div class="pointer"></div>
+              </div>
+            ) : null}
+          </Col>
+          <Col>
+            {themecon.sunk[0].Destroyer === true ? (
+              <div>
+                <div class="speechbubble">Destroyer sunk</div>
+                <div class="pointer"></div>
+              </div>
+            ) : null}
+          </Col>
+          <Col>
+            {themecon.sunk[0].Submarine === true ? (
+              <div>
+                <div class="speechbubble">Submarine sunk</div>
+                <div class="pointer"></div>
+              </div>
+            ) : null}
+          </Col>
+          <Col></Col>
+        </Row>
+      ) : null}
       <Row>
         <Col>
           {" "}
@@ -105,22 +142,6 @@ export default function EnemyBoard(props) {
           <Container className="boardContainer">{createEnemyBoard()}</Container>
         </Col>
       </Row>
-      {themecon.sunk.length !== 0 && (
-        <Row style={{ fontSize: "10px" }}>
-          <Col>
-            {themecon.sunk[0].Battleship === true ? "Battleship sunk" : null}
-          </Col>
-          <Col>
-            {themecon.sunk[0].CruiseShip === true ? "Cruise Ship sunk" : null}
-          </Col>
-          <Col>
-            {themecon.sunk[0].Destroyer === true ? "Destroyer sunk" : null}
-          </Col>
-          <Col>
-            {themecon.sunk[0].Submarine === true ? "Submarine sunk" : null}
-          </Col>
-        </Row>
-      )}
     </Container>
   );
 }

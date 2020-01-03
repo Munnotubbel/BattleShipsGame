@@ -15,6 +15,7 @@ export default function MyBoard(props) {
       if (themecon.submarine.isHorizontal === true) {
         return (
           <img
+            alt="submarine"
             style={{
               zIndex: 3000,
               position: "absolute",
@@ -29,6 +30,7 @@ export default function MyBoard(props) {
       } else {
         return (
           <img
+            alt="submarine"
             style={{
               transform: "rotate(90deg)",
               transformOrigin: "left center ",
@@ -49,6 +51,7 @@ export default function MyBoard(props) {
       if (themecon.destroyer.isHorizontal === true) {
         return (
           <img
+            alt="destroyer"
             style={{
               zIndex: 3000,
               position: "absolute",
@@ -63,6 +66,7 @@ export default function MyBoard(props) {
       } else {
         return (
           <img
+            alt="destroyer"
             style={{
               transform: "rotate(90deg)",
               transformOrigin: "left center ",
@@ -83,6 +87,7 @@ export default function MyBoard(props) {
       if (themecon.cruiseShip.isHorizontal === true) {
         return (
           <img
+            alt="cruiseShip"
             style={{
               zIndex: 3000,
               position: "absolute",
@@ -97,6 +102,7 @@ export default function MyBoard(props) {
       } else {
         return (
           <img
+            alt="cruiseShip"
             style={{
               transform: "rotate(90deg)",
               transformOrigin: "left center ",
@@ -117,6 +123,7 @@ export default function MyBoard(props) {
       if (themecon.battleship.isHorizontal === true) {
         return (
           <img
+            alt="battleship"
             style={{
               zIndex: 3000,
               position: "absolute",
@@ -131,6 +138,7 @@ export default function MyBoard(props) {
       } else {
         return (
           <img
+            alt="battleship"
             style={{
               transform: "rotate(90deg)",
               transformOrigin: "left center ",
@@ -159,10 +167,10 @@ export default function MyBoard(props) {
 
         if (
           themecon.shipsPlaced === true &&
-          (themecon.destroyer.location[0] == cellKey ||
-            themecon.submarine.location[0] == cellKey ||
-            themecon.cruiseShip.location[0] == cellKey ||
-            themecon.battleship.location[0] == cellKey)
+          (themecon.destroyer.location[0] === cellKey ||
+            themecon.submarine.location[0] === cellKey ||
+            themecon.cruiseShip.location[0] === cellKey ||
+            themecon.battleship.location[0] === cellKey)
         ) {
           children.push(
             <Col className="allCells" xs={1}>
@@ -185,7 +193,7 @@ export default function MyBoard(props) {
             <Col
               className="allCells"
               value={cellKey}
-              style={{ backgroundColor: "yellow" }}
+              style={{ backgroundColor: "white" }}
               xs={1}
             ></Col>
           );
@@ -239,7 +247,7 @@ export default function MyBoard(props) {
   return (
     <Container>
       <Row>
-        <Col>
+        <Col xs={12}>
           {" "}
           {props.enHits && (
             <Hitpoints

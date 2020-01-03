@@ -51,7 +51,7 @@ div.winlos.sunk:after {
   position: absolute;
   top: -5px;
   left: 34%;
-  z-index: 100;
+  z-index: 1000;
   font-family: Arial, sans-serif;
   -webkit-transform: rotate(-15deg);
   /* Safari */
