@@ -191,10 +191,6 @@ public class BshipsApplicationController {
         List<Integer> EnAttacks=new ArrayList<>();
         List<Integer> enTurns= new ArrayList<>();
         List<Object> enShipStatus=new ArrayList<>();
-        Boolean subSunk=false;
-        Boolean desSunk=false;
-        Boolean cruSunk=false;
-        Boolean batSunk=false;
 
         GamePlayer enPlayer = enGamePlayer(gamePlayer);
         Long gameId = gamePlayer.getGame().getGameId();

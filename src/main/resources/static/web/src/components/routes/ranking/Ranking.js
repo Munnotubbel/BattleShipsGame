@@ -1,21 +1,15 @@
-import React, { Component } from "react";
+import React, { useContext, useEffect } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import Card from "react-bootstrap/Card";
+import { InfoContext } from "../../../InfoContext";
 
-export default class Ranking extends Component {
+export default function Ranking() {
+  const infocon = useContext(InfoContext);
+  useEffect(() => {
+    infocon.fetchRanking();
+  }, []);
 
-  state = {};
-  
-  componentDidMount = () => {
-    this.fetchRanking();
-  };
-  fetchRanking = () => {
-    fetch(`api/ranking`)
-      .then(response => response.json())
-      .then(response => this.setState({ ranking: response }));
-  };
-
-  createRanking = () => {
+  function createRanking() {
     const players = [];
     const columns = [
       {
@@ -49,8 +43,8 @@ export default class Ranking extends Component {
         sort: true
       }
     ];
-    if (this.state.ranking) {
-      this.state.ranking.forEach(player => {
+    if (infocon.ranking) {
+      infocon.ranking.forEach(player => {
         let name = player.UserName;
         let wins = 0;
         let loses = 0;
@@ -77,23 +71,27 @@ export default class Ranking extends Component {
       );
       players.forEach((player, index) => {
         player["rank"] = index + 1;
-        console.log(player);
       });
       return (
-        <BootstrapTable keyField="index" data={players} columns={columns} />
+        <BootstrapTable
+          hover={true}
+          bordered={false}
+          classes="table-borderless"
+          keyField="index"
+          data={players}
+          columns={columns}
+        />
       );
-    }
-  };
-
-  render() {
-    if (this.state.ranking) {
-      return (
-        <Card className="one-edge-shadow" style={{ width: "80%" }}>
-          {this.state.ranking && <Card.Body>{this.createRanking()}</Card.Body>}
-        </Card>
-      );
-    } else {
-      return <h1>...loading</h1>;
     }
   }
+
+  return (
+    <Card className="one-edge-shadow" style={{ width: "80%" }}>
+      {infocon.ranking ? (
+        <Card.Body>{createRanking()}</Card.Body>
+      ) : (
+        <Card.Body>...loading</Card.Body>
+      )}
+    </Card>
+  );
 }

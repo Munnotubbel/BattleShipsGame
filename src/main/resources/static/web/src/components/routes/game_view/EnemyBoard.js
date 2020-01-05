@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TargetLock from "./TargetLock";
 import { InfoContext } from "../../../InfoContext";
+
 export default function EnemyBoard(props) {
   const themecon = useContext(InfoContext);
   function createEnemyBoard() {

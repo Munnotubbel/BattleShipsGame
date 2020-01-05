@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -9,15 +9,17 @@ import Button from "react-bootstrap/Button";
 import ReactTimeAgo from "react-time-ago";
 import { InfoContext } from "../../../InfoContext";
 
-export default class Games extends Component {
-  static contextType = InfoContext;
-  state = {};
+export default function Games() {
+  const infocon = useContext(InfoContext);
 
-  componentWillMount = () => {
-    this.context.fetchGames();
-  };
+  // const useMountEffect = fun => useEffect(fun, []);
+  // useMountEffect(infocon.fetchGames());
 
-  getResult = score => {
+  useEffect(() => {
+    infocon.fetchGames();
+  }, []);
+
+  function getResult(score) {
     if (score !== null) {
       switch (score[0]) {
         case "1.0":
@@ -42,96 +44,92 @@ export default class Games extends Component {
       }
     }
     return "";
-  };
+  }
 
-  render() {
-    const { updateValue, games, myGameIds } = this.context;
-    console.log(this.context);
-    if (games) {
-      return (
-        <CardDeck>
-          {games.map(game => {
-            return (
-              <Card
-                key={game.gmId}
-                className="text-center one-edge-shadow gameCards"
-              >
-                <Card.Header>Game {game.gmId}</Card.Header>
-                {game.ingamePlayer && (
-                  <Card.Body>
-                    <Card.Title>
-                      <Container>
-                        {game.ingamePlayer.map((ply, index) => {
-                          if (index === 0) {
-                            return (
-                              <div key="player1">
-                                <Row className="justify-content-md-center">
-                                  <div>{ply.name}</div>
-                                  {this.getResult(ply.score)}
-                                </Row>
-                                <Row
-                                  style={{
-                                    fontSize: "calc(5px + 0.6vw)",
-                                    marginTop: "5px",
-                                    marginBottom: "5px"
-                                  }}
-                                  className="justify-content-md-center"
-                                >
-                                  VS
-                                </Row>
-                              </div>
-                            );
-                          } else {
-                            return (
+  if (infocon.games) {
+    return (
+      <CardDeck>
+        {infocon.games.map(game => {
+          return (
+            <Card
+              key={game.gmId}
+              className="text-center one-edge-shadow gameCards"
+            >
+              <Card.Header>Game {game.gmId}</Card.Header>
+              {game.ingamePlayer && (
+                <Card.Body>
+                  <Card.Title>
+                    <Container>
+                      {game.ingamePlayer.map((ply, index) => {
+                        if (index === 0) {
+                          return (
+                            <div key="player1">
+                              <Row className="justify-content-md-center">
+                                <div>{ply.name}</div>
+                                {getResult(ply.score)}
+                              </Row>
                               <Row
-                                key="player2"
+                                style={{
+                                  fontSize: "calc(5px + 0.6vw)",
+                                  marginTop: "5px",
+                                  marginBottom: "5px"
+                                }}
                                 className="justify-content-md-center"
                               >
-                                <div>{ply.name}</div>
-                                {this.getResult(ply.score)}
+                                VS
                               </Row>
-                            );
-                          }
-                        })}
-                      </Container>
-                    </Card.Title>
-                    {myGameIds !== [null] &&
-                    myGameIds.includes(game.gmId) &&
-                    game.ingamePlayer[0].score.length === 0 ? (
-                      <NavLink
-                        to={{
-                          pathname: "/web/game_view"
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <Row
+                              key="player2"
+                              className="justify-content-md-center"
+                            >
+                              <div>{ply.name}</div>
+                              {getResult(ply.score)}
+                            </Row>
+                          );
+                        }
+                      })}
+                    </Container>
+                  </Card.Title>
+                  {infocon.myGameIds !== [null] &&
+                  infocon.myGameIds.includes(game.gmId) &&
+                  game.ingamePlayer[0].score.length === 0 ? (
+                    <NavLink
+                      to={{
+                        pathname: "/web/game_view"
+                      }}
+                      onClick={() => infocon.updateValue("gmId", game.gmId)}
+                    >
+                      <Button
+                        style={{
+                          position: "relative",
+                          fontSize: "12px"
                         }}
-                        onClick={() => updateValue("gmId", game.gmId)}
+                        className="enterGameBtn"
+                        onClick={() => infocon.updateValue("gmId", game.gmId)}
                       >
-                        <Button
-                          style={{
-                            position: "relative",
-                            fontSize: "12px"
-                          }}
-                          className="enterGameBtn"
-                          onClick={() => updateValue("gmId", game.gmId)}
-                        >
-                          Enter Game
-                        </Button>
-                      </NavLink>
-                    ) : null}
-                  </Card.Body>
-                )}
+                        Enter Game
+                      </Button>
+                    </NavLink>
+                  ) : null}
+                </Card.Body>
+              )}
 
-                <Card.Footer
-                  className="text-muted"
-                  style={{ fontSize: "calc(5px + 0.3vw)" }}
-                >
-                  created: <ReactTimeAgo date={game.created} />
-                </Card.Footer>
-              </Card>
-            );
-          })}
-        </CardDeck>
-      );
-    } else {
-      return <h1>...loading</h1>;
-    }
+              <Card.Footer
+                className="text-muted"
+                style={{ fontSize: "calc(5px + 0.3vw)" }}
+              >
+                created: <ReactTimeAgo date={game.created} />
+              </Card.Footer>
+            </Card>
+          );
+        })}
+      </CardDeck>
+    );
+  } else {
+    return <h1>...loading</h1>;
   }
 }

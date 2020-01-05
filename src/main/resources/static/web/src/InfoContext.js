@@ -27,7 +27,8 @@ class InfoContextProvider extends Component {
     submarine: {},
     destroyer: {},
     cruiseShip: {},
-    battleship: {}
+    battleship: {},
+    ranking: null
   };
 
   constructor() {
@@ -47,50 +48,20 @@ class InfoContextProvider extends Component {
     this.setState({ [key]: val });
   };
 
-  getGameInfo = async () => {
-    if (this.state.pull === true) {
-      fetch(`/api/game_view/${this.state.gmId}/checkNext`) // Any output from the script will go to the "result" div
-        .then(response => response.json())
-        .then(response => {
-          if (
-            this.state.round !== response.round ||
-            this.state.gameOver !== response.gameOver ||
-            this.state.selfCanFire !== response.selfCanFire ||
-            this.state.gameResult !== response.gameResult
-          ) {
-            this.setState(
-              {
-                round: response.round,
-
-                gameOver: response.gameOver,
-
-                gameResult: response.gameResult,
-
-                selfCanFire: response.selfCanFire
-              },
-              () => {
-                console.log("POLL!!");
-                console.log(this.state);
-              }
-            );
+  //-----------------------------------------------------------------Games List
+  fetchGames = () => {
+    fetch(`api/games`)
+      .then(response => response.json())
+      .then(response =>
+        this.setState({ ...response }, () => {
+          if (response.loggedPly !== this.context.logged) {
+            this.setState({ logged: response.loggedPly });
           }
         })
-        .catch(error => console.log(error));
-    }
+      );
   };
 
-  logOut = () => {
-    fetch("/api/logout", {
-      method: "POST"
-    }).then(response => {
-      if (response.status === 200) {
-        window.location.reload();
-      } else {
-        console.log("something went wrong");
-      }
-    });
-  };
-
+  //-----------------------------------------------------------------Game View
   fetchGameView = () => {
     fetch(`api/game_view/${this.state.gmId}`)
       .then(response =>
@@ -191,34 +162,86 @@ class InfoContextProvider extends Component {
       });
   };
 
-  // lookForGame = () => {
-  //   fetch("/api/lookForGame", {
-  //     method: "POST"
-  //   })
-  //     .then(response => {
-  //       console.log(response);
-  //       return response.json();
-  //     })
-  //     .then(res => {
-  //       if (res.gameId) {
-  //         this.updateValue("gmId", res.gameId);
-  //         this.props.history.push("/web/game_view");
-  //       } else {
-  //         this.setState({overlayTrigger: true});
-  //       }
-  //     });
-  // };
+  getGameInfo = async () => {
+    if (this.state.pull === true) {
+      fetch(`/api/game_view/${this.state.gmId}/checkNext`) // Any output from the script will go to the "result" div
+        .then(response => response.json())
+        .then(response => {
+          if (
+            this.state.round !== response.round ||
+            this.state.gameOver !== response.gameOver ||
+            this.state.selfCanFire !== response.selfCanFire ||
+            this.state.gameResult !== response.gameResult
+          ) {
+            this.setState(
+              {
+                round: response.round,
 
-  fetchGames = () => {
-    fetch(`api/games`)
-      .then(response => response.json())
-      .then(response =>
-        this.setState({ ...response }, () => {
-          if (response.loggedPly !== this.context.logged) {
-            this.setState({ logged: response.loggedPly });
+                gameOver: response.gameOver,
+
+                gameResult: response.gameResult,
+
+                selfCanFire: response.selfCanFire
+              },
+              () => {
+                console.log("POLL!!");
+                console.log(this.state);
+              }
+            );
           }
         })
-      );
+        .catch(error => console.log(error));
+    }
+  };
+  //-----------------------------------------------------------------Game View - Ship functions
+
+  checkValid = arr => {
+    const unvalid = [
+      111,
+      211,
+      311,
+      411,
+      511,
+      611,
+      711,
+      811,
+      911,
+      1011,
+      1101,
+      1102,
+      1103,
+      1104,
+      1105,
+      1106,
+      1107,
+      1108,
+      1109,
+      1110
+    ];
+
+    const check1 = unvalid.filter(element => arr.includes(element));
+    const check2 = this.state.shipLog.filter(element => arr.includes(element));
+    const checkboth = check1.concat(check2);
+
+    if (checkboth.length === 0) {
+      return true;
+    }
+  };
+
+  placeAgain = () => {
+    this.setState({
+      shipsToPlace: { ship1: true, ship2: false },
+      fleetInPosition: false,
+      shipLog: [],
+      shipLogTemp: []
+    });
+  };
+
+  rotateShip = direction => {
+    this.setState({ rotate: direction }, () => {
+      console.log(direction);
+      this.putShip(this.state.shipLogTemp[0]);
+    });
   };
 
   putShip = cellKey => {
@@ -452,54 +475,7 @@ class InfoContextProvider extends Component {
       .catch(err => console.log("err", err));
   };
 
-  checkValid = arr => {
-    const unvalid = [
-      111,
-      211,
-      311,
-      411,
-      511,
-      611,
-      711,
-      811,
-      911,
-      1011,
-      1101,
-      1102,
-      1103,
-      1104,
-      1105,
-      1106,
-      1107,
-      1108,
-      1109,
-      1110
-    ];
-
-    const check1 = unvalid.filter(element => arr.includes(element));
-    const check2 = this.state.shipLog.filter(element => arr.includes(element));
-    const checkboth = check1.concat(check2);
-
-    if (checkboth.length === 0) {
-      return true;
-    }
-  };
-
-  placeAgain = () => {
-    this.setState({
-      shipsToPlace: { ship1: true, ship2: false },
-      fleetInPosition: false,
-      shipLog: [],
-      shipLogTemp: []
-    });
-  };
-
-  rotateShip = direction => {
-    this.setState({ rotate: direction }, () => {
-      console.log(direction);
-      this.putShip(this.state.shipLogTemp[0]);
-    });
-  };
+  //-----------------------------------------------------------------Game View - Attack functions
 
   handleShot = cellKey => {
     fetch(`/api/game_view/${this.state.gmId}/checkNext`)
@@ -534,6 +510,7 @@ class InfoContextProvider extends Component {
         }
       });
   };
+
   resetShot = () => {
     this.setState({ shots: [], shotsPlaced: false });
   };
@@ -581,6 +558,45 @@ class InfoContextProvider extends Component {
       });
   };
 
+  //-----------------------------------------------------------------Leaderboard functions
+  fetchRanking = () => {
+    console.log("rating fetch");
+    fetch(`api/ranking`)
+      .then(response => response.json())
+      .then(response => this.setState({ ranking: response }));
+  };
+
+  //-----------------------------------------------------------------logout
+  logOut = () => {
+    fetch("/api/logout", {
+      method: "POST"
+    }).then(response => {
+      if (response.status === 200) {
+        window.location.reload();
+      } else {
+        console.log("something went wrong");
+      }
+    });
+  };
+
+  // lookForGame = () => {
+  //   fetch("/api/lookForGame", {
+  //     method: "POST"
+  //   })
+  //     .then(response => {
+  //       console.log(response);
+  //       return response.json();
+  //     })
+  //     .then(res => {
+  //       if (res.gameId) {
+  //         this.updateValue("gmId", res.gameId);
+  //         this.props.history.push("/web/game_view");
+  //       } else {
+  //         this.setState({overlayTrigger: true});
+  //       }
+  //     });
+  // };
+
   render() {
     return (
       <InfoContext.Provider
@@ -597,7 +613,8 @@ class InfoContextProvider extends Component {
           postShips: this.postShips,
           handleShot: this.handleShot,
           resetShot: this.resetShot,
-          postShots: this.postShots
+          postShots: this.postShots,
+          fetchRanking: this.fetchRanking
         }}
       >
         {this.props.children}

@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { InfoContext } from "../../../InfoContext";
+
 export default function MyBoard(props) {
   const themecon = useContext(InfoContext);
   function shipImage(cellKey) {
