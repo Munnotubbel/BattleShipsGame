@@ -11,7 +11,9 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long gameId;
-    Date date;
+    Date date,gameStart, turnTimer;
+
+
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
@@ -56,8 +58,27 @@ public class Game {
         return this.scores;
     }
 
+    //--------------------------------------------------------------GameDuration
 
 
+    public Date getGameStart() {
+        return gameStart;
+    }
+
+    public void setGameStart(Date gameDuration) {
+        this.gameStart = gameDuration;
+    }
+
+    //--------------------------------------------------------------TurnTimer
+
+
+    public Date getTurnTimer() {
+        return turnTimer;
+    }
+
+    public void setTurnTimer(Date turnTimer) {
+        this.turnTimer = turnTimer;
+    }
 }
 
 

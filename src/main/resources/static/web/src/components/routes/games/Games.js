@@ -4,10 +4,16 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
+import CardGroup from "react-bootstrap/CardGroup";
+
+import CardColumns from "react-bootstrap/CardColumns";
 // import CardColumns from "react-bootstrap/CardColumns";
 import Button from "react-bootstrap/Button";
 import ReactTimeAgo from "react-time-ago";
 import { InfoContext } from "../../../InfoContext";
+import Pagination from "react-bootstrap/Pagination";
+import PageItem from "react-bootstrap/PageItem";
+import Grid from "@material-ui/core/Grid";
 
 export default function Games() {
   const infocon = useContext(InfoContext);
@@ -48,86 +54,89 @@ export default function Games() {
 
   if (infocon.games) {
     return (
-      <CardDeck>
-        {infocon.games.map(game => {
-          return (
-            <Card
-              key={game.gmId}
-              className="text-center one-edge-shadow gameCards"
-            >
-              <Card.Header>Game {game.gmId}</Card.Header>
-              {game.ingamePlayer && (
-                <Card.Body>
-                  <Card.Title>
+      <Grid item xs={11}>
+        <CardDeck>
+          {infocon.games.map(game => {
+            return (
+              <Card
+                style={{ margin: "10px" }}
+                key={game.gmId}
+                className="text-center one-edge-shadow gameCards"
+              >
+                <Card.Header>Game {game.gmId}</Card.Header>
+                {game.ingamePlayer && (
+                  <Card.Body className="gameCardText">
                     <Container>
-                      {game.ingamePlayer.map((ply, index) => {
-                        if (index === 0) {
-                          return (
-                            <div key="player1">
-                              <Row className="justify-content-md-center">
+                      <Card.Title>
+                        {game.ingamePlayer.map((ply, index) => {
+                          if (index === 0) {
+                            return (
+                              <div key="player1">
+                                <Row className="justify-content-md-center">
+                                  <div>{ply.name}</div>
+                                  {getResult(ply.score)}
+                                </Row>
+                                <Row
+                                  style={{
+                                    fontSize: "calc(5px + 0.6vw)",
+                                    marginTop: "5px",
+                                    marginBottom: "5px"
+                                  }}
+                                  className="justify-content-md-center"
+                                >
+                                  VS
+                                </Row>
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <Row
+                                key="player2"
+                                className="justify-content-md-center"
+                              >
                                 <div>{ply.name}</div>
                                 {getResult(ply.score)}
                               </Row>
-                              <Row
-                                style={{
-                                  fontSize: "calc(5px + 0.6vw)",
-                                  marginTop: "5px",
-                                  marginBottom: "5px"
-                                }}
-                                className="justify-content-md-center"
-                              >
-                                VS
-                              </Row>
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <Row
-                              key="player2"
-                              className="justify-content-md-center"
-                            >
-                              <div>{ply.name}</div>
-                              {getResult(ply.score)}
-                            </Row>
-                          );
-                        }
-                      })}
+                            );
+                          }
+                        })}
+                      </Card.Title>
                     </Container>
-                  </Card.Title>
-                  {infocon.myGameIds !== [null] &&
-                  infocon.myGameIds.includes(game.gmId) &&
-                  game.ingamePlayer[0].score.length === 0 ? (
-                    <NavLink
-                      to={{
-                        pathname: "/web/game_view"
-                      }}
-                      onClick={() => infocon.updateValue("gmId", game.gmId)}
-                    >
-                      <Button
-                        style={{
-                          position: "relative",
-                          fontSize: "12px"
+                    {infocon.myGameIds !== [null] &&
+                    infocon.myGameIds.includes(game.gmId) &&
+                    game.ingamePlayer[0].score.length === 0 ? (
+                      <NavLink
+                        to={{
+                          pathname: "/web/game_view"
                         }}
-                        className="enterGameBtn"
                         onClick={() => infocon.updateValue("gmId", game.gmId)}
                       >
-                        Enter Game
-                      </Button>
-                    </NavLink>
-                  ) : null}
-                </Card.Body>
-              )}
+                        <Button
+                          style={{
+                            position: "relative",
+                            fontSize: "12px"
+                          }}
+                          className="enterGameBtn"
+                          onClick={() => infocon.updateValue("gmId", game.gmId)}
+                        >
+                          Enter Game
+                        </Button>
+                      </NavLink>
+                    ) : null}
+                  </Card.Body>
+                )}
 
-              <Card.Footer
-                className="text-muted"
-                style={{ fontSize: "calc(5px + 0.3vw)" }}
-              >
-                created: <ReactTimeAgo date={game.created} />
-              </Card.Footer>
-            </Card>
-          );
-        })}
-      </CardDeck>
+                <Card.Footer
+                  className="text-muted"
+                  style={{ fontSize: "calc(5px + 0.3vw)" }}
+                >
+                  created: <ReactTimeAgo date={game.created} />
+                </Card.Footer>
+              </Card>
+            );
+          })}
+        </CardDeck>
+      </Grid>
     );
   } else {
     return <h1>...loading</h1>;

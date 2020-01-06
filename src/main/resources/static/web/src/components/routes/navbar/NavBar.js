@@ -56,29 +56,8 @@ function NavBar(props, history) {
       <Nav className="mr-auto">
         <Container>
           <Row>
-            <Col>
-              <OverlayTrigger
-                rootClose="true"
-                rootCloseEvent="mousedown"
-                ref={overlayTrigger}
-                trigger="manual"
-                placement="bottom"
-                overlay={popover}
-              >
-                <Button onClick={lookForGame}>Play</Button>
-              </OverlayTrigger>
-            </Col>
+            {/* ------------------------------------Login, Logout, Register------------------------ */}
 
-            <Col>
-              <NavLink to="/web/games">
-                <Button>Games</Button>
-              </NavLink>
-            </Col>
-            <Col>
-              <NavLink to="/web/ranking">
-                <Button>Leaderboard</Button>
-              </NavLink>
-            </Col>
             {themecon.logged === null ? (
               <Col>
                 <Button variant="primary" onClick={() => setLoginShow(true)}>
@@ -94,7 +73,6 @@ function NavBar(props, history) {
                 </Button>
               </Col>
             )}
-
             {themecon.logged === null ? (
               <Col>
                 <Button variant="primary" onClick={() => setRegisterShow(true)}>
@@ -106,18 +84,50 @@ function NavBar(props, history) {
                   onHide={() => setRegisterShow(false)}
                 />
               </Col>
-            ) : null}
+            ) : (
+              <Col style={{ width: "110px" }}></Col>
+            )}
+
+            {/* //------------------------------------Leaderboard------------------------ */}
 
             <Col>
+              <NavLink to="/web/ranking">
+                <Button>Leaderboard</Button>
+              </NavLink>
+            </Col>
+
+            {/* //------------------------------------Games------------------------ */}
+            <Col>
+              <NavLink to="/web/games">
+                <Button>Games</Button>
+              </NavLink>
+            </Col>
+
+            {/* //------------------------------------Play------------------------ */}
+
+            <Col>
+              <OverlayTrigger
+                rootClose="true"
+                rootCloseEvent="mousedown"
+                ref={overlayTrigger}
+                trigger="manual"
+                placement="bottom"
+                overlay={popover}
+              >
+                <Button onClick={lookForGame}>Play</Button>
+              </OverlayTrigger>
+            </Col>
+
+            {/* <Col>
               <NavLink to="/web/babylon">
                 <Button>Babylon</Button>
               </NavLink>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
       </Nav>
 
-      <Navbar.Brand href="/" className="pageTitle">
+      <Navbar.Brand href="/" className="pageTitle d-none d-lg-block">
         <img
           width="200px"
           height="auto"

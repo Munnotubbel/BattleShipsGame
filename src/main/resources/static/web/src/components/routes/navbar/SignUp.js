@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export default class Login extends Component {
   constructor(props) {
@@ -101,27 +104,42 @@ export default class Login extends Component {
             Register yourself
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Username:
-              <input type="text" id="username" onChange={this.handleChange} />
-            </label>
+        <form onSubmit={this.handleSubmit}>
+          <Modal.Body>
+            <Container>
+              <Row>
+                <Col>
+                  <label>
+                    Username:
+                    <input
+                      type="text"
+                      id="username"
+                      onChange={this.handleChange}
+                    />
+                  </label>
+                </Col>
 
-            <label>
-              Password:
-              <input
-                type="password"
-                id="password"
-                onChange={this.handleChange}
-              />
-            </label>
-            <input type="submit" value="Sign up" />
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.props.onHide}>Close</Button>
-        </Modal.Footer>
+                <Col>
+                  <label>
+                    Password:
+                    <input
+                      type="password"
+                      id="password"
+                      onChange={this.handleChange}
+                    />
+                  </label>
+                </Col>
+                {/* <input type="submit" value="Sign up" /> */}
+              </Row>
+            </Container>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button type="submit" value="Sign up">
+              Sign up
+            </Button>
+            {/* <Button onClick={this.props.onHide}>Close</Button> */}
+          </Modal.Footer>
+        </form>
       </Modal>
     );
   }

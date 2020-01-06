@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import NavBar from "../routes/navbar/NavBar";
 import Games from "../routes/games/Games";
@@ -32,10 +32,7 @@ function App() {
           >
             <Route exact path="/" component={Games} />
             <Route path="/web/games" component={Games} />
-
             <Route path="/web/game_view" component={GameView} />
-
-            <Route path="/web/game" component={GameView} />
 
             <Route path="/web/ranking" component={Ranking} />
             <Route path="/web/login" component={Login} />

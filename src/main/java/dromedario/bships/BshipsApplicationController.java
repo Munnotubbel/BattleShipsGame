@@ -1,36 +1,20 @@
 package dromedario.bships;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
-
-
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.web.bind.annotation.*;
-
-
-
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.lang.reflect.Array;
 import java.util.*;
-
 import static java.util.stream.Collectors.toList;
+
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
@@ -192,11 +176,20 @@ public class BshipsApplicationController {
         List<Integer> enTurns= new ArrayList<>();
         List<Object> enShipStatus=new ArrayList<>();
 
+
+
         GamePlayer enPlayer = enGamePlayer(gamePlayer);
         Long gameId = gamePlayer.getGame().getGameId();
         Game game = gameRepository.findGameByGameId(gameId);
 
-        game.gamePlayers.stream().forEach(gp->{
+        Long turnTime = Long.valueOf(1000*60);
+        Long timeLimit = Long.valueOf(1000*60*15);
+
+        if(game.getGameStart()==null){game.setGameStart(new Date());
+        gameRepository.save(game);}
+        Long duration =(new Date().getTime())- (game.getGameStart().getTime());
+
+       game.gamePlayers.stream().forEach(gp->{
             if (gp.getPlayer().getUserName()==authentication.getName()){
 
                 if (gp.getAttacks().size()>1){
@@ -339,8 +332,86 @@ public class BshipsApplicationController {
             gameOverMap.put("gameResult", "you lose");
 
         }
+        else { gameOverMap.put("gameOver", false);
 
-        else { gameOverMap.put("gameOver", false);}
+        }
+
+
+
+        if (game.getGamePlayers().size() == 2 &&
+                duration>timeLimit &&
+                gamePlayer.getShips().isEmpty() &&
+                enGamePlayer(gamePlayer).getShips().isEmpty()
+                ){
+            if(game.getScores().isEmpty()) {
+                Score score1 = new Score(0.01, new Date());
+                Score score2 = new Score(0.01, new Date());
+                gamePlayer.getGame().addScore(score1);
+                gamePlayer.getPlayer().addScore(score1);
+                enPlayer.getGame().addScore(score2);
+                enPlayer.getPlayer().addScore(score2);
+                scoreRepository.save(score1);
+                scoreRepository.save(score2);
+                gameRepository.save(gamePlayer.getGame());
+                playerRepository.save(gamePlayer.getPlayer());
+                playerRepository.save(enPlayer.getPlayer());
+            }
+        gameOverMap.put("gameOver", true);
+        gameOverMap.put("gameResult", "times is up");
+        }
+
+
+
+
+
+        if (game.getGamePlayers().size() == 2 &&
+                gamePlayer.getShips().size()>0 &&
+                enGamePlayer(gamePlayer).getShips().size()>0
+        ){
+
+            if(gamePlayer.getAttackTimer()==null){gamePlayer.setAttackTimer(new Date());
+            gamePlayerRepository.save(gamePlayer);}
+            if(enGamePlayer(gamePlayer).getAttackTimer()==null){enGamePlayer(gamePlayer).setAttackTimer(new Date());
+            gamePlayerRepository.save(enGamePlayer(gamePlayer));}
+            Long myTimer= (new Date().getTime())- (gamePlayer.getAttackTimer().getTime());
+            Long enTimer= (new Date().getTime())- (enGamePlayer(gamePlayer).getAttackTimer().getTime());
+
+            if(enTimer>turnTime) {
+                if(game.getScores().isEmpty() ){
+                Score score1 = new Score(1.0, new Date());
+                Score score2 = new Score(0.0, new Date());
+                gamePlayer.getGame().addScore(score1);
+                gamePlayer.getPlayer().addScore(score1);
+                enPlayer.getGame().addScore(score2);
+                enPlayer.getPlayer().addScore(score2);
+                scoreRepository.save(score1);
+                scoreRepository.save(score2);
+                gameRepository.save(gamePlayer.getGame());
+                playerRepository.save(gamePlayer.getPlayer());
+                playerRepository.save(enPlayer.getPlayer());}
+
+            gameOverMap.put("gameOver", true);
+            gameOverMap.put("gameResult", "you won by timeout");}
+
+            else if(myTimer>turnTime) {
+                if(game.getScores().isEmpty()){
+                Score score1 = new Score(0.0, new Date());
+                Score score2 = new Score(1.0, new Date());
+                gamePlayer.getGame().addScore(score1);
+                gamePlayer.getPlayer().addScore(score1);
+                enPlayer.getGame().addScore(score2);
+                enPlayer.getPlayer().addScore(score2);
+                scoreRepository.save(score1);
+                scoreRepository.save(score2);
+                gameRepository.save(gamePlayer.getGame());
+                playerRepository.save(gamePlayer.getPlayer());
+                playerRepository.save(enPlayer.getPlayer());}
+
+                gameOverMap.put("gameOver", true);
+                gameOverMap.put("gameResult", "you lost by timeout");}
+        }
+
+
 
         return  gameOverMap;
     }
@@ -370,18 +441,23 @@ public class BshipsApplicationController {
         game.gamePlayers.stream().forEach(gp->{
             if (gp.getPlayer().getUserName()==authentication.getName()){
 
-                if (gp.getAttacks().size()>1){
+                if (gp.getAttacks().size()>0){
                     gp.getAttacks().stream().forEach(atck-> {
                         myTurns.add(atck.getTurn());
                     });}
-                else {myTurns.add(1);}
+                else if(gp.getShips().size()>0) {myTurns.add(1);}
+                else {myTurns.add(0);}
+
             }
             else {
-                if (gp.getAttacks().size()>1){
+                if (gp.getAttacks().size()>0){
                     gp.getAttacks().stream().forEach(atck-> {
                         enTurns.add(atck.getTurn());
                     });}
-                else {enTurns.add(1);}}
+                else if(gp.getShips().size()>0){enTurns.add(1);}
+                else {enTurns.add(0);}
+            }
+
 
         });
         Integer myMax=(Collections.max(myTurns));
@@ -393,9 +469,45 @@ public class BshipsApplicationController {
         Boolean enCanFire;
         Boolean selfCanFire;
 
-        if(myMax==enMax)
+        if(game.getTurnTimer()==null && gamePlayer.getShips().size()>0 && enGamePlayer(gamePlayer).getShips().size()>0)
+        {game.setTurnTimer(new Date());
+        gameRepository.save(game);}
+
+
+        Long turnTime = Long.valueOf(1000*60);
+
+//
+
+        if(myMax==enMax && gamePlayer.getShips().size()>0 && enGamePlayer(gamePlayer).getShips().size()>0)
         { enCanFire= true;
-            selfCanFire=true;}
+            selfCanFire=true;
+
+            Long turnDuration =new Date().getTime()- game.getTurnTimer().getTime();
+
+            if(game.getTurnTimer()==null){
+                System.out.println("set timer first time");
+                game.setTurnTimer(new Date());
+                gameRepository.save(game);
+                gamePlayer.setAttackTimer(new Date());
+                enGamePlayer(gamePlayer).setAttackTimer(new Date());
+                gamePlayerRepository.save(gamePlayer);
+                gamePlayerRepository.save(enGamePlayer(gamePlayer));
+            }
+
+            else if(gamePlayer.getAttackTimer()!= null && enGamePlayer(gamePlayer).getAttackTimer()!=null){
+                Long myTimer= (new Date().getTime())- (gamePlayer.getAttackTimer().getTime());
+                Long enTimer= (new Date().getTime())- (enGamePlayer(gamePlayer).getAttackTimer().getTime());
+
+                if(turnDuration<myTimer && turnDuration<enTimer) {
+                    game.setTurnTimer(new Date());
+                    gameRepository.save(game);
+                    gamePlayer.setAttackTimer(new Date());
+                    enGamePlayer(gamePlayer).setAttackTimer(new Date());
+                    gamePlayerRepository.save(gamePlayer);
+                    gamePlayerRepository.save(enGamePlayer(gamePlayer));
+                }
+            }
+        }
         else if(myMax<enMax){
             enCanFire= false;
             selfCanFire=true;
@@ -403,7 +515,15 @@ public class BshipsApplicationController {
         else {enCanFire= true;
             selfCanFire=false;}
 
+        if(selfCanFire==false)
+        {gamePlayer.setAttackTimer(new Date());
+            gamePlayerRepository.save(gamePlayer);}
 
+        if(enCanFire==false)
+        {enGamePlayer(gamePlayer).setAttackTimer(new Date());
+            gamePlayerRepository.save(enGamePlayer(gamePlayer));}
+
+        System.out.println();
 
         Map<String, Object> turnInfo = new HashMap<>();
         turnInfo.put("selfCanFire", selfCanFire );
@@ -419,7 +539,7 @@ public class BshipsApplicationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/ranking")
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
-        System.out.println("------------IN RANKING ROUTE");
+
         return playerRepository.findAll()
                 .stream().map(player ->
                         new HashMap<String, Object>() {{
@@ -522,29 +642,40 @@ public class BshipsApplicationController {
     @RequestMapping(path = "/lookForGame")
     public ResponseEntity<Object> createGame(Authentication authentication) {
         ArrayList<GamePlayer> listOne = new ArrayList<>();
-        playerRepository.findByUserName(authentication.getName()).getGamePlayers().stream().forEach(gp -> listOne.add(gp));
+        Player player = playerRepository.findByUserName(authentication.getName());
+
+        List<Double> scoreList = new ArrayList<>(player.getScores().stream().map(score -> score.getScore()).collect(toList()));
+
+
+
+        player.getGamePlayers().stream().forEach(gp -> {listOne.add(gp);});
 
         if (authentication.getName() == null) {
             return new ResponseEntity<>(doMap("error", "please login"), HttpStatus.UNAUTHORIZED);
         }
         if (getEmptyGame().stream().count() >0 &&
-            getEmptyGame().get(0).getGamePlayers().retainAll(listOne) && authentication.getName() != null){
+            getEmptyGame().get(0).getGamePlayers().retainAll(listOne) && (listOne.size()-scoreList.size())<2 && authentication.getName() != null){
+
                  GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(playerRepository.findByUserName(loggedPlayer()),getEmptyGame().get(0)));
+                        newGamePlayer.getGame().setGameStart(new Date());
+                        gameRepository.save(newGamePlayer.getGame());
 
                  return new ResponseEntity<>(doMap("gameId", newGamePlayer.getGame().getGameId()), HttpStatus.CREATED);
                 }
 
-        if (getEmptyGame().stream().count() ==0 && authentication.getName() != null){
-                System.out.println(authentication.getName() + " MACH NEUES GAME ALLA");
+
+        else if (getEmptyGame().stream().count() ==0 && (listOne.size()-scoreList.size())<2 && authentication.getName() != null){
                 Game newGame = gameRepository.save(new Game(new Date()));
                 GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(playerRepository.findByUserName(loggedPlayer()),newGame));
 
                 return new ResponseEntity<>(doMap("gameId", newGame.getGameId()), HttpStatus.CREATED);
                 }
 
-        else {return new ResponseEntity<>(doMap("error", "spiel zu ende du hoden"), HttpStatus.UNAUTHORIZED);}
-            };
 
+        else {return new ResponseEntity<>(doMap("error", "finish your games"), HttpStatus.UNAUTHORIZED);}
+
+
+            };
 
 //--------------------------------------------------------------POST player
 

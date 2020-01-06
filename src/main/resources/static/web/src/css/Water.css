@@ -1,6 +1,6 @@
-.background{
-    margin:0;
-    padding:0;
+.background {
+    margin: 0;
+    padding: 0;
     position: absolute;
     z-index: -50;
     width: 100%;
@@ -9,11 +9,12 @@
     left: 0;
     background-image: url("https://s3.envato.com/files/241017453/preview.jpg");
     background-size: cover;
+
 }
 
-.background .water{
-    margin:0;
-    padding:0;
+.background .water {
+    margin: 0;
+    padding: 0;
     position: absolute;
     z-index: -49;
     top: 0;
@@ -22,6 +23,6 @@
     height: 100%;
     background-image: url("https://s3.envato.com/files/241017453/preview.jpg");
     background-size: cover;
+    background-repeat: repeat-y;
     filter: url("#turbulence");
 }
-

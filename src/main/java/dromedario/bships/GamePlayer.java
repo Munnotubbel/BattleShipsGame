@@ -12,7 +12,7 @@ public class GamePlayer {
     private long id;
     Date date;
     private Integer turn ;
-
+    Date attackTimer;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
     private Player player;
@@ -102,5 +102,14 @@ public class GamePlayer {
 
     public void setScore(Score score) {
         this.score = score;
+    }
+//---------------------------------------------------------------- attackTimer
+
+    public Date getAttackTimer() {
+        return attackTimer;
+    }
+
+    public void setAttackTimer(Date attackTimer) {
+        this.attackTimer = attackTimer;
     }
 }

@@ -55,17 +55,17 @@ function GameView() {
               </Col>{" "}
             </Row>
           ) : null}
-          {infocon.round && (
-            <Row className="justify-content-md-center">
-              <Col xs="2"></Col>
-              <Col xs="auto">
-                <TurnCounter></TurnCounter>
-              </Col>
-              <Col xs="2"></Col>
-            </Row>
-          )}
+
+          <Row className="justify-content-md-center">
+            <Col xs="2"></Col>
+            <Col xs="auto">
+              <TurnCounter></TurnCounter>
+            </Col>
+            <Col xs="2"></Col>
+          </Row>
+
           <Row>
-            <Col xs={6}>
+            <Col xs={12} lg={6}>
               {" "}
               <MyBoard
                 enShots={infocon.hits}
@@ -77,7 +77,7 @@ function GameView() {
               ></MyBoard>
             </Col>
 
-            <Col xs={6}>
+            <Col xs={12} lg={6}>
               <EnemyBoard
                 enemyName={infocon.enemyName}
                 myHits={infocon.myHits}

@@ -4,6 +4,7 @@ export const InfoContext = createContext();
 
 class InfoContextProvider extends Component {
   state = {
+    round: 0,
     sunk: [],
     selfCanFire: false,
     gameOver: false,
@@ -167,6 +168,11 @@ class InfoContextProvider extends Component {
       fetch(`/api/game_view/${this.state.gmId}/checkNext`) // Any output from the script will go to the "result" div
         .then(response => response.json())
         .then(response => {
+          if (response.gameResult === "it's a tie") {
+            this.setState({ pull: false, gameOver: true }, () =>
+              this.fetchGameView()
+            );
+          }
           if (
             this.state.round !== response.round ||
             this.state.gameOver !== response.gameOver ||

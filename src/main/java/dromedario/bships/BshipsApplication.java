@@ -79,6 +79,12 @@ public class BshipsApplication {
 			Game gm3= new Game(new Date());
 			Game gm4= new Game(new Date());
 			Game gm5= new Game(new Date());
+
+			gm1.setGameStart(new Date());
+			gm2.setGameStart(new Date());
+			gm3.setGameStart(new Date());
+			gm4.setGameStart(new Date());
+
 //--------------------------------------------------------------create GamePlayers
 			GamePlayer gmPly1 = new GamePlayer(ply1, gm1);
 			GamePlayer gmPly2 = new GamePlayer(ply2, gm1);

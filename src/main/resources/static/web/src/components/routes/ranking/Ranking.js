@@ -38,6 +38,11 @@ export default function Ranking() {
         sort: true
       },
       {
+        dataField: "canceled",
+        text: "canceled",
+        sort: true
+      },
+      {
         dataField: "rating",
         text: "rating",
         sort: true
@@ -50,12 +55,16 @@ export default function Ranking() {
         let loses = 0;
         let ties = 0;
         let rating = 0;
+        let canceled = 0;
 
         for (var i = 0; i < player.scores.length; i++) {
           player.scores[i] === 1.0 && wins++;
           player.scores[i] === 0.5 && ties++;
           player.scores[i] === 0.0 && loses++;
-          rating = rating + player.scores[i];
+          player.scores[i] === 0.01 && canceled++;
+          if (player.scores[i] !== 0.01) {
+            rating = rating + player.scores[i];
+          }
         }
 
         players.push({
@@ -63,6 +72,7 @@ export default function Ranking() {
           wins: wins,
           ties: ties,
           loses: loses,
+          canceled: canceled,
           rating: rating
         });
       });
