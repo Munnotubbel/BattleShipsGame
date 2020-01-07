@@ -6,9 +6,17 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TargetLock from "./TargetLock";
 import { InfoContext } from "../../../InfoContext";
+import Countdown from "react-countdown-now";
 
 export default function EnemyBoard(props) {
-  const themecon = useContext(InfoContext);
+  const infoCon = useContext(InfoContext);
+  const renderer = ({ minutes, seconds }) => {
+    return (
+      <div>
+        {minutes}:{seconds}
+      </div>
+    );
+  };
   function createEnemyBoard() {
     let enemyBoard = [];
 
@@ -93,10 +101,10 @@ export default function EnemyBoard(props) {
 
   return (
     <Container>
-      {themecon.sunk && themecon.sunk.length > 0 ? (
+      {infoCon.sunk && infoCon.sunk.length > 0 ? (
         <Row>
           <Col>
-            {themecon.sunk[0].Battleship === true ? (
+            {infoCon.sunk[0].Battleship === true ? (
               <div>
                 <div class="speechbubble">Battleship sunk</div>
                 <div class="pointer"></div>
@@ -104,7 +112,7 @@ export default function EnemyBoard(props) {
             ) : null}
           </Col>
           <Col>
-            {themecon.sunk[0].CruiseShip === true ? (
+            {infoCon.sunk[0].CruiseShip === true ? (
               <div>
                 <div class="speechbubble">Cruise Ship sunk</div>
                 <div class="pointer"></div>
@@ -112,7 +120,7 @@ export default function EnemyBoard(props) {
             ) : null}
           </Col>
           <Col>
-            {themecon.sunk[0].Destroyer === true ? (
+            {infoCon.sunk[0].Destroyer === true ? (
               <div>
                 <div class="speechbubble">Destroyer sunk</div>
                 <div class="pointer"></div>
@@ -120,7 +128,7 @@ export default function EnemyBoard(props) {
             ) : null}
           </Col>
           <Col>
-            {themecon.sunk[0].Submarine === true ? (
+            {infoCon.sunk[0].Submarine === true ? (
               <div>
                 <div class="speechbubble">Submarine sunk</div>
                 <div class="pointer"></div>
@@ -140,7 +148,41 @@ export default function EnemyBoard(props) {
       </Row>
       <Row>
         <Col>
-          <Container className="boardContainer">{createEnemyBoard()}</Container>
+          {infoCon.EnAtmTurn === 0 || infoCon.round === 0 ? (
+            <div
+              style={{
+                border: "1px white",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                position: "absolute",
+
+                top: "40%",
+                padding: "10px"
+              }}
+            >
+              {infoCon.round === 0 ? (
+                <div>
+                  <h6>place your ships and wait for opponent</h6>{" "}
+                </div>
+              ) : (
+                <div>
+                  <h6>wait for opponent</h6>{" "}
+                </div>
+              )}
+              <div style={{ margin: "5px auto" }}>
+                {infoCon.enemyName && (
+                  <Countdown
+                    date={infoCon.timeOut + 900000}
+                    renderer={renderer}
+                  />
+                )}
+              </div>
+            </div>
+          ) : (
+            <Container className="boardContainer">
+              {createEnemyBoard()}
+            </Container>
+          )}
         </Col>
       </Row>
     </Container>

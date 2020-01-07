@@ -1,8 +1,18 @@
 import React, { useContext } from "react";
 import "../../../css/TurnCounter.css";
 import { InfoContext } from "../../../InfoContext";
+import Countdown from "react-countdown-now";
+
 export default function TurnCounter() {
   const infoCon = useContext(InfoContext);
+
+  const renderer = ({ minutes, seconds }) => {
+    return (
+      <div>
+        {minutes}:{seconds}
+      </div>
+    );
+  };
 
   return (
     <div className="counterBorder">
@@ -15,6 +25,18 @@ export default function TurnCounter() {
           )}
 
           <div className="counterCenterText">turn</div>
+          {infoCon.turnTimer && (
+            <div
+              style={{
+                position: "absolute",
+                left: "40%",
+                top: "65%",
+                zIndex: 9000
+              }}
+            >
+              <Countdown date={infoCon.turnTimer + 60000} renderer={renderer} />
+            </div>
+          )}
         </div>
       ) : (
         <div class="circle">

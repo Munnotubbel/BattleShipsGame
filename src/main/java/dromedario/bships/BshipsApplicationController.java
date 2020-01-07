@@ -157,6 +157,7 @@ public class BshipsApplicationController {
                 gameMap.put("EnGmPlyId", gamePlayerOfGame.getId());
                 gameMap.put("EnPlayer", PlayerOfGamePlayer(gamePlayerOfGame));
                 gameMap.put("EnAttacks", AttacksOfGamePlayer(gamePlayerOfGame));
+                gameMap.put("enShipNum", enGamePlayer(gamePlayer).getShips().size());
             }});
 
         gameMap.putAll(gameProgress(gamePlayer,authentication));
@@ -185,9 +186,11 @@ public class BshipsApplicationController {
         Long turnTime = Long.valueOf(1000*60);
         Long timeLimit = Long.valueOf(1000*60*15);
 
-        if(game.getGameStart()==null){game.setGameStart(new Date());
+        if(game.getGameStart()==null){
         gameRepository.save(game);}
         Long duration =(new Date().getTime())- (game.getGameStart().getTime());
+        gameOverMap.put("timeOut", game.getGameStart().getTime());
+
 
        game.gamePlayers.stream().forEach(gp->{
             if (gp.getPlayer().getUserName()==authentication.getName()){
@@ -343,6 +346,8 @@ public class BshipsApplicationController {
                 gamePlayer.getShips().isEmpty() &&
                 enGamePlayer(gamePlayer).getShips().isEmpty()
                 ){
+
+
             if(game.getScores().isEmpty()) {
                 Score score1 = new Score(0.01, new Date());
                 Score score2 = new Score(0.01, new Date());
@@ -376,7 +381,29 @@ public class BshipsApplicationController {
             Long myTimer= (new Date().getTime())- (gamePlayer.getAttackTimer().getTime());
             Long enTimer= (new Date().getTime())- (enGamePlayer(gamePlayer).getAttackTimer().getTime());
 
-            if(enTimer>turnTime) {
+
+            gameOverMap.put("turnTimer", game.getTurnTimer().getTime());
+
+
+
+            if(enTimer>turnTime && enTimer>turnTime) {
+                if(game.getScores().isEmpty() ){
+                    Score score1 = new Score(0.5, new Date());
+                    Score score2 = new Score(0.5, new Date());
+                    gamePlayer.getGame().addScore(score1);
+                    gamePlayer.getPlayer().addScore(score1);
+                    enPlayer.getGame().addScore(score2);
+                    enPlayer.getPlayer().addScore(score2);
+                    scoreRepository.save(score1);
+                    scoreRepository.save(score2);
+                    gameRepository.save(gamePlayer.getGame());
+                    playerRepository.save(gamePlayer.getPlayer());
+                    playerRepository.save(enPlayer.getPlayer());}
+
+                gameOverMap.put("gameOver", true);
+                gameOverMap.put("gameResult", "tie by timeout");}
+
+            else if(enTimer>turnTime) {
                 if(game.getScores().isEmpty() ){
                 Score score1 = new Score(1.0, new Date());
                 Score score2 = new Score(0.0, new Date());
@@ -469,36 +496,43 @@ public class BshipsApplicationController {
         Boolean enCanFire;
         Boolean selfCanFire;
 
-        if(game.getTurnTimer()==null && gamePlayer.getShips().size()>0 && enGamePlayer(gamePlayer).getShips().size()>0)
-        {game.setTurnTimer(new Date());
-        gameRepository.save(game);}
 
 
+        if(enGamePlayer(gamePlayer)==null){game.setGameStart(new Date()); gameRepository.save(game);}
         Long turnTime = Long.valueOf(1000*60);
 
-//
+
 
         if(myMax==enMax && gamePlayer.getShips().size()>0 && enGamePlayer(gamePlayer).getShips().size()>0)
         { enCanFire= true;
             selfCanFire=true;
 
+            if(game.getTurnTimer()==null && gamePlayer.getShips().size()>0 && enGamePlayer(gamePlayer).getShips().size()>0)
+            {game.setTurnTimer(new Date());
+            if(game.getTimerSetback()<2){game.setTimerSetback(2);}
+                gameRepository.save(game);}
+
             Long turnDuration =new Date().getTime()- game.getTurnTimer().getTime();
 
-            if(game.getTurnTimer()==null){
-                System.out.println("set timer first time");
-                game.setTurnTimer(new Date());
-                gameRepository.save(game);
+
+            if(gamePlayer.getAttackTimer()==null && enGamePlayer(gamePlayer).getAttackTimer()==null){
+
                 gamePlayer.setAttackTimer(new Date());
                 enGamePlayer(gamePlayer).setAttackTimer(new Date());
                 gamePlayerRepository.save(gamePlayer);
                 gamePlayerRepository.save(enGamePlayer(gamePlayer));
             }
 
-            else if(gamePlayer.getAttackTimer()!= null && enGamePlayer(gamePlayer).getAttackTimer()!=null){
+
+            else {
+
                 Long myTimer= (new Date().getTime())- (gamePlayer.getAttackTimer().getTime());
                 Long enTimer= (new Date().getTime())- (enGamePlayer(gamePlayer).getAttackTimer().getTime());
 
-                if(turnDuration<myTimer && turnDuration<enTimer) {
+
+                if(game.getTimerSetback()==myMax && game.getTimerSetback()==enMax) {
+
+                    game.setTimerSetback((game.getTimerSetback())+1);
                     game.setTurnTimer(new Date());
                     gameRepository.save(game);
                     gamePlayer.setAttackTimer(new Date());
@@ -523,7 +557,7 @@ public class BshipsApplicationController {
         {enGamePlayer(gamePlayer).setAttackTimer(new Date());
             gamePlayerRepository.save(enGamePlayer(gamePlayer));}
 
-        System.out.println();
+
 
         Map<String, Object> turnInfo = new HashMap<>();
         turnInfo.put("selfCanFire", selfCanFire );
@@ -531,6 +565,10 @@ public class BshipsApplicationController {
         turnInfo.put("round", myMax);
         turnInfo.put("myAtmTurn", myMax);
         turnInfo.put("EnAtmTurn", enMax);
+        if(game.getGamePlayers().size()==2){
+        turnInfo.put("enemyName", enGamePlayer(gamePlayer).getPlayer().getUserName());}
+        else{turnInfo.put("enemyName", null);}
+
         turnInfo.putAll(gameProgress(gamePlayer, authentication));
         return turnInfo;
     }

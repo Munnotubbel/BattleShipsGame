@@ -81,6 +81,7 @@ public class BshipsApplication {
 			Game gm5= new Game(new Date());
 
 			gm1.setGameStart(new Date());
+			gm1.setTimerSetback(6);
 			gm2.setGameStart(new Date());
 			gm3.setGameStart(new Date());
 			gm4.setGameStart(new Date());

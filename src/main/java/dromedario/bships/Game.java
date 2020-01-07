@@ -12,7 +12,7 @@ public class Game {
     @GenericGenerator(name = "native", strategy = "native")
     private long gameId;
     Date date,gameStart, turnTimer;
-
+    Integer timerSetback=0;
 
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
@@ -78,6 +78,16 @@ public class Game {
 
     public void setTurnTimer(Date turnTimer) {
         this.turnTimer = turnTimer;
+    }
+    //--------------------------------------------------------------TurnTimer
+
+
+    public Integer getTimerSetback() {
+        return timerSetback;
+    }
+
+    public void setTimerSetback(Integer turn) {
+        this.timerSetback = turn;
     }
 }
 

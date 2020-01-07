@@ -4,32 +4,36 @@ export const InfoContext = createContext();
 
 class InfoContextProvider extends Component {
   state = {
-    round: 0,
-    sunk: [],
-    selfCanFire: false,
+    battleship: {},
+    cruiseShip: {},
+    destroyer: {},
+    EnAtmTurn: null,
+    enemyName: null,
+    fleetInPosition: false,
     gameOver: false,
     gameResult: "",
+    gmId: 1,
+    logged: null,
     myHits: [],
-    shotsTemp: [],
-    shots: [],
-    rotate: "horizontal",
-    fleetInPosition: false,
-    shipLog: [],
-    shipLogTemp: [],
-    shipsPlaced: false,
-    shipsToPlace: { ship1: true, ship2: false, ship3: false, ship4: false },
     myShip1: null,
     myShip2: null,
     myShip3: null,
     myShip4: null,
-    gmId: 1,
-    logged: null,
     pull: false,
+    ranking: null,
+    rotate: "horizontal",
+    round: 0,
+    selfCanFire: false,
+    shipLog: [],
+    shipLogTemp: [],
+    shipsPlaced: false,
+    shipsToPlace: { ship1: true, ship2: false, ship3: false, ship4: false },
+    shots: [],
+    shotsTemp: [],
     submarine: {},
-    destroyer: {},
-    cruiseShip: {},
-    battleship: {},
-    ranking: null
+    sunk: [],
+    timeOut: null,
+    turnTimer: null
   };
 
   constructor() {
@@ -70,15 +74,15 @@ class InfoContextProvider extends Component {
       )
       .then(response => {
         if (response) {
-          const myShipLocations = [];
-          const myAttacks = [];
           const hits = [];
-          let enemyName = null;
+          const myAttacks = [];
+          const myShipLocations = [];
           const shipTypes = [];
-          var submarine;
-          var destroyer;
-          var cruiseShip;
+          let enemyName = null;
           var battleship;
+          var cruiseShip;
+          var destroyer;
+          var submarine;
 
           response.ships &&
             response.ships.forEach(element => {
@@ -116,30 +120,33 @@ class InfoContextProvider extends Component {
 
           this.setState(
             {
-              sunk: response.sunk ? response.sunk : null,
+              attacks: myAttacks,
+              battleship: battleship,
+              cruiseShip: cruiseShip,
+              destroyer: destroyer,
+              enemyName: enemyName,
+              EnAtmTurn: response.EnAtmTurn,
+              gameName: response.gmName,
               gameOver: response.gameOver ? response.gameOver : false,
               gameResult: response.gameResult ? response.gameResult : "",
-              myHits: response.myHits ? response.myHits : [],
-              responstStatus: response.status,
-              gameName: response.gmName,
-              enemyName: enemyName,
-              myName: response.player ? response.player.name : "",
-              locations: myShipLocations,
-              attacks: myAttacks,
-              hits: hits,
               hitMyShip: response.EnHits ? response.EnHits : [],
-              shipTypes: shipTypes,
+              hits: hits,
+              locations: myShipLocations,
+              myHits: response.myHits ? response.myHits : [],
+              myName: response.player ? response.player.name : "",
+              responstStatus: response.status,
               round: response.turnInfo ? response.turnInfo.round : 1,
               selfCanFire: response.turnInfo
                 ? response.turnInfo.selfCanFire
                 : false,
               shipLog: [],
-              submarine: submarine,
-              destroyer: destroyer,
-              cruiseShip: cruiseShip,
-              battleship: battleship,
               shipLogTemp: [],
-              shipsPlaced: response.shipsPlaced
+              shipsPlaced: response.shipsPlaced,
+              shipTypes: shipTypes,
+              submarine: submarine,
+              sunk: response.sunk ? response.sunk : null,
+              timeOut: response.timeOut ? response.timeOut : null,
+              turnTimer: response.turnTimer && response.turnTimer
             },
             () => {
               if (response.shipsPlaced === false) {
@@ -177,17 +184,19 @@ class InfoContextProvider extends Component {
             this.state.round !== response.round ||
             this.state.gameOver !== response.gameOver ||
             this.state.selfCanFire !== response.selfCanFire ||
-            this.state.gameResult !== response.gameResult
+            this.state.gameResult !== response.gameResult ||
+            this.state.gameResult !== response.EnAtmTurn ||
+            this.state.enemyName !== response.enemyName
           ) {
             this.setState(
               {
-                round: response.round,
-
+                enemyName: response.enemyName,
+                EnAtmTurn: response.EnAtmTurn,
                 gameOver: response.gameOver,
-
                 gameResult: response.gameResult,
-
-                selfCanFire: response.selfCanFire
+                round: response.round,
+                selfCanFire: response.selfCanFire,
+                turnTimer: response.turnTimer && response.turnTimer
               },
               () => {
                 console.log("POLL!!");
@@ -236,10 +245,10 @@ class InfoContextProvider extends Component {
 
   placeAgain = () => {
     this.setState({
-      shipsToPlace: { ship1: true, ship2: false },
       fleetInPosition: false,
       shipLog: [],
-      shipLogTemp: []
+      shipLogTemp: [],
+      shipsToPlace: { ship1: true, ship2: false }
     });
   };
 
@@ -608,19 +617,19 @@ class InfoContextProvider extends Component {
       <InfoContext.Provider
         value={{
           ...this.state,
-          updateValue: this.updateValue,
-          logOut: this.logOut,
           fetchGames: this.fetchGames,
           fetchGameView: this.fetchGameView,
-          putShip: this.putShip,
-          rotateShip: this.rotateShip,
-          placeShip: this.placeShip,
-          placeAgain: this.placeAgain,
-          postShips: this.postShips,
+          fetchRanking: this.fetchRanking,
           handleShot: this.handleShot,
-          resetShot: this.resetShot,
+          logOut: this.logOut,
+          placeAgain: this.placeAgain,
+          placeShip: this.placeShip,
+          postShips: this.postShips,
           postShots: this.postShots,
-          fetchRanking: this.fetchRanking
+          putShip: this.putShip,
+          resetShot: this.resetShot,
+          rotateShip: this.rotateShip,
+          updateValue: this.updateValue
         }}
       >
         {this.props.children}

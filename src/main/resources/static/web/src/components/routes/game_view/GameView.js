@@ -107,7 +107,7 @@ function GameView() {
                     className="actionButton"
                     onClick={() => infocon.placeShip(1, 2)}
                   >
-                    Place First Ship
+                    confirm First Ship
                   </button>
                 </Grid>
               ) : null}
@@ -117,7 +117,7 @@ function GameView() {
                     className="actionButton"
                     onClick={() => infocon.placeShip(2, 3)}
                   >
-                    Place Second Ship
+                    confirm Second Ship
                   </button>
                 </Grid>
               ) : null}
@@ -127,7 +127,7 @@ function GameView() {
                     className="actionButton"
                     onClick={() => infocon.placeShip(3, 4)}
                   >
-                    Place Third Ship
+                    confirm Third Ship
                   </button>
                 </Grid>
               ) : null}
@@ -137,7 +137,7 @@ function GameView() {
                     className="actionButton"
                     onClick={() => infocon.placeShip(4, null)}
                   >
-                    Place Fourth Ship
+                    confirm Fourth Ship
                   </button>
                 </Grid>
               ) : null}
