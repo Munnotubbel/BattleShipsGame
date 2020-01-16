@@ -15,7 +15,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 
 
-@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+@CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
 @RestController
 @RequestMapping("/api")
 public class BshipsApplicationController {
@@ -48,7 +48,7 @@ public class BshipsApplicationController {
     }
 
     //--------------------------------------------------------------games route
-    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+    @CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
     @RequestMapping("/games")
     public Map<String, Object> getGames() {
 
@@ -576,13 +576,14 @@ public class BshipsApplicationController {
     }
 
     //--------------------------------------------------------------#ranking route
-    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+    @CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
     @RequestMapping("/ranking")
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
 
         return playerRepository.findAll()
                 .stream().map(player ->
                         new HashMap<String, Object>() {{
+
                     put("UserName", player.getUserName());
                     put("scores", player.getScores()
                             .stream()
@@ -678,7 +679,7 @@ public class BshipsApplicationController {
     }
 
 //--------------------------------------------------------------Create & Join Game
-@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+@CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
     @RequestMapping(path = "/lookForGame")
     public ResponseEntity<Object> createGame(Authentication authentication) {
         ArrayList<GamePlayer> listOne = new ArrayList<>();
@@ -737,7 +738,7 @@ public class BshipsApplicationController {
     }
 
 //--------------------------------------------------------------Post Ships
-    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+    @CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
     @RequestMapping(path = "/game_view/{gameId}/ships", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> postShips(@PathVariable Long gameId,@RequestBody List<Ship> ships, Authentication authentication) {
 
@@ -757,7 +758,7 @@ public class BshipsApplicationController {
     }
 
 
-    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+    @CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
     @RequestMapping(path = "/game_view/{gameId}/attacks", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> postAttacks(@PathVariable Long gameId,@RequestBody List<Attack> attacks, Authentication authentication) {
         Game game = gameRepository.findGameByGameId(gameId);

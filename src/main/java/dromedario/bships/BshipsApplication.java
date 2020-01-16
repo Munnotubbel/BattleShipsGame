@@ -17,9 +17,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
@@ -28,8 +30,8 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -284,6 +286,7 @@ public class BshipsApplication {
 		};
 	}
 
+
 	@Configuration
 
 	class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
@@ -306,7 +309,7 @@ public class BshipsApplication {
 		}
 	}
 
-	@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+	@CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
 	@Configuration
 	@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -318,12 +321,15 @@ public class BshipsApplication {
 
 
 
-		@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
+		@CrossOrigin(origins = "https://secret-cliffs-59429.herokuapp.com/")
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
 			http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and()
 					.authorizeRequests()
+					.antMatchers("/**").permitAll()
+					.antMatchers("/static/css/**").permitAll()
+					.antMatchers("/static/js/**").permitAll()
 					.antMatchers("/web/players").permitAll()
 					.antMatchers("/web/games").permitAll()
 					.antMatchers("/web/ranking").permitAll()
@@ -358,7 +364,7 @@ public class BshipsApplication {
 					.logoutUrl("/api/logout");
 
 			http.csrf().disable();
-
+//
 			http.exceptionHandling()
 			.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 			http.exceptionHandling().authenticationEntryPoint((request, response, authentication) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));

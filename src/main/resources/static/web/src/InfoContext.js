@@ -59,7 +59,7 @@ class InfoContextProvider extends Component {
       .then(response => response.json())
       .then(response =>
         this.setState({ ...response }, () => {
-          if (response.loggedPly !== this.context.logged) {
+          if (response.loggedPly !== this.state.logged) {
             this.setState({ logged: response.loggedPly });
           }
         })

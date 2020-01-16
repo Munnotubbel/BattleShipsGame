@@ -40,7 +40,7 @@ export default class Login extends Component {
         if (response.status === 200) {
           console.log("logged in!");
           this.props.onHide();
-          window.location.reload();
+          // window.location.reload();
         } else {
           console.log(response.status);
           console.log(response);

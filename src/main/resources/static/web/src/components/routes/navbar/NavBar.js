@@ -33,7 +33,7 @@ function NavBar(props, history) {
   );
 
   const lookForGame = () => {
-    fetch("/api/lookForGame", {
+    fetch("https://bships.herokuapp.com/api/lookForGame", {
       method: "POST"
     })
       .then(response => {
