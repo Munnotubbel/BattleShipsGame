@@ -32,7 +32,7 @@ function App() {
             alignItems="center"
             style={{ marginTop: "20px" }}
           >
-            <Route exact path="/" component={Landing} />
+            <Route exact path="/" component={Games} />
             <Route path="/web/games" component={Games} />
             <Route path="/web/game_view" component={GameView} />
 

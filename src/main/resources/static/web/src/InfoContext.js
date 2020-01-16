@@ -582,12 +582,14 @@ class InfoContextProvider extends Component {
   };
 
   //-----------------------------------------------------------------logout
+
   logOut = () => {
     fetch("/api/logout", {
       method: "POST"
     }).then(response => {
       if (response.status === 200) {
-        window.location.reload();
+        this.props.history.push("/web/games");
+        setTimeout(window.location.reload(), 300);
       } else {
         console.log("something went wrong");
       }
