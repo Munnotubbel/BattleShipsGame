@@ -25,10 +25,10 @@ export default class Login extends Component {
   };
 
   fetchLogin = () => {
-    const URL = `https://bships.herokuapp.com//api/login`;
+    const URL = `https://bships.herokuapp.com/api/login`;
     fetch(URL, {
       method: "POST",
-      credentials: "include",
+      // credentials: "include",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded"

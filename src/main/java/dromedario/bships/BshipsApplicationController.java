@@ -579,8 +579,7 @@ public class BshipsApplicationController {
     @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
     @RequestMapping("/ranking")
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
-        System.out.println(playerRepository.findByUserName("Ralf").getUserName());
-        System.out.println(playerRepository.findByUserName("Ralf").getPassword());
+
         return playerRepository.findAll()
                 .stream().map(player ->
                         new HashMap<String, Object>() {{
