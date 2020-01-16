@@ -1,0 +1,769 @@
+.allCells {
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.2);
+
+  padding-top: 1px;
+  min-width: 2.6vw;
+  max-width: 2.6vw;
+  min-height: 2.6vw;
+  max-height: 2.6vw;
+  /* clear: both; */
+}
+
+.boardContainer {
+
+  /* margin: 20px; */
+  min-height: calc(2.6vw*10);
+  max-height: calc(2.6vw*10);
+  min-width: calc(2.6vw*10);
+  max-width: calc(2.6vw*10);
+  /* margin-left: 20px; */
+
+}
+
+.bojeRed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.7vw;
+  height: 2.7vw;
+}
+
+
+
+
+.wiggle {
+  display: inline-block;
+
+  transform-origin: bottom center;
+  animation: moveIt 2.5s ease-in-out infinite;
+
+}
+
+
+
+
+
+@keyframes moveIt {
+
+  0%,
+  100% {
+    transform: rotate(10deg);
+  }
+
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+
+.rotate {
+  display: inline-block;
+
+
+  transform-origin: center;
+  animation: rotate 5s linear infinite;
+
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  /* 50% {
+              transform: rotate(180deg);
+            } */
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+
+
+
+.watergrid {
+  /* transform: rotateX(-0.2turn); */
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+}
+
+.oil1 {
+
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  top: 23%;
+  left: 17%;
+
+  background-color: black;
+  animation-duration: 6.4s;
+  animation-delay: -2.7s;
+}
+
+.oil2 {
+  position: absolute;
+
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 45%;
+  left: 40%;
+  background-color: black;
+  animation-duration: 6.5s;
+  animation-delay: -2.5s;
+}
+
+.oil3 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 45%;
+  left: 5%;
+  background-color: black;
+  animation-duration: 6.5s;
+  animation-delay: -4;
+}
+
+.oil4 {
+  position: absolute;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  top: 25%;
+  left: 25%;
+  background-color: black;
+  animation-duration: 4s;
+  animation-delay: 0;
+}
+
+.oil5 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 8%;
+  left: 30%;
+  background-color: black;
+  animation-duration: 6s;
+  animation-delay: -3;
+}
+
+.oil6 {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  top: 60%;
+  left: 30%;
+  background-color: black;
+  animation-duration: 6s;
+  animation-delay: -3;
+
+}
+
+.oil7 {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  top: 15%;
+  left: 20%;
+  background-color: black;
+  animation-duration: 34s;
+  animation-delay: -2;
+}
+
+
+.oil8 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  top: 19%;
+  left: 90%;
+  background-color: black;
+  animation-duration: 14.5s;
+  animation-delay: -2;
+}
+
+
+.oil9 {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  top: 20%;
+  left: 90%;
+  background-color: black;
+  animation-duration: 14.5s;
+  animation-delay: -2;
+}
+
+
+.oil10 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  top: 35%;
+  left: 90%;
+  background-color: black;
+  animation-duration: 14.5s;
+  animation-delay: -2;
+}
+
+.oil8,
+.oil9,
+.oil10 {
+  z-index: 2000;
+  animation-name: smallspills;
+  animation-timing-function: linear ease-in;
+
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+
+
+.oil1,
+.oil2,
+.oil3,
+.oil4,
+.oil5,
+.oil6 {
+  z-index: 2000;
+  animation-name: stretch;
+  animation-timing-function: ease-in;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+.oil7 {
+  z-index: 2000;
+  animation-name: inandout;
+  animation-timing-function: linear ease-in;
+
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+@keyframes inandout {
+
+  0% {
+    transform: translate3d(0, 0, 0)
+  }
+
+  50% {
+    transform: translate3d(4px, 4px, 0)
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0)
+  }
+
+
+}
+
+@keyframes smallspills {
+
+  0% {
+    transform: scale(1.1);
+    transform: translate3d(0, 0, 0)
+  }
+
+  50% {
+    transform: scale(0.9);
+    transform: translate3d(-4px, 4px, 0)
+  }
+
+  100% {
+    transform: scale(1.1);
+    transform: translate3d(0, 0, 0)
+  }
+
+
+}
+
+@keyframes stretch {
+  0% {
+    transform: scale(1.2);
+
+  }
+
+
+
+  100% {
+    transform: scale(0.8);
+
+  }
+}
+
+
+
+
+@keyframes scaleUpDown {
+
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1);
+  }
+
+  50%,
+  90% {
+    transform: scaleY(1.4);
+  }
+
+  75% {
+    transform: scaleY(0.90);
+  }
+
+  80% {
+    transform: scaleX(0.90);
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: skewX(0) scale(1);
+  }
+
+  50% {
+    transform: skewX(5deg) scale(0.9);
+  }
+}
+
+@keyframes particleUp {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    top: -100%;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    background-color: #ef5a00;
+  }
+
+  50% {
+    background-color: #ff7800;
+  }
+}
+
+.fire {
+  /* transform: rotateX(0.0turn); */
+  z-index: 5000;
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  width: 1.5vw;
+  height: 1.5vw;
+  background-color: transparent;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fire-main {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  animation: scaleUpDown 3s ease-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-main .main-fire {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(farthest-corner at 10px 0, #d43300 0%, #ef5a00 95%);
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 60% 40%;
+  filter: drop-shadow(0 0 10px #d43322);
+}
+
+.fire-main .particle-fire {
+  position: absolute;
+  top: 60%;
+  left: 45%;
+  width: 2px;
+  height: 2px;
+  background-color: #ef5a00;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 1px #d43322);
+  animation: particleUp 2s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-right {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  animation: shake 5s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-right .main-fire {
+  position: absolute;
+  top: 15%;
+  right: -25%;
+  width: 80%;
+  height: 80%;
+  background-color: #ef5a00;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 60% 40%;
+  filter: drop-shadow(0 0 10px #d43322);
+}
+
+.fire-right .particle-fire {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background-color: #ef5a00;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 50%;
+  filter: drop-shadow(0 0 1px #d43322);
+  animation: particleUp 2s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-left {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  animation: shake 3s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.fire-left .main-fire {
+  position: absolute;
+  top: 15%;
+  left: -20%;
+  width: 80%;
+  height: 80%;
+  background-color: #ef5a00;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 60% 40%;
+  filter: drop-shadow(0 0 10px #d43322);
+}
+
+.fire-left .particle-fire {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 10%;
+  height: 10%;
+  background-color: #ef5a00;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px #d43322);
+  animation: particleUp 3s infinite ease-out 0;
+  animation-fill-mode: both;
+}
+
+.fire-bottom .main-fire {
+  position: absolute;
+  top: 30%;
+  left: 20%;
+  width: 75%;
+  height: 75%;
+  background-color: #ff7800;
+  transform: scaleX(0.8) rotate(45deg);
+  border-radius: 0 40% 100% 40%;
+  filter: blur(5px);
+  animation: glow 2s ease-out 0;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+
+.targetWrap {
+  top: 0;
+  left: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+
+.innerCircle {
+  transform-origin: center;
+  left: 0.5vw;
+  top: 0.5vw;
+  position: absolute;
+  width: 1.5vw;
+  height: 1.5vw;
+  border-radius: 50%;
+  border: 1px solid red;
+  -webkit-box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+}
+
+.outerCircle {
+  transform-origin: center;
+  left: 0.05vw;
+  top: 0.05vw;
+  position: absolute;
+  width: 2.4vw;
+  height: 2.4vw;
+  border-radius: 50%;
+  border: 1px solid red;
+  -webkit-box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+
+}
+
+
+
+@keyframes spin {
+
+  0%,
+  100% {
+
+    transform: rotate(360deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+
+
+
+@keyframes inandout {
+
+  0%,
+  100% {
+    transform: scaleY(1.2) scaleX(1.2) rotate(0deg);
+  }
+
+  50% {
+    transform: scaleY(0.8) scaleX(0.8) rotate(360deg);
+
+
+  }
+}
+
+@keyframes inandout2 {
+
+  0%,
+  100% {
+    transform: scaleY(1.2) scaleX(1.2) rotate(360deg);
+
+
+
+  }
+
+  50% {
+    transform: scaleY(0.8) scaleX(0.8) rotate(0deg);
+  }
+}
+
+
+@-moz-keyframes inandout {
+
+  0%,
+  100% {
+    -moz-transform: scaleY(0.8) scaleX(0.8) rotate(0deg);
+  }
+
+  50% {
+
+    -moz-transform: scaleY(1.2) scaleX(1.2) rotate(0deg);
+  }
+}
+
+@-webkit-keyframes inandout {
+
+  0%,
+  100% {
+    -webkit-transform: scaleY(0.8) scaleX(0.8) rotate(0deg);
+  }
+
+  50% {
+
+    -webkit-transform: scaleY(1.2) scaleX(1.2) rotate(0deg);
+  }
+
+
+}
+
+
+
+.tinybeam1,
+.tinybeam2,
+.tinybeam3,
+.tinybeam4,
+.tinybeam5,
+.tinybeam6,
+.tinybeam7,
+.tinybeam8 {
+  position: absolute;
+  width: 0.45vw;
+  height: 0.1vw;
+  background-color: red;
+
+}
+
+.tinybeam1 {
+
+  transform: rotate(90deg);
+
+  left: 30%;
+  top: -55%;
+}
+
+.tinybeam2 {
+  left: 130%;
+  top: 45%
+}
+
+.tinybeam3 {
+  transform: rotate(90deg);
+  left: 30%;
+  top: 145%
+}
+
+.tinybeam4 {
+
+  left: -70%;
+  top: 45%
+}
+
+
+.tinybeam5 {
+  transform: rotate(130deg);
+  left: 60%;
+  top: 20%
+}
+
+.tinybeam6 {
+  left: 65%;
+  transform: rotate(220deg);
+  top: 75%
+}
+
+.tinybeam7 {
+  transform: rotate(135deg);
+  left: 15%;
+  top: 70%
+}
+
+.tinybeam8 {
+  transform: rotate(45deg);
+  left: 15%;
+  top: 25%
+}
+
+
+.innerCircle,
+.outerCircle {
+  animation: inandout 6s ease-in infinite;
+
+}
+
+.innerCircle {
+  animation: inandout2 6s ease-in infinite;
+
+}
+
+
+
+.speechbubble {
+  z-index: 100;
+  position: absolute;
+  top: -2.5vw;
+  height: 1.5vw;
+
+  background: white;
+  display: inline-block;
+  padding: 2px;
+  border-radius: 20px;
+  /* margin-top: 50px; */
+  font-size: 0.7vw;
+  text-align: center;
+}
+
+.pointer {
+  z-index: 50;
+  height: 0.9vw;
+  width: 0.9vw;
+  background: white;
+  /* margin: 0 auto; */
+  transform: rotate(45deg);
+  /* border-radius: 0 0 1px 0; */
+  top: -1.5vw;
+  position: absolute;
+  left: 55%
+}
+
+.actionButton {
+  white-space: nowrap;
+  font-size: calc(5px+0.2vw);
+  width: auto;
+  /* display: inline-block; */
+  height: auto;
+  background-color: white;
+  border-radius: 0.5vw;
+  border: 1px solid black;
+  padding: 3px
+}
+
+.timeOut {
+  position: absolute;
+  top: 40%;
+  border: 1px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+}

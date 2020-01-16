@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap');
+
+.video-background {
+    background: #000;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.video-foreground,
+.video-background iframe {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    width: 100%;
+    height: 100%;
+    -webkit-filter: grayscale(70%);
+    -moz-filter: grayscale(70%);
+    -ms-filter: grayscale(70%);
+    -o-filter: grayscale(70%);
+    filter: grayscale(70%);
+    /* pointer-events: none; */
+}
+
+#vidtop-content {
+    top: 0;
+}
+
+@media (min-aspect-ratio: 16/9) {
+    .video-foreground {
+        height: 300%;
+        top: -100%;
+    }
+}
+
+@media (max-aspect-ratio: 16/9) {
+    .video-foreground {
+        width: 300%;
+        left: -100%;
+    }
+}
+
+.landingLink {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    z-index: 1000;
+    left: 0;
+    top: -15px;
+    width: 100%;
+
+}
+
+.landingHeadline {
+
+    align-self: center;
+    margin-left: 1%;
+
+    padding: 0;
+    z-index: 1000;
+    font-size: 9vw;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+}
+
+.logo {
+    margin-right: 1%;
+    z-index: 1000;
+    align-self: center;
+}
+
+.logo img {
+
+
+    width: 26vw;
+    height: auto;
+}
+
+.landingStripe {
+    position: absolute;
+    /* z-index: ; */
+    top: 33%;
+    z-index: 500;
+    width: 100%;
+    height: 4.9vw;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.intoBattle {
+    position: absolute;
+    z-index: 500;
+    left: 0;
+    top: 80%;
+
+
+
+}
+
+.intoBattle button {
+    z-index: 550;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    border: 0;
+    font-size: 30px;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.6);
+    transition: box-shadow .3s;
+
+}
+
+.intoBattle button:visited {
+    background-color: transparent;
+    border: 0;
+}
+
+.intoBattle button:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+
+    border-radius: 20px;
+    box-shadow: 0 0 70px rgba(226, 53, 53, 0.764);
+}

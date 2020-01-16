@@ -23,7 +23,8 @@
     "react-hash-router": "^0.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
-    "react-time-ago": "^5.0.7"
+    "react-time-ago": "^5.0.7",
+    "react-vimeo": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

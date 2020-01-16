@@ -685,6 +685,7 @@ public class BshipsApplicationController {
         ArrayList<GamePlayer> listOne = new ArrayList<>();
         Player player = playerRepository.findByUserName(authentication.getName());
 
+
         List<Double> scoreList = new ArrayList<>(player.getScores().stream().map(score -> score.getScore()).collect(toList()));
 
 

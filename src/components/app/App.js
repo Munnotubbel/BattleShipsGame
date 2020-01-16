@@ -6,10 +6,8 @@ import GameView from "../routes/game_view/GameView";
 import Ranking from "../routes/ranking/Ranking";
 import Login from "../routes/navbar/Login";
 import SignUp from "../routes/navbar/SignUp";
-import Landing from "../routes/landing/Landing";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../css/App.css";
-import "../../css/Landing.css";
 import { Route, HashRouter } from "react-router-dom";
 import "../../css/Water.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -32,7 +30,7 @@ function App() {
             alignItems="center"
             style={{ marginTop: "20px" }}
           >
-            <Route exact path="/" component={Landing} />
+            <Route exact path="/" component={Games} />
             <Route path="/web/games" component={Games} />
             <Route path="/web/game_view" component={GameView} />
 
