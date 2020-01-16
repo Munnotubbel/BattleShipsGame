@@ -149,17 +149,7 @@ export default function EnemyBoard(props) {
       <Row>
         <Col>
           {infoCon.EnAtmTurn === 0 || infoCon.round === 0 ? (
-            <div
-              style={{
-                border: "1px white",
-                borderRadius: "5px",
-                backgroundColor: "white",
-                position: "absolute",
-
-                top: "40%",
-                padding: "10px"
-              }}
-            >
+            <div className="timeOut">
               {infoCon.round === 0 ? (
                 <div>
                   <h6>place your ships and wait for opponent</h6>{" "}

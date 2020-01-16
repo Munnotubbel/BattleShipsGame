@@ -20,6 +20,7 @@ export default class Login extends Component {
   };
 
   handleSubmit = event => {
+    console.log("SUBMIT");
     event.preventDefault();
     this.signUp();
   };
@@ -47,7 +48,7 @@ export default class Login extends Component {
   // };
 
   signUp = () => {
-    fetch("/api/players", {
+    fetch("/api/register", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -58,7 +59,7 @@ export default class Login extends Component {
     }).then(response => {
       if (response.status === 201) {
         console.log("user added");
-        this.fetchLogin();
+        // this.fetchLogin();
       } else if (response.status === 409) {
         console.log("User exists");
       } else {

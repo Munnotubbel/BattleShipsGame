@@ -42,6 +42,8 @@ export default class Login extends Component {
           this.props.onHide();
           window.location.reload();
         } else {
+          console.log(response.status);
+          console.log(response);
           console.log("Invalid username or password");
         }
       })

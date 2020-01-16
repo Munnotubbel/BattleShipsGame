@@ -36,13 +36,15 @@ public class BshipsApplicationController {
     @Bean
     public PasswordEncoder passwordEncoderCont() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+}
 
 
     private HashMap<String, Object> doMap(String key, Object value) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(key, value);
         return map;
+
+
     }
 
     //--------------------------------------------------------------games route
@@ -369,7 +371,7 @@ public class BshipsApplicationController {
 
 
 
-        if (game.getGamePlayers().size() == 2 &&
+        if (game.getGamePlayers().size() > 1 &&
                 gamePlayer.getShips().size()>0 &&
                 enGamePlayer(gamePlayer).getShips().size()>0
         ){
@@ -524,7 +526,7 @@ public class BshipsApplicationController {
             }
 
 
-            else {
+            else if(gamePlayer.getShips().size()>0 && enGamePlayer(gamePlayer).getShips().size()>0 && gamePlayer.getAttackTimer()!=null && enGamePlayer(gamePlayer).getAttackTimer()!=null) {
 
                 Long myTimer= (new Date().getTime())- (gamePlayer.getAttackTimer().getTime());
                 Long enTimer= (new Date().getTime())- (enGamePlayer(gamePlayer).getAttackTimer().getTime());
@@ -577,7 +579,8 @@ public class BshipsApplicationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/ranking")
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
-
+        System.out.println(playerRepository.findByUserName("Ralf").getUserName());
+        System.out.println(playerRepository.findByUserName("Ralf").getPassword());
         return playerRepository.findAll()
                 .stream().map(player ->
                         new HashMap<String, Object>() {{
@@ -717,16 +720,19 @@ public class BshipsApplicationController {
 
 //--------------------------------------------------------------POST player
 
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    @RequestMapping(path = "/register", method = RequestMethod.POST)
     public ResponseEntity<Object> register(
             @RequestParam String userName, @RequestParam String password) {
         if (userName.isEmpty() || password.isEmpty()) {
             return new ResponseEntity<>(doMap("error", "something is missing"), HttpStatus.UNAUTHORIZED);
         }
-        if (playerRepository.findByUserName(userName) != null) {
+        else if (playerRepository.findByUserName(userName) != null) {
             return new ResponseEntity<>(doMap("error", "user exists"), HttpStatus.UNAUTHORIZED);
         } else {
-            Player newPlayer = playerRepository.save(new Player(userName, passwordEncoderCont().encode(password)));
+            Player newPlayer = new Player(userName, passwordEncoderCont().encode(password));
+            playerRepository.save(newPlayer);
+            System.out.println(newPlayer.getUserName());
+            System.out.println(passwordEncoderCont().encode(newPlayer.getPassword()));
             return new ResponseEntity<>(doMap("userName", newPlayer.getUserName()), HttpStatus.CREATED);
         }
     }

@@ -331,6 +331,8 @@ public class BshipsApplication {
 					.antMatchers("/web/login").permitAll()
 					.antMatchers("/web/**").permitAll()
 					.antMatchers("/players").permitAll()
+					.antMatchers("/register").permitAll()
+					.antMatchers("/web/register").permitAll()
 
 					.antMatchers("/api/lookForGame").permitAll()
 					.antMatchers("/api/players").permitAll()
@@ -339,8 +341,9 @@ public class BshipsApplication {
 					.antMatchers("/api/ranking").permitAll()
                     .antMatchers("/api/game-view/attacks").hasAuthority("USER")
                     .antMatchers("/api/game-view/ships").hasAuthority("USER")
-
-                    .antMatchers("/api/game-view/**").hasAuthority("USER")
+					.antMatchers("/api/register").permitAll()
+					.antMatchers("/api/login*").permitAll()
+					.antMatchers("/api/game-view/**").hasAuthority("USER")
 					.antMatchers("/api/**").permitAll()
 					.antMatchers("/rest/*").permitAll()
 					.anyRequest().authenticated()
@@ -371,6 +374,8 @@ public class BshipsApplication {
 				session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 			}
 		}
+
+
 
 
 	}

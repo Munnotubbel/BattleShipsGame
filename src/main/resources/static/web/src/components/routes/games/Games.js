@@ -54,7 +54,7 @@ export default function Games() {
 
   if (infocon.games) {
     return (
-      <Grid item xs={11}>
+      <Grid item xs={10}>
         <CardDeck>
           {infocon.games.map(game => {
             return (
