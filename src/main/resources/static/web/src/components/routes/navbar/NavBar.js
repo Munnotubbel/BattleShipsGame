@@ -31,6 +31,9 @@ function NavBar(props, history) {
       </Popover.Content>
     </Popover>
   );
+  function delay(methodes) {
+    setTimeout(methodes, 300);
+  }
 
   const lookForGame = () => {
     fetch("api/lookForGame", {
@@ -43,8 +46,8 @@ function NavBar(props, history) {
       .then(res => {
         if (res.gameId) {
           updateValue("gmId", res.gameId);
-
-          props.history.push("/web/game_view");
+          props.history.push("/web/games");
+          delay(props.history.push("/web/game_view"));
         } else {
           overlayTrigger.current.show();
         }
