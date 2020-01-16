@@ -25,7 +25,7 @@ export default class Login extends Component {
   };
 
   fetchLogin = () => {
-    const URL = `/api/login`;
+    const URL = `https://bships.herokuapp.com//api/login`;
     fetch(URL, {
       method: "POST",
       credentials: "include",

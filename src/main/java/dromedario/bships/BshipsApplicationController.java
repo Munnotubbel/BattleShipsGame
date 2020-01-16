@@ -15,7 +15,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
 @RestController
 @RequestMapping("/api")
 public class BshipsApplicationController {
@@ -48,7 +48,7 @@ public class BshipsApplicationController {
     }
 
     //--------------------------------------------------------------games route
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
     @RequestMapping("/games")
     public Map<String, Object> getGames() {
 
@@ -576,7 +576,7 @@ public class BshipsApplicationController {
     }
 
     //--------------------------------------------------------------#ranking route
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
     @RequestMapping("/ranking")
     public List<HashMap<String, Object>> ScoreOfGamePlayer() {
         System.out.println(playerRepository.findByUserName("Ralf").getUserName());
@@ -679,7 +679,7 @@ public class BshipsApplicationController {
     }
 
 //--------------------------------------------------------------Create & Join Game
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
     @RequestMapping(path = "/lookForGame")
     public ResponseEntity<Object> createGame(Authentication authentication) {
         ArrayList<GamePlayer> listOne = new ArrayList<>();
@@ -738,7 +738,7 @@ public class BshipsApplicationController {
     }
 
 //--------------------------------------------------------------Post Ships
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
     @RequestMapping(path = "/game_view/{gameId}/ships", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> postShips(@PathVariable Long gameId,@RequestBody List<Ship> ships, Authentication authentication) {
 
@@ -758,7 +758,7 @@ public class BshipsApplicationController {
     }
 
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
     @RequestMapping(path = "/game_view/{gameId}/attacks", method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> postAttacks(@PathVariable Long gameId,@RequestBody List<Attack> attacks, Authentication authentication) {
         Game game = gameRepository.findGameByGameId(gameId);

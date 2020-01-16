@@ -55,7 +55,7 @@ class InfoContextProvider extends Component {
 
   //-----------------------------------------------------------------Games List
   fetchGames = () => {
-    fetch(`api/games`)
+    fetch(`https://bships.herokuapp.com/api/games`)
       .then(response => response.json())
       .then(response =>
         this.setState({ ...response }, () => {
@@ -68,7 +68,7 @@ class InfoContextProvider extends Component {
 
   //-----------------------------------------------------------------Game View
   fetchGameView = () => {
-    fetch(`api/game_view/${this.state.gmId}`)
+    fetch(`https://bships.herokuapp.com/api/game_view/${this.state.gmId}`)
       .then(response =>
         response.status !== 401 ? response.json() : this.props.history.goBack()
       )
@@ -172,7 +172,9 @@ class InfoContextProvider extends Component {
 
   getGameInfo = async () => {
     if (this.state.pull === true) {
-      fetch(`/api/game_view/${this.state.gmId}/checkNext`) // Any output from the script will go to the "result" div
+      fetch(
+        `https://bships.herokuapp.com/api/game_view/${this.state.gmId}/checkNext`
+      ) // Any output from the script will go to the "result" div
         .then(response => response.json())
         .then(response => {
           if (response.gameResult === "it's a tie") {
@@ -471,15 +473,18 @@ class InfoContextProvider extends Component {
     ];
 
     console.log(JSON.stringify(post));
-    fetch(`/api/game_view/${this.state.gmId}/ships`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(post)
-    })
+    fetch(
+      `https://bships.herokuapp.com/api/game_view/${this.state.gmId}/ships`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(post)
+      }
+    )
       .then(response => {
         console.log(response);
         if (response.status === 201) {
@@ -493,7 +498,9 @@ class InfoContextProvider extends Component {
   //-----------------------------------------------------------------Game View - Attack functions
 
   handleShot = cellKey => {
-    fetch(`/api/game_view/${this.state.gmId}/checkNext`)
+    fetch(
+      `https://bships.herokuapp.com/api/game_view/${this.state.gmId}/checkNext`
+    )
       .then(response => response.json())
       .then(response => {
         if (response.selfCanFire === true && response.gameOver === false) {
@@ -531,7 +538,9 @@ class InfoContextProvider extends Component {
   };
 
   postShots = () => {
-    fetch(`/api/game_view/${this.state.gmId}/checkNext`)
+    fetch(
+      `https://bships.herokuapp.com/api/game_view/${this.state.gmId}/checkNext`
+    )
       .then(response => response.json())
       .then(response => {
         if (
@@ -543,15 +552,18 @@ class InfoContextProvider extends Component {
             { turn: response.myAtmTurn, attackLocations: this.state.shots }
           ];
 
-          fetch(`/api/game_view/${this.state.gmId}/attacks`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(attacks)
-          })
+          fetch(
+            `https://bships.herokuapp.com/api/game_view/${this.state.gmId}/attacks`,
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(attacks)
+            }
+          )
             .then(response => {
               console.log(response);
               if (response.status === 201) {
@@ -576,14 +588,14 @@ class InfoContextProvider extends Component {
   //-----------------------------------------------------------------Leaderboard functions
   fetchRanking = () => {
     console.log("rating fetch");
-    fetch(`api/ranking`)
+    fetch(`https://bships.herokuapp.com/api/ranking`)
       .then(response => response.json())
       .then(response => this.setState({ ranking: response }));
   };
 
   //-----------------------------------------------------------------logout
   logOut = () => {
-    fetch("/api/logout", {
+    fetch("https://bships.herokuapp.com/api/logout", {
       method: "POST"
     }).then(response => {
       if (response.status === 200) {

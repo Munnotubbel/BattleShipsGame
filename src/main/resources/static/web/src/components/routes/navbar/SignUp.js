@@ -48,7 +48,7 @@ export default class Login extends Component {
   // };
 
   signUp = () => {
-    fetch("/api/register", {
+    fetch("https://bships.herokuapp.com//api/register", {
       method: "POST",
       credentials: "include",
       headers: {

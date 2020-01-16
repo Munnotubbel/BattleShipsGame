@@ -306,7 +306,7 @@ public class BshipsApplication {
 		}
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
 	@Configuration
 	@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -318,7 +318,7 @@ public class BshipsApplication {
 
 
 
-		@CrossOrigin(origins = "http://localhost:3000")
+		@CrossOrigin(origins = "https://affectionate-curie-26b721.netlify.com/")
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
