@@ -358,7 +358,7 @@ public class BshipsApplication {
 					.logoutUrl("/api/logout");
 
 			http.csrf().disable();
-//
+
 			http.exceptionHandling()
 			.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 			http.exceptionHandling().authenticationEntryPoint((request, response, authentication) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED));

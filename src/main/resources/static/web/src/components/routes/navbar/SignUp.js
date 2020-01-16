@@ -55,7 +55,7 @@ export default class Login extends Component {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: `userName=${this.state.username}&password=${this.state.password}}`
+      body: `userName=${this.state.username}&password=${this.state.password}`
     }).then(response => {
       if (response.status === 201) {
         console.log("user added");
